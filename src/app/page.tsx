@@ -67,7 +67,7 @@ export default function Home() {
         <div className="section-head"><div><p className="eyebrow">START ONLINE AT NO COST</p><h2>Apply for free domain & hosting.</h2></div><p className="section-intro">Request an eligible free subdomain and starter hosting option. Availability depends on provider rules, project suitability and review.</p></div>
         <div className="free-starter-info"><span>FREE STARTER REQUEST</span><p>We will review your details and reply with the available free option. Free hosting may use a provider subdomain such as <strong>yourname.vercel.app</strong>; it does not include a free custom .com domain.</p></div>
         <FreeStarterForm />
-      </section>\n
+      </section>
       <section id="process" className="section process-section">
         <p className="eyebrow">A CLEAR PROCESS</p><h2>From idea to launch.</h2>
         <div className="process-grid">
