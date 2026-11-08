@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import { createUserWithEmailAndPassword, onAuthStateChanged, sendEmailVerification, signInWithEmailAndPassword, signOut, User } from "firebase/auth";
+import { createUserWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, User } from "firebase/auth";
 import { addDoc, collection, onSnapshot, orderBy, query, serverTimestamp, where } from "firebase/firestore";
 import Link from "next/link";
 import { auth, db } from "@/lib/firebase";
@@ -42,6 +42,17 @@ export default function PortalClient() {
     } catch (err) { setMessage(err instanceof Error ? err.message : "Could not complete sign-in."); }
   }
 
+  async function resetPassword() {
+    setMessage("");
+    if (!email.trim()) { setMessage("পাসওয়ার্ড রিসেট লিংক পেতে আগে আপনার ইমেইল ঠিকানা লিখুন।"); return; }
+    try {
+      await sendPasswordResetEmail(auth, email.trim());
+      setMessage("পাসওয়ার্ড রিসেট করার লিংক আপনার ইমেইলে পাঠানো হয়েছে। ইনবক্স ও স্প্যাম ফোল্ডার দেখুন।");
+    } catch (err) {
+      setMessage(err instanceof Error ? err.message : "পাসওয়ার্ড রিসেট ইমেইল পাঠানো যায়নি।");
+    }
+  }
+
   async function submitProject(e: FormEvent) {
     e.preventDefault(); if (!user || !title.trim()) return;
     setSaving(true); setMessage("");
@@ -67,6 +78,7 @@ export default function PortalClient() {
         <label>Password<input required minLength={6} type="password" value={password} onChange={e=>setPassword(e.target.value)} autoComplete={register ? "new-password" : "current-password"} /></label>
         <button className="portal-button" type="submit">{register ? "Create account" : "Sign in"}</button>
       </form>
+      {!register && <button type="button" className="portal-switch" onClick={resetPassword}>Forgot password?</button>}
       <button className="portal-switch" onClick={()=>{setRegister(!register);setMessage("");}}>{register ? "Already registered? Sign in" : "New customer? Create an account"}</button>
       {message && <p className="portal-message">{message}</p>}
     </section> : <section className="portal-dashboard">
