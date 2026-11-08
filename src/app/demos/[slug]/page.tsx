@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { DEMO_SITES } from "@/lib/demo-sites";
 import DemoProtection from "@/components/DemoProtection";
 import DemoInteractive from "@/components/DemoInteractive";
+import DemoBusinessModules from "@/components/DemoBusinessModules";
 
 const content: Record<string, {nav:string[]; label:string; stats:string[]; showcase:string[]; quote:string; faq:string[]}> = {
  school:{nav:["About","Academics","Admissions","Campus life"],label:"A place to discover your potential",stats:["25+ years of learning","1,200+ curious minds","40+ expert educators"],showcase:["Early years & primary","Middle school","Clubs, arts & sports"],quote:"Every learner has a spark. Our job is to help it shine.",faq:["How can a student apply?","Can families arrange a campus visit?"]},
@@ -93,6 +94,7 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
         <section className="demo-stats" id="highlights">{detail.stats.map((item,i)=><div key={item}><b>0{i+1}</b><span>{item}</span></div>)}</section>
         <section className="demo-section demo-intro-section"><div><p className="demo-kicker">DESIGNED WITH PURPOSE</p><h2>A better experience for every visitor.</h2></div><p>{demo.intro} This concept brings the most important information forward, makes the next step easy to find and gives the brand a consistent visual identity across devices.</p></section>
         <DemoInteractive slug={slug} />
+        <DemoBusinessModules slug={slug} />
         <section className="demo-quote"><span>“</span><blockquote>{detail.quote}</blockquote><p>{demo.title.toUpperCase()} EXPERIENCE</p></section>
         <section className="demo-contact" id="contact"><p className="demo-kicker">YOUR IDEA, OUR NEXT PROJECT</p><h2>Like what you see?</h2><p>We can customise this concept with your brand, pages, content and required features.</p><Link className="demo-cta" href="/#contact">Discuss your website with NEXORA ↗</Link><small>Sample website only · No real orders, bookings or payments are processed here.</small></section>
         <footer className="demo-footer"><span>© NEXORA INTERNATIONAL TECHNOLOGY · CONCEPT {String(number).padStart(2,"0")} / 50</span><Link href="/#templates">Browse all 50 demos ↗</Link></footer>
