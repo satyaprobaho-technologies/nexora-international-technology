@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import HelpChat from "@/components/HelpChat";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 const siteUrl = "https://nexora-international-technology.vercel.app";
 
@@ -14,5 +15,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en"><body>{children}<HelpChat /></body></html>;
+  return <html lang="en"><body>{children}<LanguageSwitcher /><HelpChat /></body></html>;
 }
