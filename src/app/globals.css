@@ -227,3 +227,68 @@ body{top:0!important}
 .demo-catalog-photo{display:block;width:100%;height:150px;object-fit:cover;border-radius:7px;margin:0 0 12px}
 .demo-catalog-preview{overflow:hidden}
 @media(max-width:620px){.demo-catalog-photo{height:125px}}
+
+
+/* Category-specific interactive demo modules */
+.demo-interactive{background:#fff;color:#17263b}
+.demo-live-catalog{padding:86px max(7vw,24px);background:#f3f6fa}
+.demo-live-heading{display:flex;justify-content:space-between;align-items:end;gap:30px;margin-bottom:30px}
+.demo-live-heading>div:first-child{max-width:760px}
+.demo-live-heading h2,.demo-live-benefits h2,.demo-live-faq h2,.demo-live-enquiry h2{font:800 clamp(30px,4.2vw,48px)/1.12 Manrope,Arial,sans-serif;letter-spacing:-1.4px;color:#17263b;margin:10px 0 14px}
+.demo-live-heading>div>p:last-child,.demo-live-faq>div>p:last-child,.demo-live-enquiry>div>p:not(.demo-kicker){max-width:720px;color:#607187;font-size:14px;line-height:1.8}
+.demo-live-count{flex:0 0 150px;padding:20px;background:#fff;border:1px solid #dce5ef;border-radius:10px;display:grid;gap:5px;text-align:center}
+.demo-live-count b{font:800 34px Manrope;color:var(--demo-accent)}
+.demo-live-count span{font-size:9px;letter-spacing:1.3px;color:#6a7b90}
+.demo-live-toolbar{display:flex;align-items:center;gap:14px;margin:26px 0 20px;flex-wrap:wrap}
+.demo-live-search{display:flex;align-items:center;gap:9px;flex:1;min-width:220px;padding:0 14px;background:#fff;border:1px solid #d7e1ec;border-radius:8px}
+.demo-live-search>span{font-size:23px;color:var(--demo-accent)}
+.demo-live-search input{width:100%;height:46px;border:0;outline:0;background:transparent;color:#17263b;font:13px Arial}
+.demo-live-toolbar>span{font-size:11px;color:#65758a}
+.demo-live-toolbar>button{border:0;background:transparent;color:var(--demo-accent);font-size:11px;font-weight:800;cursor:pointer}
+.demo-live-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+.demo-live-card{overflow:hidden;background:#fff;border:1px solid #dce5ef;border-radius:11px;box-shadow:0 10px 25px #16263b08}
+.demo-live-card-top{display:flex;justify-content:space-between;gap:8px;padding:13px 14px 0;color:#738398;font-size:9px}
+.demo-live-card-top span:first-child{color:var(--demo-accent);font-weight:900;letter-spacing:1px}
+.demo-live-art{height:132px;margin:12px 13px 0;padding:16px;position:relative;overflow:hidden;display:flex;align-items:end;background:linear-gradient(135deg,color-mix(in srgb,var(--demo-accent) 20%,white),#e9eff6);border-radius:7px}
+.demo-live-art:after{content:"";position:absolute;width:130px;height:130px;right:-22px;top:-32px;border:1px solid color-mix(in srgb,var(--demo-accent) 35%,white);border-radius:50%;box-shadow:0 0 0 17px #ffffff50,0 0 0 35px #ffffff30}
+.demo-live-art i{position:absolute;border-radius:50%;border:1px solid color-mix(in srgb,var(--demo-accent) 30%,white);width:48px;height:48px;right:25px;top:27px}
+.demo-live-art i:nth-child(2){width:70px;height:70px;right:14px;top:16px}
+.demo-live-art i:nth-child(3){width:92px;height:92px;right:3px;top:5px}
+.demo-live-art b{position:relative;z-index:1;max-width:76%;font:800 17px/1.15 Manrope;color:#17263b}
+.demo-live-card-copy{padding:15px}
+.demo-live-card-copy h3{font:700 16px Manrope;margin:0 0 8px;color:#1c3048}
+.demo-live-card-copy p{min-height:65px;margin:0;color:#68798d;font-size:11px;line-height:1.65}
+.demo-live-card-bottom{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:14px;flex-wrap:wrap}
+.demo-live-card-bottom>strong{color:#17263b;font:800 14px Manrope}
+.demo-live-card-bottom button,.demo-live-selection button,.demo-live-enquiry form>button{border:0;border-radius:6px;padding:10px 12px;background:var(--demo-accent);color:white;font-size:10px;font-weight:800;cursor:pointer}
+.demo-live-card-bottom button.is-selected{background:#14734c}
+.demo-live-empty{padding:25px;text-align:center;color:#64748b}
+.demo-live-selection{display:flex;justify-content:space-between;align-items:center;gap:18px;margin-top:22px;padding:17px 20px;background:#fff;border:1px solid #dce5ef;border-radius:9px}
+.demo-live-selection>div{display:grid;gap:5px;min-width:0}
+.demo-live-selection b{font:800 13px Manrope;color:#17263b}
+.demo-live-selection span{font-size:11px;line-height:1.5;color:#697b90;overflow-wrap:anywhere}
+.demo-live-selection button:disabled{opacity:.4;cursor:not-allowed}
+.demo-live-benefits{padding:82px max(7vw,24px);display:grid;grid-template-columns:.9fr 1.1fr;gap:55px;align-items:center}
+.demo-live-benefits h2{font-size:clamp(28px,3.6vw,42px)}
+.demo-live-benefit-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.demo-live-benefit-grid article{min-height:100px;padding:18px;border:1px solid #e0e7ef;border-radius:9px;display:grid;align-content:space-between;gap:12px;background:#fbfcfe}
+.demo-live-benefit-grid b{font:800 17px Manrope;color:var(--demo-accent)}
+.demo-live-benefit-grid span{font-size:12px;font-weight:700;color:#344960}
+.demo-live-faq{padding:80px max(7vw,24px);background:#f3f6fa;display:grid;grid-template-columns:.8fr 1.2fr;gap:60px}
+.demo-live-faq-list article{border-bottom:1px solid #d9e2ec}
+.demo-live-faq-list article>button{width:100%;padding:19px 0;display:flex;justify-content:space-between;align-items:center;gap:15px;border:0;background:transparent;text-align:left;color:#243950;font-size:13px;font-weight:800;cursor:pointer}
+.demo-live-faq-list article>button b{color:var(--demo-accent);font-size:20px}
+.demo-live-faq-list article>p{margin:0;padding:0 30px 18px 0;color:#68798d;font-size:12px;line-height:1.8}
+.demo-live-enquiry{padding:85px max(7vw,24px);display:grid;grid-template-columns:1fr 1fr;gap:60px;background:linear-gradient(130deg,color-mix(in srgb,var(--demo-accent) 12%,white),#f6f8fb)}
+.demo-live-contact-points{display:grid;gap:11px;margin-top:28px;color:#4c637b;font-size:12px;font-weight:700}
+.demo-live-enquiry form{padding:25px;background:#fff;border:1px solid #dce5ef;border-radius:12px;box-shadow:0 15px 45px #172b430d;display:grid;gap:14px}
+.demo-live-enquiry form label{display:grid;gap:7px;color:#344960;font-size:11px;font-weight:800}
+.demo-live-enquiry form input,.demo-live-enquiry form textarea{width:100%;border:1px solid #d5dfeb;border-radius:6px;padding:12px;background:#fbfcfe;color:#17263b;font:13px Arial;outline-color:var(--demo-accent)}
+.demo-live-enquiry form textarea{min-height:95px;resize:vertical}
+.demo-live-form-selection{display:grid;gap:5px;padding:12px;background:#f3f6fa;border-radius:6px}
+.demo-live-form-selection b{font-size:10px;color:#344960}
+.demo-live-form-selection span{font-size:11px;line-height:1.6;color:#697b90}
+.demo-live-enquiry form>button{padding:14px;font-size:12px}
+.demo-live-success{margin:0;padding:12px;border-radius:6px;background:#e8f7ef;color:#17633f;font-size:11px;line-height:1.6}
+@media(max-width:1050px){.demo-live-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.demo-live-benefits{grid-template-columns:1fr;gap:25px}}
+@media(max-width:680px){.demo-live-catalog,.demo-live-benefits,.demo-live-faq,.demo-live-enquiry{padding:58px 20px}.demo-live-heading{display:block}.demo-live-count{display:inline-grid;margin-top:18px}.demo-live-grid{grid-template-columns:1fr}.demo-live-card-copy p{min-height:0}.demo-live-selection{align-items:stretch;flex-direction:column}.demo-live-selection button{width:100%}.demo-live-faq,.demo-live-enquiry{grid-template-columns:1fr;gap:25px}.demo-live-benefit-grid{grid-template-columns:1fr 1fr}}
