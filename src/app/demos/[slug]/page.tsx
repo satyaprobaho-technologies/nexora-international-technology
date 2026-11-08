@@ -136,7 +136,7 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
         <DemoInteractive slug={slug} />
         <DemoBusinessModules slug={slug} />
         <section className="demo-quote"><span>“</span><blockquote>{detail.quote}</blockquote><p>{demo.title.toUpperCase()} EXPERIENCE</p></section>
-        <section className="demo-contact" id="contact"><p className="demo-kicker">YOUR IDEA, OUR NEXT PROJECT</p><h2>Like what you see?</h2><p>We can customise this concept with your brand, pages, content and required features.</p><Link className="demo-cta" href="/#contact">Discuss your website with NEXORA ↗</Link><small>Sample website only · No real orders, bookings or payments are processed here.</small></section>
+        <section className="demo-contact" id="contact"><p className="demo-kicker">YOUR IDEA, OUR NEXT PROJECT</p><h2>Like what you see?</h2><p>We can customise this concept for your organisation, region and international customers with your brand, languages, currencies, pages and required workflows.</p><Link className="demo-cta" href="/#contact">Request this solution from NEXORA ↗</Link><small>Interactive sample preview only · Submit a project enquiry to request a quotation. No live orders, bookings or payments are processed here.</small></section>
         <footer className="demo-footer"><span>© NEXORA INTERNATIONAL TECHNOLOGY · CONCEPT {String(number).padStart(2,"0")} / 50</span><Link href="/#templates">Browse all 50 demos ↗</Link></footer>
       </main>
     </DemoProtection>
