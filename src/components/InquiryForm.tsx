@@ -2,7 +2,7 @@
 
 import { FormEvent } from "react";
 
-const inbox = "computer26training@gmail.com";
+const inbox = "24customar.support@gmail.com";
 
 export default function InquiryForm() {
   function submit(event: FormEvent<HTMLFormElement>) {
