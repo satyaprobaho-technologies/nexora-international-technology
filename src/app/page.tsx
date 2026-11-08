@@ -34,7 +34,7 @@ export default function Home() {
       <header className="nav">
         <Link className="brand" href="/" aria-label="NEXORA home">NEXORA <small>INTERNATIONAL TECHNOLOGY</small></Link>
         <nav aria-label="Main navigation">
-          <a href="#services">Services</a><Link href="/software">Software Demos</Link><Link href="/demos">50 Website Demos</Link><a href="#free-starter">Free starter</a><a href="#process">How it works</a><a href="#payments">Payment</a><a href="#contact">Contact</a>
+          <Link href="/solutions">Solutions</Link><Link href="/pricing">Pricing</Link><a href="#services">Services</a><Link href="/software">Software Demos</Link><Link href="/demos">50 Website Demos</Link><a href="#free-starter">Free starter</a><a href="#process">How it works</a><a href="#payments">Payment</a><a href="#contact">Contact</a>
         </nav>
       </header>
 
@@ -44,8 +44,8 @@ export default function Home() {
           <h1>Your Digital World<br /><span>Starts Here.</span></h1>
           <p className="lead">From your first domain to a complete business website, NEXORA helps you plan, build and grow your online presence.</p>
           <div className="actions">
-            <a className="button" href="#contact">Start a project <span aria-hidden="true">↗</span></a>
-            <Link className="button secondary" href="/software">Explore software demos</Link><Link className="button secondary" href="/demos">Explore all 50 website demos</Link>
+            <Link className="button" href="/portal">Request a project quote <span aria-hidden="true">↗</span></Link>
+            <Link className="button secondary" href="/solutions">Explore solutions</Link><Link className="button secondary" href="/pricing">Pricing & packages</Link><Link className="button secondary" href="/software">Explore software demos</Link><Link className="button secondary" href="/demos">Explore all 50 website demos</Link>
           </div>
           <div className="hero-proof"><span>01 / PLAN</span><span>02 / BUILD</span><span>03 / GROW</span></div>
         </div>
