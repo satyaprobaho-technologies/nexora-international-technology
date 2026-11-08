@@ -115,3 +115,29 @@ body{top:0!important}
 .goog-te-menu-value{display:none!important}
 .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 @media(max-width:680px){.language-switcher{top:12px;right:12px;padding:6px 8px}.language-switcher select{max-width:88px}}
+
+
+/* Rich visual catalogue for all 50 website demos */
+.demo-catalog-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px}
+.demo-catalog-card{overflow:hidden;border:1px solid #294967;border-radius:14px;background:#0d223a;transition:transform .2s,border-color .2s}
+.demo-catalog-card:hover{transform:translateY(-4px);border-color:#67c9ff}
+.demo-catalog-preview{padding:13px;border-top:4px solid #67c9ff;background:#eaf0f7;min-height:210px}
+.demo-catalog-browser{display:flex;align-items:center;gap:5px;padding:3px 3px 12px;color:#718198}
+.demo-catalog-browser i{width:7px;height:7px;border-radius:50%;background:#b6c4d3}
+.demo-catalog-browser span{margin-left:auto;font-size:7px;letter-spacing:1.2px}
+.demo-catalog-hero{min-height:142px;padding:19px 17px;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:7px;border-radius:6px;color:#17263b}
+.demo-catalog-hero small{font-size:8px;letter-spacing:1.4px;color:#52647a;font-weight:800}
+.demo-catalog-hero b{font:800 clamp(16px,2vw,22px)/1.1 Manrope,Arial,sans-serif;max-width:95%}
+.demo-catalog-hero span{font-size:10px;color:#52647a}
+.demo-catalog-hero em{font-style:normal;font-size:7px;letter-spacing:1px;padding:6px 9px;border-radius:3px;color:white}
+.demo-catalog-bars{display:flex;gap:6px;margin-top:10px}
+.demo-catalog-bars i{height:5px;flex:1;background:#cbd6e3;border-radius:4px}
+.demo-catalog-info{padding:18px}
+.demo-catalog-number{font-size:9px;letter-spacing:1.8px;color:#67c9ff}
+.demo-catalog-info h3{font:700 17px Manrope;margin:8px 0}
+.demo-catalog-info p{min-height:58px;margin:0;color:#a9bbd1;font-size:12px;line-height:1.65}
+.demo-module-tags{display:flex;flex-wrap:wrap;gap:6px;margin:13px 0 17px}
+.demo-module-tags span{padding:5px 7px;border:1px solid #315575;border-radius:20px;color:#b8d9ef;font-size:9px}
+.demo-catalog-info>a{display:inline-flex;color:#8ce6ed;text-decoration:none;font-size:12px;font-weight:800}
+@media(max-width:1050px){.demo-catalog-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:620px){.demo-catalog-grid{grid-template-columns:1fr}.demo-catalog-info p{min-height:0}}
