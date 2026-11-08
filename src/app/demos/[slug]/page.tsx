@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { notFound } from "next/navigation";
 
 const demos = {
@@ -21,7 +22,7 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
   if (!(slug in demos)) notFound();
   const demo = demos[slug as DemoSlug];
   return (
-    <main className="demo-page" style={{ "--demo-accent": demo.color } as React.CSSProperties}>
+    <main className="demo-page" style={{ "--demo-accent": demo.color } as CSSProperties}>
       <header className="demo-nav"><Link href="/" className="demo-brand">NEXORA <span>DEMO PREVIEW</span></Link><Link href="/#demos" className="demo-back">← All demos</Link></header>
       <section className="demo-hero"><p className="demo-kicker">{demo.type} · SAMPLE DESIGN</p><h1>{demo.title}</h1><h2>{demo.tagline}</h2><p>{demo.intro}</p><Link className="demo-cta" href="/#contact">Request a website like this ↗</Link></section>
       <section className="demo-features"><p className="demo-kicker">EXPLORE THE LAYOUT</p><h2>Designed around your audience.</h2><div className="demo-feature-grid">{demo.cards.map(([title, description]) => <article key={title}><span>✦</span><h3>{title}</h3><p>{description}</p></article>)}</div></section>
