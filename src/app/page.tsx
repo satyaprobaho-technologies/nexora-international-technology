@@ -110,7 +110,7 @@ export default function Home() {
         <InquiryForm />
         <a className="contact-email" href={`mailto:${email}?subject=${subject}`}>{email} ↗</a>
       </section>
-      <footer><Link className="brand" href="/">NEXORA <small>INTERNATIONAL TECHNOLOGY</small></Link><p>Your Digital World Starts Here.</p><span>© {new Date().getFullYear()} NEXORA INTERNATIONAL TECHNOLOGY. All rights reserved.</span></footer>
+      <footer><Link className="brand" href="/">NEXORA <small>INTERNATIONAL TECHNOLOGY</small></Link><p>Your Digital World Starts Here.</p><span>© {new Date().getFullYear()} NEXORA INTERNATIONAL TECHNOLOGY. All rights reserved.</span><Link className="footer-portal-link" href="/portal">Client Portal</Link><Link className="footer-admin-link" href="/admin" aria-label="Staff access">·</Link></footer>
     </main>
   );
 }
