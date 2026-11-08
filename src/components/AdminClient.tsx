@@ -2,12 +2,13 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, User } from "firebase/auth";
-import { collection, doc, getDocs, orderBy, query, updateDoc } from "firebase/firestore";
+import { collection, doc, getDocs, orderBy, query, serverTimestamp, updateDoc } from "firebase/firestore";
 import Link from "next/link";
 import { ADMIN_EMAIL, auth, db } from "@/lib/firebase";
 
 type Customer = { id: string; name?: string; email?: string; status?: string };
 type Project = { id: string; ownerUid?: string; ownerEmail?: string; title?: string; service?: string; status?: string; paymentStatus?: string; dueDate?: string };
+type ResetRequest = { id: string; uid?: string; email?: string; status?: string; createdAt?: unknown };
 
 export default function AdminClient() {
   const [user, setUser] = useState<User | null>(null);
@@ -17,6 +18,7 @@ export default function AdminClient() {
   const [message, setMessage] = useState("");
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
+  const [resetRequests, setResetRequests] = useState<ResetRequest[]>([]);
   const [search, setSearch] = useState("");
   const [saving, setSaving] = useState("");
 
@@ -25,12 +27,14 @@ export default function AdminClient() {
     if (!user || user.email !== ADMIN_EMAIL || !user.emailVerified) { setCustomers([]); setProjects([]); return; }
     (async () => {
       try {
-        const [c, p] = await Promise.all([
+        const [c, p, r] = await Promise.all([
           getDocs(query(collection(db, "customers"), orderBy("createdAt", "desc"))),
-          getDocs(query(collection(db, "projects"), orderBy("createdAt", "desc")))
+          getDocs(query(collection(db, "projects"), orderBy("createdAt", "desc"))),
+          getDocs(query(collection(db, "passwordResetRequests"), orderBy("createdAt", "desc")))
         ]);
         setCustomers(c.docs.map(d=>({id:d.id,...d.data()} as Customer)));
         setProjects(p.docs.map(d=>({id:d.id,...d.data()} as Project)));
+        setResetRequests(r.docs.map(d=>({id:d.id,...d.data()} as ResetRequest)));
       } catch (err) { setMessage(err instanceof Error ? err.message : "Unable to load admin data."); }
     })();
   }, [user]);
@@ -53,6 +57,18 @@ export default function AdminClient() {
     } catch (err) {
       setMessage(err instanceof Error ? err.message : "পাসওয়ার্ড রিসেট ইমেইল পাঠানো যায়নি।");
     }
+  }
+
+  async function sendCustomerReset(request: ResetRequest) {
+    if (!request.email) return;
+    setSaving(request.id); setMessage("");
+    try {
+      await sendPasswordResetEmail(auth, request.email);
+      await updateDoc(doc(db, "passwordResetRequests", request.id), {status: "sent", handledAt: serverTimestamp()});
+      setResetRequests(items=>items.map(item=>item.id===request.id?{...item,status:"sent"}:item));
+      setMessage(`পাসওয়ার্ড রিসেট লিংক ${request.email} ঠিকানায় পাঠানো হয়েছে।`);
+    } catch (err) { setMessage(err instanceof Error ? err.message : "Reset email could not be sent."); }
+    finally { setSaving(""); }
   }
 
   async function updateProject(id: string, patch: Partial<Project>) {
@@ -84,6 +100,7 @@ export default function AdminClient() {
     <div className="portal-heading"><div><p className="portal-kicker">NEXORA CONTROL CENTER</p><h1>Admin Dashboard</h1><p className="portal-muted">Signed in as {user.email}</p></div></div>
     <div className="admin-stats"><article><b>{customers.length}</b><span>Customers</span></article><article><b>{projects.length}</b><span>Projects</span></article><article><b>{projects.filter(p=>p.status==="pending").length}</b><span>Pending</span></article><article><b>{projects.filter(p=>p.paymentStatus!=="paid").length}</b><span>Unpaid</span></article></div>
     <section className="portal-panel"><h2>Find customer or project</h2><input className="admin-search" placeholder="Search by any customer email or project name…" value={search} onChange={e=>setSearch(e.target.value)} /></section>
+    <section className="portal-panel"><h2>Password help requests ({resetRequests.filter(r=>r.status!=="sent").length} pending)</h2><p className="portal-muted">গ্রাহকরা পাসওয়ার্ডে সমস্যায় পড়লে এখানে সহায়তার অনুরোধ পাঠাতে পারবেন। রিসেট লিংক পাঠালে সেটি গ্রাহকের ইমেইলে যাবে।</p><div className="admin-table">{resetRequests.length ? resetRequests.map(r=><article key={r.id}><div><b>{r.email || "Unknown email"}</b><small>{r.status === "sent" ? "Reset link sent" : "Needs password help"}</small></div><button className="portal-button" disabled={saving===r.id || r.status==="sent"} onClick={()=>sendCustomerReset(r)}>{saving===r.id ? "Sending…" : r.status==="sent" ? "Sent" : "Send reset link"}</button></article>) : <p className="portal-muted">No password help requests yet.</p>}</div></section>
     <section className="portal-panel"><h2>Customers ({visibleCustomers.length})</h2><div className="admin-table">{visibleCustomers.map(c=><article key={c.id}><div><b>{c.name || "Customer"}</b><small>{c.email}</small></div><select value={c.status||"active"} onChange={e=>updateCustomer(c.id,e.target.value)}><option value="active">Active</option><option value="suspended">Suspended</option></select></article>)}</div></section>
     <section className="portal-panel"><h2>Projects ({visibleProjects.length})</h2><div className="admin-table">{visibleProjects.map(p=><article key={p.id}><div className="admin-project-info"><b>{p.title}</b><small>{p.ownerEmail} · {p.service}</small></div><select value={p.status||"pending"} disabled={saving===p.id} onChange={e=>updateProject(p.id,{status:e.target.value})}><option value="pending">Pending</option><option value="in-progress">In progress</option><option value="completed">Completed</option><option value="suspended">Suspended</option></select><select value={p.paymentStatus||"unpaid"} disabled={saving===p.id} onChange={e=>updateProject(p.id,{paymentStatus:e.target.value})}><option value="unpaid">Unpaid</option><option value="paid">Paid</option></select><input aria-label="Payment due date" type="date" value={p.dueDate||""} onChange={e=>updateProject(p.id,{dueDate:e.target.value})}/></article>)}</div></section>
     {message && <p className="portal-message">{message}</p>}<p className="portal-foot">Admin actions are protected by Firebase Authentication and Firestore rules.</p>
