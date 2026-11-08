@@ -24,6 +24,9 @@ export async function initiateSslcommerz(input: {
   const amount = Number(project.quoteAmount);
   const currency = String(project.quoteCurrency || "USD").toUpperCase();
   if (!Number.isFinite(amount) || amount <= 0 || !/^[A-Z]{3}$/.test(currency)) throw new Error("A valid approved quotation is required");
+  // Bangladesh SSLCOMMERZ checkout must use the merchant-approved settlement currency.
+  // Until a provider explicitly confirms another currency in writing, only BDT quotations may be charged.
+  if (currency !== "BDT") throw new Error("For this gateway, the approved invoice must be issued in BDT. Please ask NEXORA to reissue the quotation in BDT.");
 
   const approvals = await adminDb.collection("quoteApprovals")
     .where("projectId", "==", input.projectId).where("ownerUid", "==", input.uid)
