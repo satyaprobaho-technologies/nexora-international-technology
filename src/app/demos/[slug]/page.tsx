@@ -3,6 +3,7 @@ import type { CSSProperties } from "react";
 import { notFound } from "next/navigation";
 import { DEMO_SITES } from "@/lib/demo-sites";
 import DemoProtection from "@/components/DemoProtection";
+import DemoInteractive from "@/components/DemoInteractive";
 
 const content: Record<string, {nav:string[]; label:string; stats:string[]; showcase:string[]; quote:string; faq:string[]}> = {
  school:{nav:["About","Academics","Admissions","Campus life"],label:"A place to discover your potential",stats:["25+ years of learning","1,200+ curious minds","40+ expert educators"],showcase:["Early years & primary","Middle school","Clubs, arts & sports"],quote:"Every learner has a spark. Our job is to help it shine.",faq:["How can a student apply?","Can families arrange a campus visit?"]},
@@ -72,8 +73,8 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
         <div className="demo-preview-ribbon">NEXORA DESIGN SHOWCASE · SAMPLE CONTENT · NOT A LIVE SERVICE</div>
         <header className="demo-nav">
           <Link href="/" className="demo-brand">{demo.title}<span>{demo.name} · DESIGN CONCEPT</span></Link>
-          <nav className="demo-menu">{detail.nav.map((item,i)=><a key={item} href={i===0?"#overview":i===1?"#highlights":i===2?"#showcase":"#contact"}>{item}</a>)}</nav>
-          <Link className="demo-nav-cta" href="/#contact">Build this site ↗</Link>
+          <nav className="demo-menu">{detail.nav.map((item,i)=><a key={item} href={i===0?"#overview":i===1?"#catalogue":i===2?"#demo-benefits":"#demo-enquiry"}>{item}</a>)}</nav>
+          <Link className="demo-nav-cta" href="#demo-enquiry">Build this site ↗</Link>
         </header>
         <section className="demo-hero" id="overview">
           <div className="demo-hero-copy">
@@ -91,19 +92,8 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
         </section>
         <section className="demo-stats" id="highlights">{detail.stats.map((item,i)=><div key={item}><b>0{i+1}</b><span>{item}</span></div>)}</section>
         <section className="demo-section demo-intro-section"><div><p className="demo-kicker">DESIGNED WITH PURPOSE</p><h2>A better experience for every visitor.</h2></div><p>{demo.intro} This concept brings the most important information forward, makes the next step easy to find and gives the brand a consistent visual identity across devices.</p></section>
-        <section className="demo-section demo-showcase" id="showcase"><div className="demo-section-heading"><div><p className="demo-kicker">EXPLORE THE EXPERIENCE</p><h2>Everything in its right place.</h2></div><span>CURATED MODULES / 0{detail.showcase.length}</span></div><div className="demo-showcase-grid">{detail.showcase.map((item,i)=><article className={"demo-showcase-card card-"+i} key={item}><div className="demo-showcase-art"><span>0{i+1}</span><b>{item}</b><i></i><i></i><i></i></div><div className="demo-showcase-copy"><span>FEATURED MODULE</span><h3>{item}</h3><p>{demo.sections[i]?.description ?? "Explore this part of the experience and discover useful information."}</p><a href="#contact">Explore module ↗</a></div></article>)}</div></section>
-        <section className="demo-visual-gallery" id="gallery">
-          <div className="demo-gallery-heading"><div><p className="demo-kicker">A CLOSER LOOK</p><h2>Designed to make an impression.</h2></div><p>Explore the visual direction, key spaces and experiences included in this website concept.</p></div>
-          <div className="demo-gallery-grid">
-            {[
-              {src:"https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1100&q=85",alt:"Modern workspace and website environment",title:demo.sections[0]?.title ?? "Discover the experience",copy:demo.sections[0]?.description ?? demo.intro},
-              {src:"https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=1100&q=85",alt:"Bright contemporary interior and work area",title:demo.sections[1]?.title ?? "Explore what we offer",copy:demo.sections[1]?.description ?? "A considered layout for useful information and services."},
-              {src:"https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1100&q=85",alt:"Team collaborating around a digital project",title:demo.sections[2]?.title ?? "Take the next step",copy:demo.sections[2]?.description ?? "Clear calls to action help visitors move forward."}
-            ].map((item,i)=><article key={item.title}><img src={item.src} alt={item.alt} loading="lazy"/><div><span>0{i+1} / FEATURED VIEW</span><h3>{item.title}</h3><p>{item.copy}</p><a href="#contact">Explore this section ↗</a></div></article>)}
-          </div>
-        </section>
+        <DemoInteractive slug={slug} />
         <section className="demo-quote"><span>“</span><blockquote>{detail.quote}</blockquote><p>THE {demo.title.toUpperCase()} EXPERIENCE</p></section>
-        <section className="demo-section demo-faq"><div><p className="demo-kicker">GOOD TO KNOW</p><h2>Questions, answered.</h2><p className="demo-faq-note">Example information architecture for a real website. Final answers can be tailored to your organisation.</p></div><div className="demo-faq-list">{detail.faq.map((q,i)=><details key={q}><summary><span>0{i+1}</span>{q}<b>＋</b></summary><p>This is a design preview only. Contact the NEXORA team to tailor this section, confirm requirements and build the complete website experience.</p></details>)}</div></section>
         <section className="demo-contact" id="contact"><p className="demo-kicker">YOUR IDEA, OUR NEXT PROJECT</p><h2>Like what you see?</h2><p>We can customise this concept with your brand, pages, content and required features.</p><Link className="demo-cta" href="/#contact">Discuss your website with NEXORA ↗</Link><small>Sample website only · No real orders, bookings or payments are processed here.</small></section>
         <footer className="demo-footer"><span>© NEXORA INTERNATIONAL TECHNOLOGY · CONCEPT {String(number).padStart(2,"0")} / 50</span><Link href="/#templates">Browse all 50 demos ↗</Link></footer>
       </main>
