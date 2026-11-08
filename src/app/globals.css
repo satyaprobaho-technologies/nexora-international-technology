@@ -402,3 +402,20 @@ body{top:0!important}
 .software-demo-footer p:not(.eyebrow){color:#b6c9e0;line-height:1.8}
 @media(max-width:900px){.software-demo-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:600px){.software-demo-grid{grid-template-columns:1fr}.software-demo-notice{display:block}.software-demo-notice span{display:block;margin-top:8px}.software-demo-footer{display:block}.software-demo-footer .button{margin-top:15px}.software-demo-hero{padding-top:65px}}
+
+
+/* Eight Bangladesh division showcase concepts */
+.division-demo-section{background:#071326;color:#f1f6ff}
+.division-demo-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+.division-demo-card{overflow:hidden;border:1px solid #31516e;border-radius:14px;background:linear-gradient(145deg,#122e4b,#0b1d33)}
+.division-demo-card-top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:17px 21px;background:linear-gradient(100deg,#174b70,#102b47);border-bottom:1px solid #31516e}
+.division-demo-card-top span{font-size:9px;letter-spacing:1.5px;color:#b7d3e9}
+.division-demo-card-top b{font-size:11px;letter-spacing:1.8px;color:#8ce6ed}
+.division-demo-card-body{padding:22px}
+.division-demo-card h3{font:750 22px/1.25 Manrope,Arial,sans-serif;margin:8px 0 10px}
+.division-demo-card-body>p:not(.software-demo-type){min-height:62px;color:#b7c9dc;font-size:13px;line-height:1.75}
+.division-demo-actions{display:flex;flex-wrap:wrap;gap:17px;align-items:center;margin-top:20px}
+.division-demo-order{color:#fff;background:#146b85;border:1px solid #4eafc4;border-radius:7px;padding:10px 13px;text-decoration:none;font-size:12px;font-weight:750}
+.division-demo-order:hover{background:#1a829e}
+.division-demo-disclaimer{max-width:900px;margin:25px auto 0;color:#a8bed2;font-size:12px;line-height:1.8;text-align:center}
+@media(max-width:650px){.division-demo-grid{grid-template-columns:1fr}.division-demo-card-body>p:not(.software-demo-type){min-height:0}.division-demo-card-top{padding:15px}}
