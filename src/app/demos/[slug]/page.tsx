@@ -67,6 +67,32 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
   if (!demo) notFound();
   const detail = content[slug] ?? {nav:["Overview","Services","About","Contact"],label:"A thoughtful digital experience, built around you",stats:["Clear information","Helpful experiences","Human-centred design"],showcase:demo.sections.map(x=>x.title),quote:"Good experiences begin with understanding what people need.",faq:["How can I learn more?","How do I get in touch?"]};
   const number = DEMO_SITES.findIndex((site) => site.slug === slug) + 1;
+  const moduleNavTargets: Record<string, string[]> = {
+    school:["#overview","#biz-programs","#biz-admission","#biz-student"],
+    college:["#overview","#biz-programs","#biz-admission","#biz-student"],
+    university:["#overview","#biz-programs","#biz-admission","#biz-student"],
+    courses:["#overview","#biz-programs","#biz-admission","#biz-student"],
+    coaching:["#overview","#biz-programs","#biz-admission","#biz-student"],
+    restaurant:["#overview","#biz-products","#biz-cart","#biz-delivery"],
+    grocery:["#overview","#biz-products","#biz-cart","#biz-delivery"],
+    shop:["#overview","#biz-products","#biz-cart","#biz-delivery"],
+    fashion:["#overview","#biz-products","#biz-cart","#biz-delivery"],
+    electronics:["#overview","#biz-products","#biz-cart","#biz-delivery"],
+    furniture:["#overview","#biz-products","#biz-cart","#biz-delivery"],
+    pharmacy:["#overview","#biz-products","#biz-cart","#biz-delivery"],
+    hotel:["#overview","#biz-services","#biz-booking","#biz-account"],
+    resort:["#overview","#biz-services","#biz-booking","#biz-account"],
+    travel:["#overview","#biz-services","#biz-booking","#biz-account"],
+    tour:["#overview","#biz-services","#biz-booking","#biz-account"],
+    booking:["#overview","#biz-services","#biz-booking","#biz-account"],
+    hospital:["#overview","#biz-services","#biz-appointment","#biz-patient"],
+    clinic:["#overview","#biz-services","#biz-appointment","#biz-patient"],
+    dental:["#overview","#biz-services","#biz-appointment","#biz-patient"],
+    diagnostic:["#overview","#biz-services","#biz-appointment","#biz-patient"],
+    beauty:["#overview","#biz-services","#biz-appointment","#biz-patient"],
+    fitness:["#overview","#biz-services","#biz-appointment","#biz-patient"]
+  };
+  const targets = moduleNavTargets[slug] ?? ["#overview","#biz-services","#biz-request","#biz-account"];
   const accentStyle = { "--demo-accent": demo.accent } as CSSProperties;
   return (
     <DemoProtection>
@@ -74,7 +100,7 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
         <div className="demo-preview-ribbon">NEXORA DESIGN SHOWCASE · SAMPLE CONTENT · NOT A LIVE SERVICE</div>
         <header className="demo-nav">
           <Link href="/" className="demo-brand">{demo.title}<span>{demo.name} · DESIGN CONCEPT</span></Link>
-          <nav className="demo-menu">{detail.nav.map((item,i)=><a key={item} href={i===0?"#overview":i===1?"#catalogue":i===2?"#demo-benefits":"#demo-enquiry"}>{item}</a>)}</nav>
+          <nav className="demo-menu">{detail.nav.map((item,i)=><a key={item} href={targets[i] ?? "#business-modules"}>{item}</a>)}</nav>
           <Link className="demo-nav-cta" href="#demo-enquiry">Build this site ↗</Link>
         </header>
         <section className="demo-hero" id="overview">
