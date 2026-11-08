@@ -18,7 +18,10 @@ export default function PortalClient() {
   const [message, setMessage] = useState("");
   const [projects, setProjects] = useState<Project[]>([]);
   const [title, setTitle] = useState("");
-  const [service, setService] = useState("Custom software / SaaS development");\n  const [brief, setBrief] = useState("");\n  const [budget, setBudget] = useState("Not sure yet");\n  const [timeline, setTimeline] = useState("Flexible");
+  const [service, setService] = useState("Custom software / SaaS development");
+  const [brief, setBrief] = useState("");
+  const [budget, setBudget] = useState("Not sure yet");
+  const [timeline, setTimeline] = useState("Flexible");
   const [saving, setSaving] = useState(false);
 
   useEffect(() => onAuthStateChanged(auth, (next) => { setUser(next); setLoading(false); }), []);
@@ -81,7 +84,7 @@ export default function PortalClient() {
       due.setDate(due.getDate() + 10);
       const dueDate = due.getFullYear() + "-" + String(due.getMonth() + 1).padStart(2, "0") + "-" + String(due.getDate()).padStart(2, "0");
       await addDoc(collection(db, "projects"), {
-        ownerUid: user.uid, ownerEmail: user.email, title: title.trim(), service,
+        ownerUid: user.uid, ownerEmail: user.email, title: title.trim(), service, brief: brief.trim(), budget, timeline, currency: "USD",
         status: "pending", createdAt: serverTimestamp(), dueDate, paymentStatus: "unpaid"
       });
       setTitle(""); setBrief(""); setBudget("Not sure yet"); setTimeline("Flexible"); setMessage("আপনার প্রজেক্ট অনুরোধ জমা হয়েছে। NEXORA টিম পর্যালোচনা করবে এবং পরবর্তী ধাপ জানাবে।");
@@ -110,6 +113,8 @@ export default function PortalClient() {
       <div className="portal-panel"><h2>Request a new project</h2><form className="portal-form" onSubmit={submitProject}>
         <label>Project / website name<input required value={title} onChange={e=>setTitle(e.target.value)} placeholder="e.g. My business website" /></label>
         <label>Service<select value={service} onChange={e=>setService(e.target.value)}><option>Custom software / SaaS development</option><option>Accounting, CRM, HR or ERP software</option><option>AI & business automation</option><option>Website design & development</option><option>Mobile app development</option><option>Domain registration assistance</option><option>Web hosting & cloud services</option><option>Business email & DNS</option><option>Cybersecurity & system integration</option><option>Website maintenance</option></select></label>
+        <label>Project brief / required features<textarea value={brief} onChange={e=>setBrief(e.target.value)} rows={4} maxLength={3000} placeholder="Describe the business problem, required features, users and integrations." /></label>
+        <div className="portal-form-row"><label>Estimated budget<select value={budget} onChange={e=>setBudget(e.target.value)}><option>Not sure yet</option><option>Under USD 500</option><option>USD 500–1,500</option><option>USD 1,500–5,000</option><option>USD 5,000–15,000</option><option>USD 15,000+</option></select></label><label>Target timeline<select value={timeline} onChange={e=>setTimeline(e.target.value)}><option>Flexible</option><option>Within 2 weeks</option><option>Within 1 month</option><option>Within 2–3 months</option><option>3+ months</option></select></label></div>
         <button className="portal-button" disabled={saving}>{saving ? "Submitting…" : "Submit project request"}</button>
       </form></div>
       <div className="portal-panel"><h2>Your projects</h2>{projects.length ? <div className="portal-project-list">{projects.map(p=><article key={p.id}><div><b>{p.title}</b><small>{p.service}</small></div><span className="portal-status">{p.status || "pending"}</span>{p.paymentStatus !== "paid" && p.dueDate && (() => { const days = Math.ceil((new Date(p.dueDate + "T23:59:59").getTime() - Date.now()) / 86400000); return <p className={days < 0 ? "portal-due-alert overdue" : days <= 10 ? "portal-due-alert" : "portal-due-note"}>{days < 0 ? `Payment deadline passed ${Math.abs(days)} day(s) ago. Please contact NEXORA.` : days <= 10 ? `Payment reminder: ${days} day(s) left. Please contact NEXORA to confirm payment.` : `Payment due by ${p.dueDate}`}</p>; })()}</article>)}</div> : <p className="portal-muted">No projects yet. Submit your first request above.</p>}</div>
