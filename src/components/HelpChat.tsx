@@ -29,12 +29,12 @@ function replyTo(message: string): string {
     return "বর্তমানে ওয়েবসাইটে কোনো online payment বা checkout চালু নেই। ভবিষ্যতে bKash, Nagad, Rocket ও bank transfer বিবেচিত হবে। Credit/debit card, Visa, Mastercard ও AMEX গ্রহণ করা হবে না। অফিসিয়াল নির্দেশনা ছাড়া টাকা পাঠাবেন না।";
   }
   if (q.includes("contact") || q.includes("যোগাযোগ") || q.includes("email") || q.includes("ইমেইল") || q.includes("phone") || q.includes("ফোন")) {
-    return "NEXORA-তে যোগাযোগ করুন: computer26training@gmail.com। মূল পেজের “Have a project in mind?” অংশে project enquiry form-ও রয়েছে।";
+    return "NEXORA-তে যোগাযোগ করুন: 24customar.support@gmail.com। মূল পেজের “Have a project in mind?” অংশে project enquiry form-ও রয়েছে।";
   }
   if (q.includes("website") || q.includes("ওয়েবসাইট") || q.includes("site") || q.includes("তৈরি") || q.includes("build")) {
     return "NEXORA business website, portfolio, school, shop, restaurantসহ বিভিন্ন ধরনের website design ও development নিয়ে কাজ করে। আপনার পছন্দের demo খুলে “Request this website” নির্বাচন করুন অথবা project enquiry form ব্যবহার করুন।";
   }
-  return "আপনার প্রশ্নটি বুঝতে পারিনি। Free domain/hosting, ৫০টি demo, website development, payment অথবা contact বিষয়ে প্রশ্ন করতে পারেন। প্রয়োজনে computer26training@gmail.com-এ লিখুন।";
+  return "আপনার প্রশ্নটি বুঝতে পারিনি। Free domain/hosting, ৫০টি demo, website development, payment অথবা contact বিষয়ে প্রশ্ন করতে পারেন। প্রয়োজনে 24customar.support@gmail.com-এ লিখুন।";
 }
 
 export default function HelpChat() {
