@@ -1,4 +1,17 @@
 import type { Metadata } from "next";
 import "./globals.css";
-export const metadata: Metadata = {title:"NEXORA INTERNATIONAL TECHNOLOGY",description:"Your Digital World Starts Here. Website development, domain and hosting services."};
-export default function RootLayout({children}:{children:React.ReactNode}) { return <html lang="en"><body>{children}</body></html>; }
+
+const siteUrl = "https://nexora-international-technology.vercel.app";
+
+export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
+  title: { default: "NEXORA INTERNATIONAL TECHNOLOGY | Your Digital World Starts Here", template: "%s | NEXORA" },
+  description: "NEXORA provides website design and development, domain and hosting guidance, business email, website maintenance and digital support.",
+  applicationName: "NEXORA INTERNATIONAL TECHNOLOGY",
+  openGraph: { type: "website", url: siteUrl, title: "NEXORA INTERNATIONAL TECHNOLOGY", description: "Your Digital World Starts Here." },
+  robots: { index: true, follow: true },
+};
+
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  return <html lang="en"><body>{children}</body></html>;
+}
