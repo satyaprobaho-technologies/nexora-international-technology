@@ -6,6 +6,19 @@ export const metadata = {
   description: "Explore all 50 NEXORA website design demos and open a complete preview for each business category.",
 };
 
+const catalogImages = [
+  "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=900&q=80",
+  "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=900&q=80",
+  "https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=900&q=80",
+  "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80",
+  "https://images.unsplash.com/photo-1540555700478-4be289fbecef?auto=format&fit=crop&w=900&q=80",
+  "https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?auto=format&fit=crop&w=900&q=80",
+  "https://images.unsplash.com/photo-1511818966892-d7d671e672a2?auto=format&fit=crop&w=900&q=80",
+  "https://images.unsplash.com/photo-1560472354-b33ff0c44a43?auto=format&fit=crop&w=900&q=80",
+  "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=900&q=80",
+  "https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&w=900&q=80",
+];
+
 export default function DemosPage() {
   return (
     <main>
@@ -29,7 +42,7 @@ export default function DemosPage() {
         <div className="demo-catalog-grid">
           {DEMO_SITES.map((demo, i) => (
             <article id={`demo-card-${String(i + 1).padStart(2, "0")}`} className="demo-catalog-card" key={demo.slug}>
-              <div className="demo-catalog-preview" style={{ borderTopColor: demo.accent }}>
+              <div className="demo-catalog-preview" style={{ borderTopColor: demo.accent }}>\n                <img className="demo-catalog-photo" src={catalogImages[i % catalogImages.length]} alt={demo.name + " website design preview"} loading="lazy"/>
                 <div className="demo-catalog-browser"><i></i><i></i><i></i><span>WEBSITE PREVIEW / {String(i + 1).padStart(2, "0")}</span></div>
                 <div className="demo-catalog-hero" style={{ background: `linear-gradient(120deg, ${demo.accent}22, #ffffff)` }}>
                   <small>{demo.name.toUpperCase()}</small><b>{demo.title}</b><span>{demo.tagline}</span><em style={{ background: demo.accent }}>EXPLORE ↗</em>
