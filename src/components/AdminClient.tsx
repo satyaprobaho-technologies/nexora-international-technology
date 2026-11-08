@@ -8,7 +8,7 @@ import { ADMIN_EMAIL, auth, db } from "@/lib/firebase";
 
 type Customer = { id: string; name?: string; email?: string; status?: string };
 type Project = { id: string; ownerUid?: string; ownerEmail?: string; title?: string; service?: string; brief?: string; budget?: string; timeline?: string; quoteAmount?: number; quoteCurrency?: string; status?: string; paymentStatus?: string; dueDate?: string };
-type ResetRequest = { id: string; uid?: string; email?: string; status?: string; createdAt?: unknown };
+type QuoteApproval = { id: string; projectId?: string; ownerEmail?: string; quoteAmount?: number; quoteCurrency?: string; status?: string };\ntype ResetRequest = { id: string; uid?: string; email?: string; status?: string; createdAt?: unknown };
 
 export default function AdminClient() {
   const [user, setUser] = useState<User | null>(null);
@@ -18,7 +18,7 @@ export default function AdminClient() {
   const [message, setMessage] = useState("");
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
-  const [resetRequests, setResetRequests] = useState<ResetRequest[]>([]);
+  const [resetRequests, setResetRequests] = useState<ResetRequest[]>([]);\n  const [quoteApprovals, setQuoteApprovals] = useState<QuoteApproval[]>([]);
   const [search, setSearch] = useState("");
   const [saving, setSaving] = useState("");
 
@@ -27,12 +27,12 @@ export default function AdminClient() {
     if (!user || user.email !== ADMIN_EMAIL || !user.emailVerified) { setCustomers([]); setProjects([]); return; }
     (async () => {
       try {
-        const [c, p] = await Promise.all([
+        const [c, p, qa] = await Promise.all([
           getDocs(query(collection(db, "customers"), orderBy("createdAt", "desc"))),
           getDocs(query(collection(db, "projects"), orderBy("createdAt", "desc")))
         ]);
         setCustomers(c.docs.map(d=>({id:d.id,...d.data()} as Customer)));
-        setProjects(p.docs.map(d=>({id:d.id,...d.data()} as Project)));
+        setProjects(p.docs.map(d=>({id:d.id,...d.data()} as Project)));\n        setQuoteApprovals(qa.docs.map(d=>({id:d.id,...d.data()} as QuoteApproval)));
         try {
           const r = await getDocs(query(collection(db, "passwordResetRequests"), orderBy("createdAt", "desc")));
           setResetRequests(r.docs.map(d=>({id:d.id,...d.data()} as ResetRequest)));
@@ -116,7 +116,7 @@ export default function AdminClient() {
     <section className="portal-panel"><h2>Find customer or project</h2><input className="admin-search" placeholder="Search by any customer email or project name…" value={search} onChange={e=>setSearch(e.target.value)} /></section>
     <section className="portal-panel"><h2>Password help requests ({resetRequests.filter(r=>r.status!=="sent").length} pending)</h2><p className="portal-muted">গ্রাহকরা পাসওয়ার্ডে সমস্যায় পড়লে এখানে সহায়তার অনুরোধ পাঠাতে পারবেন। রিসেট লিংক পাঠালে সেটি গ্রাহকের ইমেইলে যাবে।</p><div className="admin-table">{resetRequests.length ? resetRequests.map(r=><article key={r.id}><div><b>{r.email || "Unknown email"}</b><small>{r.status === "sent" ? "Reset link sent" : "Needs password help"}</small></div><button className="portal-button" disabled={saving===r.id || r.status==="sent"} onClick={()=>sendCustomerReset(r)}>{saving===r.id ? "Sending…" : r.status==="sent" ? "Sent" : "Send reset link"}</button></article>) : <p className="portal-muted">No password help requests yet.</p>}</div></section>
     <section className="portal-panel"><h2>Customers ({visibleCustomers.length})</h2><div className="admin-table">{visibleCustomers.map(c=><article key={c.id}><div><b>{c.name || "Customer"}</b><small>{c.email}</small></div><button className="portal-outline" disabled={saving===c.email} onClick={()=>sendResetToCustomerEmail(c.email)}>{saving===c.email ? "Sending…" : "Send password reset"}</button><select value={c.status||"active"} onChange={e=>updateCustomer(c.id,e.target.value)}><option value="active">Active</option><option value="suspended">Suspended</option></select></article>)}</div></section>
-    <section className="portal-panel"><h2>Projects ({visibleProjects.length})</h2><div className="admin-table">{visibleProjects.map(p=><article key={p.id}><div className="admin-project-info"><b>{p.title}</b><small>{p.ownerEmail} · {p.service}</small><small>Budget: {p.budget || "Not provided"} · Timeline: {p.timeline || "Not specified"}</small>{p.brief && <p className="admin-project-brief">{p.brief}</p>}</div><label className="admin-quote-field">Quote (USD)<input type="number" min="0" step="0.01" defaultValue={p.quoteAmount ?? ""} placeholder="Enter quote" onBlur={e=>{if(e.target.value.trim()) updateProject(p.id,{quoteAmount:Number(e.target.value),quoteCurrency:"USD",paymentStatus:"awaiting_payment"});}} /></label><select value={p.status||"pending"} disabled={saving===p.id} onChange={e=>updateProject(p.id,{status:e.target.value})}><option value="pending">Pending</option><option value="in-progress">In progress</option><option value="completed">Completed</option><option value="suspended">Suspended</option></select><select value={p.paymentStatus||"awaiting_quote"} disabled={saving===p.id} onChange={e=>updateProject(p.id,{paymentStatus:e.target.value})}><option value="awaiting_quote">Awaiting quote</option><option value="quote_sent">Quote sent</option><option value="awaiting_payment">Awaiting payment</option><option value="paid">Paid</option></select><input aria-label="Payment due date" type="date" value={p.dueDate||""} onChange={e=>updateProject(p.id,{dueDate:e.target.value})}/></article>)}</div></section>
+    <section className="portal-panel"><h2>Quotation acceptances ({quoteApprovals.length})</h2><div className="admin-table">{quoteApprovals.length ? quoteApprovals.map(q=><article key={q.id}><div><b>{q.ownerEmail}</b><small>Project: {q.projectId}</small><small>Accepted quote: {q.quoteCurrency || "USD"} {q.quoteAmount?.toLocaleString()}</small></div><span className="portal-status">{q.status || "customer_accepted"}</span></article>) : <p className="portal-muted">No accepted quotations yet.</p>}</div></section>\n    <section className="portal-panel"><h2>Projects ({visibleProjects.length})</h2><div className="admin-table">{visibleProjects.map(p=><article key={p.id}><div className="admin-project-info"><b>{p.title}</b><small>{p.ownerEmail} · {p.service}</small><small>Budget: {p.budget || "Not provided"} · Timeline: {p.timeline || "Not specified"}</small>{p.brief && <p className="admin-project-brief">{p.brief}</p>}</div><label className="admin-quote-field">Quote (USD)<input type="number" min="0" step="0.01" defaultValue={p.quoteAmount ?? ""} placeholder="Enter quote" onBlur={e=>{if(e.target.value.trim()) updateProject(p.id,{quoteAmount:Number(e.target.value),quoteCurrency:"USD",paymentStatus:"awaiting_payment"});}} /></label><select value={p.status||"pending"} disabled={saving===p.id} onChange={e=>updateProject(p.id,{status:e.target.value})}><option value="pending">Pending</option><option value="in-progress">In progress</option><option value="completed">Completed</option><option value="suspended">Suspended</option></select><select value={p.paymentStatus||"awaiting_quote"} disabled={saving===p.id} onChange={e=>updateProject(p.id,{paymentStatus:e.target.value})}><option value="awaiting_quote">Awaiting quote</option><option value="quote_sent">Quote sent</option><option value="awaiting_payment">Awaiting payment</option><option value="paid">Paid</option></select><input aria-label="Payment due date" type="date" value={p.dueDate||""} onChange={e=>updateProject(p.id,{dueDate:e.target.value})}/></article>)}</div></section>
     {message && <p className="portal-message">{message}</p>}<p className="portal-foot">Admin actions are protected by Firebase Authentication and Firestore rules.</p>
   </main>;
 }
