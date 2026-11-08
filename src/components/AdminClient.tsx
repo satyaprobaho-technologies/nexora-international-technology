@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import { onAuthStateChanged, signInWithEmailAndPassword, signOut, User } from "firebase/auth";
+import { onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, User } from "firebase/auth";
 import { collection, doc, getDocs, orderBy, query, updateDoc } from "firebase/firestore";
 import Link from "next/link";
 import { ADMIN_EMAIL, auth, db } from "@/lib/firebase";
@@ -44,6 +44,17 @@ export default function AdminClient() {
       }
     } catch (err) { setMessage(err instanceof Error ? err.message : "Admin sign-in failed."); }
   }
+  async function resetAdminPassword() {
+    setMessage("");
+    if (!email.trim()) { setMessage("পাসওয়ার্ড রিসেটের জন্য অ্যাডমিন ইমেইল লিখুন।"); return; }
+    try {
+      await sendPasswordResetEmail(auth, email.trim());
+      setMessage("অ্যাডমিন পাসওয়ার্ড রিসেট লিংক ইমেইলে পাঠানো হয়েছে। ইনবক্স ও স্প্যাম ফোল্ডার দেখুন।");
+    } catch (err) {
+      setMessage(err instanceof Error ? err.message : "পাসওয়ার্ড রিসেট ইমেইল পাঠানো যায়নি।");
+    }
+  }
+
   async function updateProject(id: string, patch: Partial<Project>) {
     setSaving(id); setMessage("");
     try {
@@ -61,7 +72,7 @@ export default function AdminClient() {
   if (!user || user.email !== ADMIN_EMAIL || !user.emailVerified) return <main className="portal-shell">
     <div className="portal-top"><Link className="portal-brand" href="/">NEXORA <small>INTERNATIONAL TECHNOLOGY</small></Link><Link href="/">Back to website ↗</Link></div>
     <section className="portal-panel"><p className="portal-kicker">STAFF ACCESS</p><h1>Administrator sign in</h1><p className="portal-muted">Restricted access for authorized NEXORA staff.</p>
-      <form className="portal-form" onSubmit={login}><label>Admin email<input type="email" required value={email} onChange={e=>setEmail(e.target.value)} /></label><label>Password<input type="password" required value={password} onChange={e=>setPassword(e.target.value)} /></label><button className="portal-button">Sign in securely</button></form>{message && <p className="portal-message">{message}</p>}
+      <form className="portal-form" onSubmit={login}><label>Admin email<input type="email" required value={email} onChange={e=>setEmail(e.target.value)} /></label><label>Password<input type="password" required value={password} onChange={e=>setPassword(e.target.value)} /></label><button className="portal-button">Sign in securely</button></form><button type="button" className="portal-switch" onClick={resetAdminPassword}>Forgot password?</button>{message && <p className="portal-message">{message}</p>}
     </section>
   </main>;
 
