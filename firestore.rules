@@ -19,6 +19,7 @@ service cloud.firestore {
         && request.resource.data.ownerUid == request.auth.uid
         && request.resource.data.ownerEmail == request.auth.token.email
         && request.auth.token.email_verified == true
+        && get(/databases/$(database)/documents/customers/$(request.auth.uid)).data.status == "active"
         && request.resource.data.status == "pending";
       allow read: if signedIn()
         && (resource.data.ownerUid == request.auth.uid || isAdmin());
