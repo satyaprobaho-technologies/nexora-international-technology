@@ -1,2 +1,3 @@
 User-agent: *
 Allow: /
+Sitemap: https://nexora-international-technology.vercel.app/sitemap.xml
