@@ -1,18 +1,85 @@
 import Link from "next/link";
+
 const services = [
- ["Website Development","Business, education, healthcare, commerce and custom platforms."],
- ["Domain & Hosting","Domain search, shared hosting, cloud, VPS, DNS and SSL."],
- ["Client Management","Customer accounts, orders, invoices and support workflows."],
- ["Cloud & Security","Backups, monitoring, CDN and website protection."],
+  { n: "Website Design & Development", d: "Responsive business websites, landing pages, portfolios, blogs and custom web applications.", tags: ["Next.js", "WordPress", "E-commerce"] },
+  { n: "Domain Registration Assistance", d: "Guidance for choosing and registering suitable domain names, including popular extensions and eligible country domains.", tags: [".com", ".net", ".org"] },
+  { n: "Web Hosting Solutions", d: "Hosting recommendations for personal sites, business websites, WordPress, stores and growing projects.", tags: ["Shared", "Business", "Cloud / VPS"] },
+  { n: "Maintenance & Security", d: "Updates, SSL guidance, backups, malware checks, performance improvements and migration planning.", tags: ["SSL", "Backup", "Migration"] },
+  { n: "Business Email & DNS", d: "Professional email setup guidance, DNS configuration and domain connection support.", tags: ["DNS", "Email", "CDN"] },
+  { n: "Website Support", d: "A clear point of contact for project enquiries, website updates and ongoing technical assistance.", tags: ["Consultation", "Support", "Updates"] },
 ];
-const categories = ["Education","Finance & Corporate","Hotel & Tourism","Healthcare","Business & Ecommerce","Modern Platforms"];
+
+const templates = [
+  "School Website", "College Website", "University Portal", "Online Course Platform", "Coaching Centre",
+  "Personal Portfolio", "Creative Agency", "Corporate Business", "Startup Landing Page", "Consulting Firm",
+  "Accounting & Tax Service", "Law Firm", "Banking & Finance Concept", "Insurance Agency", "Real Estate Agency",
+  "Hotel Website", "Resort & Villa", "Travel Agency", "Tour Operator", "Restaurant & Cafe",
+  "Hospital Website", "Clinic Website", "Dental Clinic", "Diagnostic Centre", "Pharmacy Catalogue",
+  "NGO & Charity", "Community Organization", "News & Magazine", "Blog & Editorial", "Event & Conference",
+  "Online Store", "Fashion Boutique", "Electronics Store", "Grocery Store", "Furniture Store",
+  "Beauty & Salon", "Fitness & Gym", "Automotive Service", "Construction Company", "Interior Design",
+  "Logistics & Courier", "Cleaning Service", "Repair Service", "Photography Studio", "Wedding Planner",
+  "SaaS Product", "Mobile App Landing", "Technology Company", "Membership Platform", "Booking Platform",
+];
+
+const email = "computer26training@gmail.com";
+const subject = encodeURIComponent("NEXORA website project enquiry");
+
 export default function Home() {
- return <main>
-  <header className="nav"><Link className="brand" href="/">NEXORA <small>INTERNATIONAL TECHNOLOGY</small></Link><nav><a href="#services">Services</a><a href="#templates">Templates</a><a href="#contact">Contact</a></nav></header>
-  <section className="hero"><p className="eyebrow">DIGITAL SERVICES • GLOBAL AMBITION</p><h1>Your Digital World<br/><span>Starts Here.</span></h1><p>Build your online presence with website development, domains, hosting and dependable digital services.</p><div className="actions"><a className="button" href="#templates">Explore 50 website demos</a><a className="button secondary" href="#contact">Request a project</a></div></section>
-  <section id="services"><p className="eyebrow">WHAT WE DO</p><h2>Technology services for growing businesses</h2><div className="cards">{services.map(([name,desc])=><article className="card" key={name}><h3>{name}</h3><p>{desc}</p></article>)}</div></section>
-  <section id="templates"><p className="eyebrow">START WITH A TEMPLATE</p><h2>50 website demo categories</h2><p>Explore tailored concepts across six industry groups. Demo concepts are previews, not production client systems.</p><div className="cards">{categories.map((c,i)=><article className="card" key={c}><b>0{i+1}</b><h3>{c}</h3><p>Industry-ready responsive website concepts and feature modules.</p></article>)}</div></section>
-  <section id="contact"><p className="eyebrow">LET'S BUILD</p><h2>Tell us what you need</h2><p>Contact: computer26training@gmail.com</p><p className="notice">Pre-launch preview. No domain purchases, hosting orders or payments are currently processed.</p></section>
-  <footer>© {new Date().getFullYear()} NEXORA INTERNATIONAL TECHNOLOGY. All rights reserved.</footer>
- </main>
+  return (
+    <main>
+      <header className="nav">
+        <Link className="brand" href="/" aria-label="NEXORA home">NEXORA <small>INTERNATIONAL TECHNOLOGY</small></Link>
+        <nav aria-label="Main navigation">
+          <a href="#services">Services</a><a href="#templates">Website demos</a><a href="#process">How it works</a><a href="#contact">Contact</a>
+        </nav>
+      </header>
+
+      <section className="hero">
+        <div className="hero-copy">
+          <p className="eyebrow">DIGITAL SERVICES • BUILT FOR YOUR NEXT STEP</p>
+          <h1>Your Digital World<br /><span>Starts Here.</span></h1>
+          <p className="lead">From your first domain to a complete business website, NEXORA helps you plan, build and grow your online presence.</p>
+          <div className="actions">
+            <a className="button" href="#contact">Start a project <span aria-hidden="true">↗</span></a>
+            <a className="button secondary" href="#templates">Explore 50 website ideas</a>
+          </div>
+          <div className="hero-proof"><span>01 / PLAN</span><span>02 / BUILD</span><span>03 / GROW</span></div>
+        </div>
+        <div className="hero-art" aria-hidden="true"><div className="orbit orbit-one" /><div className="orbit orbit-two" /><div className="globe"><span>N</span></div><div className="float-card">YOUR IDEAS<br /><b>GO GLOBAL</b></div></div>
+      </section>
+
+      <section id="services" className="section">
+        <div className="section-head"><div><p className="eyebrow">WHAT WE DO</p><h2>Everything you need<br />to get online.</h2></div><p className="section-intro">Practical digital services for individuals, entrepreneurs and growing organizations.</p></div>
+        <div className="service-grid">{services.map((s, i) => <article className="service-card" key={s.n}><span className="number">0{i + 1}</span><h3>{s.n}</h3><p>{s.d}</p><div className="tags">{s.tags.map(t => <span key={t}>{t}</span>)}</div></article>)}</div>
+      </section>
+
+      <section id="templates" className="section templates-section">
+        <div className="section-head"><div><p className="eyebrow">WEBSITE STARTER IDEAS</p><h2>50 ways to build<br />your online presence.</h2></div><p className="section-intro">Browse the range of website concepts we can discuss and tailor to your goals. These are service concepts, not 50 separately deployed live demo sites.</p></div>
+        <div className="template-grid">{templates.map((t, i) => <article className="template-card" key={t}><span>{String(i + 1).padStart(2, "0")}</span><h3>{t}</h3><a href={`mailto:${email}?subject=${encodeURIComponent("Website enquiry: " + t)}`} aria-label={`Enquire about ${t}`}>Discuss this idea ↗</a></article>)}</div>
+      </section>
+
+      <section id="process" className="section process-section">
+        <p className="eyebrow">A CLEAR PROCESS</p><h2>From idea to launch.</h2>
+        <div className="process-grid">
+          <article><b>01</b><h3>Tell us your goal</h3><p>Share your business, audience, features and preferred timeline.</p></article>
+          <article><b>02</b><h3>Plan the solution</h3><p>We discuss the scope, design direction, domain and hosting requirements.</p></article>
+          <article><b>03</b><h3>Build & review</h3><p>Review the agreed website and request refinements before launch.</p></article>
+          <article><b>04</b><h3>Launch & support</h3><p>Go live after approvals, provider setup and any required payments.</p></article>
+        </div>
+      </section>
+
+      <section className="section hosting-note">
+        <div><p className="eyebrow">DOMAIN & HOSTING</p><h2>Choose the right foundation.</h2><p>Need a domain, hosting, business email, SSL or help moving an existing website? Tell us what you need and we can discuss suitable options.</p></div>
+        <a className="button secondary" href={`mailto:${email}?subject=${encodeURIComponent("Domain and hosting enquiry")}`}>Ask about domain & hosting ↗</a>
+      </section>
+
+      <section id="contact" className="contact-section">
+        <p className="eyebrow">LET'S MAKE IT HAPPEN</p><h2>Have a project in mind?</h2><p>Tell us a little about it. We’ll be happy to discuss the next step.</p>
+        <a className="contact-email" href={`mailto:${email}?subject=${subject}`}>{email} ↗</a>
+        <p className="small-note">Click the email address to contact NEXORA using your email application.</p>
+      </section>
+      <footer><Link className="brand" href="/">NEXORA <small>INTERNATIONAL TECHNOLOGY</small></Link><p>Your Digital World Starts Here.</p><span>© {new Date().getFullYear()} NEXORA INTERNATIONAL TECHNOLOGY. All rights reserved.</span></footer>
+    </main>
+  );
 }
