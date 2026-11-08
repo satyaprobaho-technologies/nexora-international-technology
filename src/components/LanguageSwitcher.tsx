@@ -94,7 +94,7 @@ export default function LanguageSwitcher() {
       </select>
       <span id="nexora-google-translate" className="google-translate-host" aria-hidden="true" />
       <Script
-        src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"
+        src="https://translate.google.com/translate_a/element.js"
         strategy="afterInteractive"
         onError={() => setError(true)}
       />
