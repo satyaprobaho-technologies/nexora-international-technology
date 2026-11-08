@@ -20,7 +20,7 @@ function replyTo(message: string): string {
     return "Free starter-এর জন্য ওয়েবসাইটের “Free Domain & Hosting” অংশে আবেদন ফর্ম পূরণ করুন। যোগ্যতা ও provider-এর নিয়ম অনুযায়ী free subdomain/hosting বিবেচনা করা হবে। Free .com domain দেওয়ার নিশ্চয়তা নেই। আবেদনটি বর্তমানে আপনার email app-এ খসড়া তৈরি করে; সরাসরি অনলাইনে জমা হয় না।";
   }
   if (q.includes("demo") || q.includes("ডেমো") || q.includes("নমুনা")) {
-    return "মূল পেজের “৫০টি ওয়েবসাইট ডেমো দেখুন” অংশে ৫০টি আলাদা demo card ও link আছে। প্রতিটি খুললে আলাদা sample page ও feature module দেখতে পাবেন। এগুলো design preview—সবগুলো production-ready customer website নয়।";
+    return "ওয়েবসাইটের “50 Website Demos” মেনু অথবা https://nexora-international-technology.vercel.app/demos লিংক খুলুন। সেখানে ৫০টি আলাদা demo card আছে; প্রতিটি খুললে আলাদা sample page ও feature module দেখতে পাবেন। এগুলো design preview—সবগুলো production-ready customer website নয়।";
   }
   if (q.includes("price") || q.includes("cost") || q.includes("দাম") || q.includes("খরচ") || q.includes("কত টাকা")) {
     return "প্রজেক্টের খরচ নির্ভর করে website type, page সংখ্যা, design ও প্রয়োজনীয় feature-এর ওপর। আপনার প্রয়োজন জানিয়ে নিচের “Start a project” ফর্ম পাঠালে NEXORA আপনার সঙ্গে scope ও quotation নিয়ে আলোচনা করতে পারবে।";
