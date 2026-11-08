@@ -21,7 +21,7 @@ service cloud.firestore {
         && request.resource.data.status == "pending";
       allow read, update, delete: if isAdmin();
     }
-    match /projects/{projectId} {
+    match /quoteApprovals/{approvalId} {\n      allow create: if signedIn()\n        && request.resource.data.ownerUid == request.auth.uid\n        && request.resource.data.ownerEmail == request.auth.token.email\n        && request.resource.data.status == "customer_accepted"\n        && exists(/databases/$(database)/documents/projects/$(request.resource.data.projectId))\n        && get(/databases/$(database)/documents/projects/$(request.resource.data.projectId)).data.ownerUid == request.auth.uid;\n      allow read, update, delete: if isAdmin();\n    }\n    match /projects/{projectId} {
       allow create: if signedIn()
         && request.resource.data.ownerUid == request.auth.uid
         && request.resource.data.ownerEmail == request.auth.token.email
