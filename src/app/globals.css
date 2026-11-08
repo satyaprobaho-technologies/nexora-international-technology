@@ -206,3 +206,20 @@ body{top:0!important}
 
 .portal-due-alert,.portal-due-note{flex-basis:100%;margin:2px 0 0;padding:9px 11px;border-radius:6px;background:#183b4c;color:#bcecff;font-size:11px;line-height:1.55}
 .portal-due-alert.overdue{background:#4a2228;color:#ffd0d0}
+
+
+/* Rich image-led sections shared by all 50 demo sites */
+.demo-visual-gallery{padding:78px max(10vw,24px);background:#fff}
+.demo-gallery-heading{display:flex;justify-content:space-between;align-items:end;gap:32px;margin-bottom:30px}
+.demo-gallery-heading h2{font-size:clamp(30px,4vw,46px);color:#17263b;max-width:620px}
+.demo-gallery-heading>p{max-width:360px;color:#65758a;line-height:1.8;font-size:14px}
+.demo-gallery-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.demo-gallery-grid article{overflow:hidden;border:1px solid #e2e8f0;border-radius:13px;background:#fff;box-shadow:0 12px 36px #16263b0b}
+.demo-gallery-grid img{display:block;width:100%;height:220px;object-fit:cover;background:#e8edf4}
+.demo-gallery-grid article>div{padding:22px}
+.demo-gallery-grid article>div>span{font-size:9px;font-weight:800;letter-spacing:1.8px;color:var(--demo-accent)}
+.demo-gallery-grid h3{font:700 19px Manrope,Arial,sans-serif;color:#17263b;margin:12px 0 8px}
+.demo-gallery-grid p{font-size:13px;line-height:1.7;color:#64748b;min-height:44px}
+.demo-gallery-grid a{display:inline-block;margin-top:8px;color:var(--demo-accent);font-size:12px;font-weight:800;text-decoration:none}
+@media(max-width:760px){.demo-gallery-grid{grid-template-columns:1fr 1fr}.demo-gallery-grid img{height:180px}.demo-gallery-heading{display:block}.demo-gallery-heading>p{margin-top:16px}}
+@media(max-width:520px){.demo-gallery-grid{grid-template-columns:1fr}.demo-gallery-grid img{height:210px}.demo-visual-gallery{padding:58px 22px}}
