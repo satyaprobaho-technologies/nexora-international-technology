@@ -37,7 +37,7 @@ export default function SoftwareDemosPage() {
       <header className="nav">
         <Link className="brand" href="/">NEXORA <small>INTERNATIONAL TECHNOLOGY</small></Link>
         <nav aria-label="Main navigation">
-          <Link href="/">Home</Link><Link href="/demos">50 Website Demos</Link><Link href="/portal">Client Portal</Link>
+          <Link href="/">Home</Link><Link href="/solutions">Solutions</Link><Link href="/pricing">Pricing</Link><Link href="/demos">50 Website Demos</Link><Link href="/portal">Client Portal</Link>
         </nav>
       </header>
       <section className="software-demo-hero">
