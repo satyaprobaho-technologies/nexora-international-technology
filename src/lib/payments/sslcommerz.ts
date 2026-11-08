@@ -4,6 +4,7 @@ import { FieldValue } from "firebase-admin/firestore";
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://nexora-international-technology.vercel.app";
 
 function credentials() {
+  if (process.env.PAYMENTS_ENABLED !== "true") throw new Error("Online payments are disabled until merchant onboarding is complete");
   const storeId = process.env.SSLCOMMERZ_STORE_ID;
   const storePassword = process.env.SSLCOMMERZ_STORE_PASSWORD;
   if (!storeId || !storePassword) throw new Error("SSLCOMMERZ live/sandbox credentials are not configured");
