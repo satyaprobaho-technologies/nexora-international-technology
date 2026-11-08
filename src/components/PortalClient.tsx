@@ -6,7 +6,7 @@ import { addDoc, collection, onSnapshot, orderBy, query, serverTimestamp, where 
 import Link from "next/link";
 import { auth, db } from "@/lib/firebase";
 
-type Project = { id: string; title?: string; service?: string; status?: string; dueDate?: string; createdAt?: unknown };
+type Project = { id: string; title?: string; service?: string; status?: string; paymentStatus?: string; dueDate?: string; createdAt?: unknown };
 
 export default function PortalClient() {
   const [user, setUser] = useState<User | null>(null);
