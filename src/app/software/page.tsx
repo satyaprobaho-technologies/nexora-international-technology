@@ -19,6 +19,18 @@ const software = [
   { slug: "booking", name: "Appointment & Booking Platform", type: "Booking workflow demo", detail: "Explore service discovery, booking steps and provider-facing concepts.", modules: ["Service discovery", "Booking flow", "Provider concept", "Help centre"], accent: "#0e7490" },
 ];
 
+
+const divisionDemos = [
+  { division: "Dhaka", concept: "Global Accounting & Business ERP", slug: "accounting", brand: "LedgerOne International", description: "A polished finance and operations showcase for international SMEs, agencies and cross-border service businesses.", features: ["Multi-currency finance concept", "Invoices & expense workflows", "Management reporting", "Client onboarding"] },
+  { division: "Chattogram", concept: "International Logistics & Trade", slug: "logistics", brand: "PortLink Global", description: "A global freight, shipment and trade-services preview inspired by the port and export ecosystem.", features: ["Freight service catalogue", "Shipment journey concept", "Trade enquiry workflow", "Business client support"] },
+  { division: "Rajshahi", concept: "Agri Export & Wholesale Marketplace", slug: "grocery", brand: "HarvestBridge Trade", description: "An international produce sourcing and wholesale storefront concept for growers, exporters and buyers.", features: ["Produce catalogue", "Wholesale enquiry", "Supplier showcase", "Export buyer journey"] },
+  { division: "Khulna", concept: "Aquaculture & Cold-Chain Business", slug: "shop", brand: "BlueCurrent Global", description: "A seafood and aquaculture business showcase for product discovery, wholesale enquiries and international supply partners.", features: ["Seafood product catalogue", "Wholesale order enquiry", "Quality information", "Partner onboarding"] },
+  { division: "Barishal", concept: "River Tourism & Hospitality", slug: "hotel", brand: "DeltaVoyage Retreats", description: "An international-standard hospitality concept for river journeys, stays and curated guest experiences.", features: ["Stay & room showcase", "Experience catalogue", "Booking request flow", "Guest information"] },
+  { division: "Sylhet", concept: "International Travel & Tea Tourism", slug: "travel", brand: "Verdant Routes", description: "A premium travel operator preview for international visitors, curated itineraries and destination enquiries.", features: ["Destination discovery", "Tour itineraries", "Custom trip enquiry", "Travel support"] },
+  { division: "Rangpur", concept: "Agri Supply & Online Wholesale", slug: "grocery", brand: "NorthHarvest Exchange", description: "A digital wholesale marketplace concept connecting producers, distributors and buyers across markets.", features: ["Category-based catalogue", "Bulk purchase enquiry", "Supplier information", "Delivery workflow"] },
+  { division: "Mymensingh", concept: "International Education & Student Portal", slug: "university", brand: "Meridian Global Academy", description: "A modern education portal concept for international programmes, admissions information and student services.", features: ["Programme catalogue", "Admissions journey", "Student services", "International enquiry"] },
+];
+
 export default function SoftwareDemosPage() {
   return (
     <main className="software-demo-page">
@@ -50,6 +62,19 @@ export default function SoftwareDemosPage() {
             </article>
           ))}
         </div>
+      </section>
+      <section className="section division-demo-section" id="division-demos">
+        <div className="section-head"><div><p className="eyebrow">8 DIVISIONS · 8 SIGNATURE CONCEPTS</p><h2>Regional ideas. International-quality demos.</h2></div><p className="section-intro">Explore one signature business-software concept inspired by each division of Bangladesh. Every preview is presented for a global audience, with international-ready workflows and customisation possibilities.</p></div>
+        <div className="division-demo-grid">
+          {divisionDemos.map((item,index)=><article className="division-demo-card" key={item.division}>
+            <div className="division-demo-card-top"><span>DIVISION SHOWCASE / 0{index+1}</span><b>{item.division.toUpperCase()}</b></div>
+            <div className="division-demo-card-body"><p className="software-demo-type">{item.brand}</p><h3>{item.concept}</h3><p>{item.description}</p>
+              <div className="software-demo-tags">{item.features.map(feature=><span key={feature}>{feature}</span>)}</div>
+              <div className="division-demo-actions"><Link className="software-demo-open" href={`/demos/${item.slug}`}>View full preview ↗</Link><Link className="division-demo-order" href="/#contact">Request this solution ↗</Link></div>
+            </div>
+          </article>)}
+        </div>
+        <p className="division-demo-disclaimer">These are sample concepts, not operating companies or live trade services. You can review the full demo first, then submit a project/order enquiry. NEXORA will confirm scope, pricing, delivery and payment instructions separately; no online payment is taken on demo pages.</p>
       </section>
       <section className="section software-demo-footer">
         <div><p className="eyebrow">NEED A CUSTOM SYSTEM?</p><h2>Turn a demo into your own solution.</h2><p>Tell NEXORA which modules, user roles and workflows your organisation needs. We can scope a custom build separately.</p></div>
