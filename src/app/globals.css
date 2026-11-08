@@ -203,3 +203,6 @@ body{top:0!important}
 .demo-catalog-toolbar>a{color:#8ce6ed;text-decoration:none;font-size:12px;font-weight:800}
 .demo-catalog-card{scroll-margin-top:110px}
 @media(max-width:620px){.demo-catalog-toolbar{align-items:flex-start;flex-direction:column}.demo-catalog-toolbar>div{font-size:12px}}
+
+.portal-due-alert,.portal-due-note{flex-basis:100%;margin:2px 0 0;padding:9px 11px;border-radius:6px;background:#183b4c;color:#bcecff;font-size:11px;line-height:1.55}
+.portal-due-alert.overdue{background:#4a2228;color:#ffd0d0}
