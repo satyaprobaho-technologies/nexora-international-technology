@@ -2,7 +2,7 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { createUserWithEmailAndPassword, onAuthStateChanged, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, User } from "firebase/auth";
-import { addDoc, collection, onSnapshot, orderBy, query, serverTimestamp, where } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, onSnapshot, orderBy, query, serverTimestamp, where } from "firebase/firestore";
 import Link from "next/link";
 import { auth, db } from "@/lib/firebase";
 
@@ -63,6 +63,11 @@ export default function PortalClient() {
     if (!user.emailVerified) { setMessage("প্রজেক্ট জমা দেওয়ার আগে ইমেইল যাচাই করুন।"); return; }
     setSaving(true); setMessage("");
     try {
+      const customerSnapshot = await getDoc(doc(db, "customers", user.uid));
+      if (!customerSnapshot.exists() || customerSnapshot.data().status !== "active") {
+        setMessage("আপনার customer account বর্তমানে সক্রিয় নয়। সহায়তার জন্য NEXORA support-এ যোগাযোগ করুন।");
+        return;
+      }
       await addDoc(collection(db, "projects"), {
         ownerUid: user.uid, ownerEmail: user.email, title: title.trim(), service,
         status: "pending", createdAt: serverTimestamp(), dueDate: null, paymentStatus: "unpaid"
