@@ -14,6 +14,12 @@ A responsive Next.js website for presenting NEXORA's website development, domain
 ## Important service limitations
 The website is an enquiry and service-information site. It does **not** currently sell or register domains, provision hosting, accept payments, create customer accounts, or send contact-form submissions to a backend. Those features require approved registrar/hosting/payment providers, credentials, server-side implementation, privacy/terms policies and testing. Do not represent these as active until integrated and verified.
 
+## Payment policy (mandatory)
+- Card payments are prohibited: credit cards, debit cards, Visa, Mastercard and American Express must not be offered, collected or processed.
+- Permitted methods for a future approved integration: bKash, Nagad, Rocket and bank transfer only.
+- All payment methods remain inactive until the owner obtains external approvals, supplies provider credentials and the integration passes end-to-end testing.
+- Never collect or store card numbers, CVVs, expiry dates or other card credentials.
+
 ## Requirements
 - Node.js >=20.9
 - npm
