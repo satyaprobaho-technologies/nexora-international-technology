@@ -25,7 +25,7 @@ const templates = [
   "SaaS Product", "Mobile App Landing", "Technology Company", "Membership Platform", "Booking Platform",
 ];
 
-const email = "computer26training@gmail.com";
+const email = "24customar.support@gmail.com";
 const subject = encodeURIComponent("NEXORA website project enquiry");
 
 export default function Home() {
@@ -34,7 +34,7 @@ export default function Home() {
       <header className="nav">
         <Link className="brand" href="/" aria-label="NEXORA home">NEXORA <small>INTERNATIONAL TECHNOLOGY</small></Link>
         <nav aria-label="Main navigation">
-          <a href="#services">Services</a><a href="#demos">Website demos</a><a href="#free-starter">Free starter</a><a href="#process">How it works</a><a href="#payments">Payment</a><a href="#contact">Contact</a>
+          <a href="#services">Services</a><a href="#templates">Website demos</a><a href="#free-starter">Free starter</a><a href="#process">How it works</a><a href="#payments">Payment</a><a href="#contact">Contact</a>
         </nav>
       </header>
 
@@ -58,8 +58,8 @@ export default function Home() {
       </section>
 
       <section id="templates" className="section templates-section">
-        <div className="section-head"><div><p className="eyebrow">WEBSITE STARTER IDEAS</p><h2>50 ways to build<br />your online presence.</h2></div><p className="section-intro">Choose any of the 50 separate website demo modules. Each opens its own sample page with a design direction and feature sections.</p></div>
-        <div className="template-grid">{DEMO_SITES.map((demo, i) => <article className="template-card" key={demo.slug}><span>{String(i + 1).padStart(2, "0")}</span><h3>{demo.name}</h3><Link href={`/demos/${demo.slug}`}>Open separate demo ↗</Link></article>)}</div>
+        <div className="section-head"><div><p className="eyebrow">WEBSITE STARTER IDEAS</p><h2>50 live website<br />demo previews.</h2></div><p className="section-intro">Explore all 50 separate website demo previews. Every demo has its own page, design direction and feature sections.</p></div>
+        <div className="template-grid">{DEMO_SITES.map((demo, i) => <article className="template-card" key={demo.slug}><span>{String(i + 1).padStart(2, "0")}</span><h3>{demo.name}</h3><Link href={`/demos/${demo.slug}`}>View demo ↗</Link></article>)}</div>
       </section>
 
 
