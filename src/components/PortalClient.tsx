@@ -23,6 +23,9 @@ export default function PortalClient() {
   const [budget, setBudget] = useState("Not sure yet");
   const [timeline, setTimeline] = useState("Flexible");
   const [saving, setSaving] = useState(false);
+  const [billingName, setBillingName] = useState("");
+  const [billingPhone, setBillingPhone] = useState("");
+  const [billingAddress, setBillingAddress] = useState("");
 
   useEffect(() => onAuthStateChanged(auth, (next) => { setUser(next); setLoading(false); }), []);
   useEffect(() => {
@@ -84,6 +87,24 @@ export default function PortalClient() {
     finally { setSaving(false); }
   }
 
+  async function startPayment(project: Project) {
+    if (!user) return;
+    if (!billingName.trim() || !billingPhone.trim() || !billingAddress.trim()) {
+      setMessage("পেমেন্টের আগে billing name, phone এবং address পূরণ করুন।"); return;
+    }
+    setSaving(true); setMessage("");
+    try {
+      const token = await user.getIdToken();
+      const response = await fetch("/api/payments/sslcommerz/initiate", {
+        method: "POST", headers: { "content-type": "application/json", authorization: `Bearer ${token}` },
+        body: JSON.stringify({ projectId: project.id, name: billingName.trim(), phone: billingPhone.trim(), address: billingAddress.trim() })
+      });
+      const result = await response.json();
+      if (!response.ok || !result.paymentUrl) throw new Error(result.error || "Payment could not be started.");
+      window.location.href = result.paymentUrl;
+    } catch (err) { setMessage(err instanceof Error ? err.message : "Payment could not be started."); setSaving(false); }
+  }
+
   async function submitProject(e: FormEvent) {
     e.preventDefault(); if (!user || !title.trim()) return;
     if (!user.emailVerified) { setMessage("প্রজেক্ট জমা দেওয়ার আগে ইমেইল যাচাই করুন।"); return; }
@@ -128,7 +149,8 @@ export default function PortalClient() {
         <div className="portal-form-row"><label>Estimated budget<select value={budget} onChange={e=>setBudget(e.target.value)}><option>Not sure yet</option><option>Under USD 500</option><option>USD 500–1,500</option><option>USD 1,500–5,000</option><option>USD 5,000–15,000</option><option>USD 15,000+</option></select></label><label>Target timeline<select value={timeline} onChange={e=>setTimeline(e.target.value)}><option>Flexible</option><option>Within 2 weeks</option><option>Within 1 month</option><option>Within 2–3 months</option><option>3+ months</option></select></label></div>
         <button className="portal-button" disabled={saving}>{saving ? "Submitting…" : "Submit project request"}</button>
       </form></div>
-      <div className="portal-panel"><h2>Your projects</h2>{projects.length ? <div className="portal-project-list">{projects.map(p=><article key={p.id}><div><b>{p.title}</b><small>{p.service}</small><small>Budget: {p.budget || "Not specified"} · Timeline: {p.timeline || "Flexible"}</small>{p.brief && <p className="portal-project-brief">{p.brief}</p>}</div><span className="portal-status">{p.status || "pending"}</span>{typeof p.quoteAmount === "number" && <><p className="portal-quote">NEXORA quotation: {p.quoteCurrency || "USD"} {p.quoteAmount.toLocaleString()}</p>{p.paymentStatus === "quote_sent" && <button className="portal-button" disabled={saving} onClick={()=>acceptQuote(p)}>Accept quotation & request invoice</button>}</>}<p className="portal-due-note">Payment status: {(p.paymentStatus || "awaiting_quote").replaceAll("_"," ")}</p>{p.paymentStatus === "awaiting_payment" && p.dueDate && <p className="portal-due-alert">Payment due by {p.dueDate}. Contact NEXORA for official payment instructions.</p>}</article>)}</div> : <p className="portal-muted">No projects yet. Submit your first request above.</p>}</div>
+      <div className="portal-panel"><h2>Secure payment details</h2><p className="portal-muted">Approved invoices can be paid through the configured hosted gateway. Your card or wallet details are entered only on the provider payment page.</p><div className="portal-form"><label>Billing name<input value={billingName} onChange={e=>setBillingName(e.target.value)} autoComplete="name" /></label><label>Mobile number<input value={billingPhone} onChange={e=>setBillingPhone(e.target.value)} autoComplete="tel" /></label><label>Billing address<input value={billingAddress} onChange={e=>setBillingAddress(e.target.value)} autoComplete="street-address" /></label></div></div>
+      <div className="portal-panel"><h2>Your projects</h2>{projects.length ? <div className="portal-project-list">{projects.map(p=><article key={p.id}><div><b>{p.title}</b><small>{p.service}</small><small>Budget: {p.budget || "Not specified"} · Timeline: {p.timeline || "Flexible"}</small>{p.brief && <p className="portal-project-brief">{p.brief}</p>}</div><span className="portal-status">{p.status || "pending"}</span>{typeof p.quoteAmount === "number" && <><p className="portal-quote">NEXORA quotation: {p.quoteCurrency || "USD"} {p.quoteAmount.toLocaleString()}</p>{p.paymentStatus === "quote_sent" && <button className="portal-button" disabled={saving} onClick={()=>acceptQuote(p)}>Accept quotation & request invoice</button>}{p.paymentStatus === "awaiting_payment" && <button className="portal-button" disabled={saving} onClick={()=>startPayment(p)}>{saving ? "Connecting securely…" : "Pay securely via SSLCOMMERZ"}</button>}</>}<p className="portal-due-note">Payment status: {(p.paymentStatus || "awaiting_quote").replaceAll("_"," ")}</p>{p.paymentStatus === "awaiting_payment" && p.dueDate && <p className="portal-due-alert">Payment due by {p.dueDate}. Contact NEXORA for official payment instructions.</p>}</article>)}</div> : <p className="portal-muted">No projects yet. Submit your first request above.</p>}</div>
       {message && <p className="portal-message">{message}</p>}
     </section>}
     <p className="portal-foot">Secure customer access · NEXORA INTERNATIONAL TECHNOLOGY</p>
