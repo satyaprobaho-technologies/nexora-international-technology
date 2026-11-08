@@ -141,3 +141,44 @@ body{top:0!important}
 .demo-catalog-info>a{display:inline-flex;color:#8ce6ed;text-decoration:none;font-size:12px;font-weight:800}
 @media(max-width:1050px){.demo-catalog-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(max-width:620px){.demo-catalog-grid{grid-template-columns:1fr}.demo-catalog-info p{min-height:0}}
+
+
+/* NEXORA customer and staff portal */
+.portal-shell{min-height:100vh;background:radial-gradient(ellipse at 80% 0%,#123b60 0,transparent 40%),#071326;color:#f1f6ff;padding:26px max(5vw,20px) 50px;font-family:'DM Sans',Arial,sans-serif}
+.portal-top{max-width:1120px;margin:0 auto 55px;display:flex;align-items:center;justify-content:space-between;gap:18px}
+.portal-top>a:not(.portal-brand){color:#a9c5df;text-decoration:none;font-size:13px}
+.portal-brand{font:800 19px Manrope,Arial,sans-serif;letter-spacing:2px;text-decoration:none;color:#fff}.portal-brand small{display:block;font-size:8px;letter-spacing:3px;color:#8eb8ed;margin-top:4px}
+.portal-panel,.portal-dashboard{max-width:850px;margin:0 auto 22px}
+.portal-panel{padding:30px;background:linear-gradient(145deg,#102944,#0b1d33);border:1px solid #294967;border-radius:14px}
+.portal-panel h1,.portal-heading h1{font:800 clamp(30px,5vw,48px)/1.12 Manrope,Arial,sans-serif;letter-spacing:-1px;margin:12px 0}
+.portal-panel h2{font:700 21px Manrope;margin:0 0 20px;letter-spacing:0}
+.portal-kicker{font-size:10px;letter-spacing:2.5px;color:#67c9ff;font-weight:700}
+.portal-muted{color:#a9bbd1;font-size:13px;line-height:1.7}
+.portal-form{display:grid;gap:16px;margin-top:25px}
+.portal-form label{display:grid;gap:8px;color:#dceafa;font-size:13px;font-weight:600}
+.portal-form input,.portal-form select,.admin-search,.admin-table select,.admin-table input{width:100%;background:#07182b;color:#f5f9ff;border:1px solid #355675;border-radius:7px;padding:13px;font:400 14px Arial,sans-serif;min-width:0}
+.portal-button{border:0;border-radius:7px;background:#168de0;color:#fff;padding:14px 20px;font-weight:700;cursor:pointer}
+.portal-button:disabled{opacity:.6;cursor:wait}
+.portal-switch,.portal-outline{border:1px solid #54718f;border-radius:7px;background:transparent;color:#d9eaff;padding:11px 15px;cursor:pointer}
+.portal-switch{margin-top:18px;border:0;padding-left:0;color:#79d0ff}
+.portal-message{color:#b8e8ff;background:#103450;border:1px solid #315d7c;padding:13px 15px;border-radius:8px;font-size:13px;line-height:1.6}
+.portal-foot{text-align:center;color:#718ba7;font-size:11px;margin:40px 0 0}
+.portal-heading{max-width:1120px;margin:0 auto 28px;display:flex;justify-content:space-between;align-items:center;gap:18px}
+.portal-dashboard{max-width:1120px}
+.portal-dashboard .portal-panel{max-width:none}
+.portal-project-list,.admin-table{display:grid;gap:10px}
+.portal-project-list article,.admin-table article{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px;background:#0a1b30;border:1px solid #284663;border-radius:8px;flex-wrap:wrap}
+.portal-project-list article div,.admin-table article div{display:grid;gap:5px;min-width:180px}
+.portal-project-list small,.admin-table small{color:#91a8c0;font-size:11px}
+.portal-status{color:#8ce6ed;text-transform:capitalize;font-size:12px}
+.admin-shell{max-width:none}
+.admin-stats{max-width:1120px;margin:0 auto 22px;display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.admin-stats article{padding:22px;background:#102944;border:1px solid #294967;border-radius:10px;display:grid;gap:8px}
+.admin-stats b{font:800 30px Manrope;color:#8ce6ed}.admin-stats span{font-size:12px;color:#a9bbd1}
+.admin-shell .portal-panel{max-width:1120px}
+.admin-search{max-width:100%}
+.admin-table select,.admin-table input{width:auto;max-width:180px;padding:10px}
+.admin-project-info{flex:1}
+.footer-portal-link{font-size:10px;color:#8eb8ed;text-decoration:none;letter-spacing:1px}
+.footer-admin-link{font-size:10px;color:#314d69;text-decoration:none;margin-left:-16px}
+@media(max-width:680px){.portal-shell{padding:20px 16px 40px}.portal-top{margin-bottom:35px}.portal-panel{padding:22px}.admin-stats{grid-template-columns:repeat(2,1fr)}.portal-heading{align-items:flex-start}.admin-table article{align-items:stretch}.admin-table select,.admin-table input{max-width:none;width:100%}.portal-project-list article{align-items:flex-start;flex-direction:column}}
