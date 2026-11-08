@@ -31,7 +31,7 @@ export default function Home() {
       <header className="nav">
         <Link className="brand" href="/" aria-label="NEXORA home">NEXORA <small>INTERNATIONAL TECHNOLOGY</small></Link>
         <nav aria-label="Main navigation">
-          <a href="#services">Services</a><a href="#templates">Website demos</a><a href="#process">How it works</a><a href="#contact">Contact</a>
+          <a href="#services">Services</a><a href="#templates">Website demos</a><a href="#process">How it works</a><a href="#payments">Payment</a><a href="#contact">Contact</a>
         </nav>
       </header>
 
