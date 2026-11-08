@@ -104,3 +104,14 @@
 @media(max-width:900px){.demo-menu{display:none}.demo-hero{grid-template-columns:1fr}.demo-hero-visual{min-height:330px}.demo-showcase-grid{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:650px){.demo-nav{height:auto;min-height:70px;flex-wrap:wrap;padding:13px 18px}.demo-nav-cta{padding:9px 11px}.demo-hero{padding:55px 22px}.demo-hero h1{letter-spacing:-2px}.demo-hero-visual{min-height:290px}.demo-visual-orbit{width:270px;height:270px}.demo-visual-orbit.second{width:220px;height:300px}.demo-visual-card{width:90%}.demo-floating-note{right:0;bottom:0}.demo-stats{grid-template-columns:1fr;padding:16px 22px}.demo-stats>div{border-right:0;border-bottom:1px solid #ffffff22;padding:13px 4px}.demo-stats>div:last-child{border-bottom:0}.demo-section{padding:60px 22px}.demo-intro-section,.demo-faq{grid-template-columns:1fr;gap:22px}.demo-section-heading{display:block}.demo-section-heading>span{display:inline-block;margin-top:16px}.demo-showcase-grid{grid-template-columns:1fr}.demo-showcase-art{height:165px}.demo-quote{padding:65px 22px}.demo-contact{padding:65px 22px}}
 @media(prefers-reduced-motion:reduce){.demo-page *{scroll-behavior:auto;transition:none!important}}
+
+
+.language-switcher{position:fixed;right:22px;top:96px;z-index:1200;display:flex;align-items:center;gap:7px;padding:7px 10px;border:1px solid #cbd8e6;border-radius:7px;background:#fff;color:#24415e;box-shadow:0 5px 20px #07132620;font-size:12px}
+.language-switcher>span:first-child{font-size:16px;color:#168de0}
+.language-switcher select{max-width:115px;border:0;background:transparent;color:#24415e;font:600 11px Arial,sans-serif;outline:none;cursor:pointer}
+.google-translate-host{display:none}
+.goog-te-banner-frame,.goog-te-gadget,.goog-logo-link{display:none!important}
+body{top:0!important}
+.goog-te-menu-value{display:none!important}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+@media(max-width:680px){.language-switcher{top:12px;right:12px;padding:6px 8px}.language-switcher select{max-width:88px}}
