@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import { createUserWithEmailAndPassword, onAuthStateChanged, signInWithEmailAndPassword, signOut, User } from "firebase/auth";
+import { createUserWithEmailAndPassword, onAuthStateChanged, sendEmailVerification, signInWithEmailAndPassword, signOut, User } from "firebase/auth";
 import { addDoc, collection, onSnapshot, orderBy, query, serverTimestamp, where } from "firebase/firestore";
 import Link from "next/link";
 import { auth, db } from "@/lib/firebase";
@@ -24,7 +24,7 @@ export default function PortalClient() {
   useEffect(() => onAuthStateChanged(auth, (next) => { setUser(next); setLoading(false); }), []);
   useEffect(() => {
     if (!user) { setProjects([]); return; }
-    const q = query(collection(db, "projects"), where("ownerUid", "==", user.uid), orderBy("createdAt", "desc"));
+    const q = query(collection(db, "projects"), where("ownerUid", "==", user.uid));
     return onSnapshot(q, (snap) => setProjects(snap.docs.map((d) => ({ id: d.id, ...d.data() } as Project))), (err) => setMessage(err.message));
   }, [user]);
 
