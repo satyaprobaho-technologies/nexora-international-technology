@@ -34,7 +34,7 @@ export default function Home() {
       <header className="nav">
         <Link className="brand" href="/" aria-label="NEXORA home">NEXORA <small>INTERNATIONAL TECHNOLOGY</small></Link>
         <nav aria-label="Main navigation">
-          <a href="#services">Services</a><a href="#templates">Website demos</a><a href="#free-starter">Free starter</a><a href="#process">How it works</a><a href="#payments">Payment</a><a href="#contact">Contact</a>
+          <a href="#services">Services</a><a href="#templates">50 Website Demos</a><a href="#free-starter">Free starter</a><a href="#process">How it works</a><a href="#payments">Payment</a><a href="#contact">Contact</a>
         </nav>
       </header>
 
@@ -52,14 +52,10 @@ export default function Home() {
         <div className="hero-art" aria-hidden="true"><div className="orbit orbit-one" /><div className="orbit orbit-two" /><div className="globe"><span>N</span></div><div className="float-card">YOUR IDEAS<br /><b>GO GLOBAL</b></div></div>
       </section>
 
-      <section id="services" className="section">
-        <div className="section-head"><div><p className="eyebrow">WHAT WE DO</p><h2>Everything you need<br />to get online.</h2></div><p className="section-intro">Practical digital services for individuals, entrepreneurs and growing organizations.</p></div>
-        <div className="service-grid">{services.map((s, i) => <article className="service-card" key={s.n}><span className="number">0{i + 1}</span><h3>{s.n}</h3><p>{s.d}</p><div className="tags">{s.tags.map(t => <span key={t}>{t}</span>)}</div></article>)}</div>
-      </section>
-
       <section id="templates" className="section templates-section">
         <div className="section-head"><div><p className="eyebrow">WEBSITE STARTER IDEAS</p><h2>50 live website<br />demo previews.</h2></div><p className="section-intro">প্রতিটি কার্ডে ডিজাইনের ঝলক, পেজের ধরন ও মডিউল দেখুন। পছন্দ হলে খুলুন সম্পূর্ণ মাল্টি-সেকশন ডেমো—তারপর আপনার প্রতিষ্ঠানের নামে কাস্টমাইজ করার অনুরোধ দিন।</p></div>
-        <div className="demo-catalog-grid">{DEMO_SITES.map((demo, i) => <article className="demo-catalog-card" key={demo.slug}>
+        <div className="demo-catalog-toolbar"><div><strong>{DEMO_SITES.length}</strong><span>টি আলাদা ওয়েবসাইট ডেমো ও মডিউল</span></div><a href="#demo-card-01">ডেমো কার্ডগুলো দেখুন ↓</a></div>
+        <div className="demo-catalog-grid">{DEMO_SITES.map((demo, i) => <article id={`demo-card-${String(i + 1).padStart(2, "0")}`} className="demo-catalog-card" key={demo.slug}>
           <div className="demo-catalog-preview" style={{ borderTopColor: demo.accent }}>
             <div className="demo-catalog-browser"><i></i><i></i><i></i><span>WEBSITE PREVIEW / {String(i + 1).padStart(2, "0")}</span></div>
             <div className="demo-catalog-hero" style={{ background: `linear-gradient(120deg, ${demo.accent}22, #ffffff)` }}>
@@ -74,6 +70,11 @@ export default function Home() {
         </article>)}</div>
       </section>
 
+
+      <section id="services" className="section">
+        <div className="section-head"><div><p className="eyebrow">WHAT WE DO</p><h2>Everything you need<br />to get online.</h2></div><p className="section-intro">Practical digital services for individuals, entrepreneurs and growing organizations.</p></div>
+        <div className="service-grid">{services.map((s, i) => <article className="service-card" key={s.n}><span className="number">0{i + 1}</span><h3>{s.n}</h3><p>{s.d}</p><div className="tags">{s.tags.map(t => <span key={t}>{t}</span>)}</div></article>)}</div>
+      </section>
 
       <section id="free-starter" className="section free-starter-section">
         <div className="section-head"><div><p className="eyebrow">START ONLINE AT NO COST</p><h2>Apply for free domain & hosting.</h2></div><p className="section-intro">Request an eligible free subdomain and starter hosting option. Availability depends on provider rules, project suitability and review.</p></div>
