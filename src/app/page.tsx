@@ -45,7 +45,7 @@ export default function Home() {
           <p className="lead">From your first domain to a complete business website, NEXORA helps you plan, build and grow your online presence.</p>
           <div className="actions">
             <a className="button" href="#contact">Start a project <span aria-hidden="true">↗</span></a>
-            <a className="button secondary" href="#templates">Explore 50 website ideas</a>
+            <a className="button secondary" href="#templates">Explore 50 website demos</a>
           </div>
           <div className="hero-proof"><span>01 / PLAN</span><span>02 / BUILD</span><span>03 / GROW</span></div>
         </div>
@@ -53,7 +53,7 @@ export default function Home() {
       </section>
 
       <section id="templates" className="section templates-section">
-        <div className="section-head"><div><p className="eyebrow">WEBSITE STARTER IDEAS</p><h2>50 live website<br />demo previews.</h2></div><p className="section-intro">প্রতিটি কার্ডে ডিজাইনের ঝলক, পেজের ধরন ও মডিউল দেখুন। পছন্দ হলে খুলুন সম্পূর্ণ মাল্টি-সেকশন ডেমো—তারপর আপনার প্রতিষ্ঠানের নামে কাস্টমাইজ করার অনুরোধ দিন।</p></div>
+        <div className="section-head"><div><p className="eyebrow">WEBSITE STARTER IDEAS</p><h2>৫০টি ওয়েবসাইট<br />ডেমো দেখুন।</h2></div><p className="section-intro">প্রতিটি কার্ডে ডিজাইনের ঝলক, পেজের ধরন ও মডিউল দেখুন। পছন্দ হলে খুলুন সম্পূর্ণ মাল্টি-সেকশন ডেমো—তারপর আপনার প্রতিষ্ঠানের নামে কাস্টমাইজ করার অনুরোধ দিন।</p></div>
         <div className="demo-catalog-toolbar"><div><strong>{DEMO_SITES.length}</strong><span>টি আলাদা ওয়েবসাইট ডেমো ও মডিউল</span></div><a href="#demo-card-01">ডেমো কার্ডগুলো দেখুন ↓</a></div>
         <div className="demo-catalog-grid">{DEMO_SITES.map((demo, i) => <article id={`demo-card-${String(i + 1).padStart(2, "0")}`} className="demo-catalog-card" key={demo.slug}>
           <div className="demo-catalog-preview" style={{ borderTopColor: demo.accent }}>
