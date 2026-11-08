@@ -1,6 +1,7 @@
 import Link from "next/link";
 import InquiryForm from "@/components/InquiryForm";
 import FreeStarterForm from "@/components/FreeStarterForm";
+import { DEMO_SITES } from "@/lib/demo-sites";
 
 const services = [
   { n: "Website Design & Development", d: "Responsive business websites, landing pages, portfolios, blogs and custom web applications.", tags: ["Next.js", "WordPress", "E-commerce"] },
@@ -57,21 +58,12 @@ export default function Home() {
       </section>
 
       <section id="templates" className="section templates-section">
-        <div className="section-head"><div><p className="eyebrow">WEBSITE STARTER IDEAS</p><h2>50 ways to build<br />your online presence.</h2></div><p className="section-intro">Browse 50 website ideas and open the interactive sample previews below. The six previews are working sample pages; the remaining items are design categories available on request.</p></div>
-        <div className="template-grid">{templates.map((t, i) => <article className="template-card" key={t}><span>{String(i + 1).padStart(2, "0")}</span><h3>{t}</h3><a href={`mailto:${email}?subject=${encodeURIComponent("Website enquiry: " + t)}`} aria-label={`Enquire about ${t}`}>Discuss this idea ↗</a></article>)}</div>
+        <div className="section-head"><div><p className="eyebrow">WEBSITE STARTER IDEAS</p><h2>50 ways to build<br />your online presence.</h2></div><p className="section-intro">Choose any of the 50 separate website demo modules. Each opens its own sample page with a design direction and feature sections.</p></div>
+        <div className="template-grid">{DEMO_SITES.map((demo, i) => <article className="template-card" key={demo.slug}><span>{String(i + 1).padStart(2, "0")}</span><h3>{demo.name}</h3><Link href={`/demos/${demo.slug}`}>Open separate demo ↗</Link></article>)}</div>
       </section>
 
 
-      <section id="demos" className="section demo-gallery">
-        <div className="section-head"><div><p className="eyebrow">LIVE SAMPLE PREVIEWS</p><h2>Explore website demos.</h2></div><p className="section-intro">Open a sample website layout, explore its sections and tell us which direction you like. These are illustrative previews, not customer websites or live stores.</p></div>
-        <div className="demo-link-grid">
-          {[
-            ["School Website","Education","school"],["Corporate Business","Business","business"],["Online Store","E-commerce concept","shop"],
-            ["Restaurant & Cafe","Food & hospitality","restaurant"],["Personal Portfolio","Portfolio","portfolio"],["Clinic Website","Healthcare concept","clinic"]
-          ].map(([name,kind,slug]) => <article className="demo-link-card" key={slug}><span>{kind}</span><h3>{name}</h3><p>Open the sample layout and explore its design direction.</p><Link href={`/demos/${slug}`}>View demo ↗</Link></article>)}
-        </div>
-      </section>
-\n      <section id="free-starter" className="section free-starter-section">\n        <div className="section-head"><div><p className="eyebrow">START ONLINE AT NO COST</p><h2>Apply for free domain & hosting.</h2></div><p className="section-intro">Request an eligible free subdomain and starter hosting option. Availability depends on provider rules, project suitability and review.</p></div>\n        <div className="free-starter-info"><span>FREE STARTER REQUEST</span><p>We will review your details and reply with the available free option. Free hosting may use a provider subdomain such as <strong>yourname.vercel.app</strong>; it does not include a free custom .com domain.</p></div>\n        <FreeStarterForm />\n      </section>\n\n      <section id="process" className="section process-section">
+      <section id="free-starter" className="section free-starter-section">\n        <div className="section-head"><div><p className="eyebrow">START ONLINE AT NO COST</p><h2>Apply for free domain & hosting.</h2></div><p className="section-intro">Request an eligible free subdomain and starter hosting option. Availability depends on provider rules, project suitability and review.</p></div>\n        <div className="free-starter-info"><span>FREE STARTER REQUEST</span><p>We will review your details and reply with the available free option. Free hosting may use a provider subdomain such as <strong>yourname.vercel.app</strong>; it does not include a free custom .com domain.</p></div>\n        <FreeStarterForm />\n      </section>\n\n      <section id="process" className="section process-section">
         <p className="eyebrow">A CLEAR PROCESS</p><h2>From idea to launch.</h2>
         <div className="process-grid">
           <article><b>01</b><h3>Tell us your goal</h3><p>Share your business, audience, features and preferred timeline.</p></article>
