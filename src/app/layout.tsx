@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import HelpChat from "@/components/HelpChat";
 
 const siteUrl = "https://nexora-international-technology.vercel.app";
 
@@ -13,5 +14,5 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  return <html lang="en"><body>{children}</body></html>;
+  return <html lang="en"><body>{children}<HelpChat /></body></html>;
 }
