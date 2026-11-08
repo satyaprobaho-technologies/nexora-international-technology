@@ -27,14 +27,18 @@ export default function AdminClient() {
     if (!user || user.email !== ADMIN_EMAIL || !user.emailVerified) { setCustomers([]); setProjects([]); return; }
     (async () => {
       try {
-        const [c, p, r] = await Promise.all([
+        const [c, p] = await Promise.all([
           getDocs(query(collection(db, "customers"), orderBy("createdAt", "desc"))),
-          getDocs(query(collection(db, "projects"), orderBy("createdAt", "desc"))),
-          getDocs(query(collection(db, "passwordResetRequests"), orderBy("createdAt", "desc")))
+          getDocs(query(collection(db, "projects"), orderBy("createdAt", "desc")))
         ]);
         setCustomers(c.docs.map(d=>({id:d.id,...d.data()} as Customer)));
         setProjects(p.docs.map(d=>({id:d.id,...d.data()} as Project)));
-        setResetRequests(r.docs.map(d=>({id:d.id,...d.data()} as ResetRequest)));
+        try {
+          const r = await getDocs(query(collection(db, "passwordResetRequests"), orderBy("createdAt", "desc")));
+          setResetRequests(r.docs.map(d=>({id:d.id,...d.data()} as ResetRequest)));
+        } catch {
+          setResetRequests([]);
+        }
       } catch (err) { setMessage(err instanceof Error ? err.message : "Unable to load admin data."); }
     })();
   }, [user]);
