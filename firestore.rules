@@ -14,6 +14,13 @@ service cloud.firestore {
       allow read: if signedIn() && (request.auth.uid == uid || isAdmin());
       allow update, delete: if isAdmin();
     }
+    match /passwordResetRequests/{requestId} {
+      allow create: if signedIn()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.email == request.auth.token.email
+        && request.resource.data.status == "pending";
+      allow read, update, delete: if isAdmin();
+    }
     match /projects/{projectId} {
       allow create: if signedIn()
         && request.resource.data.ownerUid == request.auth.uid
