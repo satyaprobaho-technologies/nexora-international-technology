@@ -58,8 +58,20 @@ export default function Home() {
       </section>
 
       <section id="templates" className="section templates-section">
-        <div className="section-head"><div><p className="eyebrow">WEBSITE STARTER IDEAS</p><h2>50 live website<br />demo previews.</h2></div><p className="section-intro">Explore all 50 separate website demo previews. Every demo has its own page, design direction and feature sections.</p></div>
-        <div className="template-grid">{DEMO_SITES.map((demo, i) => <article className="template-card" key={demo.slug}><span>{String(i + 1).padStart(2, "0")}</span><h3>{demo.name}</h3><Link href={`/demos/${demo.slug}`}>View demo ↗</Link></article>)}</div>
+        <div className="section-head"><div><p className="eyebrow">WEBSITE STARTER IDEAS</p><h2>50 live website<br />demo previews.</h2></div><p className="section-intro">প্রতিটি কার্ডে ডিজাইনের ঝলক, পেজের ধরন ও মডিউল দেখুন। পছন্দ হলে খুলুন সম্পূর্ণ মাল্টি-সেকশন ডেমো—তারপর আপনার প্রতিষ্ঠানের নামে কাস্টমাইজ করার অনুরোধ দিন।</p></div>
+        <div className="demo-catalog-grid">{DEMO_SITES.map((demo, i) => <article className="demo-catalog-card" key={demo.slug}>
+          <div className="demo-catalog-preview" style={{ borderTopColor: demo.accent }}>
+            <div className="demo-catalog-browser"><i></i><i></i><i></i><span>WEBSITE PREVIEW / {String(i + 1).padStart(2, "0")}</span></div>
+            <div className="demo-catalog-hero" style={{ background: `linear-gradient(120deg, ${demo.accent}22, #ffffff)` }}>
+              <small>{demo.name.toUpperCase()}</small><b>{demo.title}</b><span>{demo.tagline}</span><em style={{ background: demo.accent }}>EXPLORE ↗</em>
+            </div>
+            <div className="demo-catalog-bars"><i></i><i></i><i></i></div>
+          </div>
+          <div className="demo-catalog-info"><span className="demo-catalog-number">DEMO {String(i + 1).padStart(2, "0")} / 50</span><h3>{demo.name}</h3><p>{demo.intro}</p>
+            <div className="demo-module-tags">{demo.sections.map((section) => <span key={section.title}>{section.title}</span>)}</div>
+            <Link href={`/demos/${demo.slug}`}>সম্পূর্ণ ডেমো ও মডিউল দেখুন ↗</Link>
+          </div>
+        </article>)}</div>
       </section>
 
 
