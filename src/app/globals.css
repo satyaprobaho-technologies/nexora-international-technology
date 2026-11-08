@@ -445,3 +445,11 @@ body{top:0!important}
 .nexora-demo-dock-links a{display:flex;justify-content:space-between;gap:10px;text-decoration:none;padding:9px 10px;border-radius:7px;background:#102944;color:#dceaff;font-size:13px}
 .nexora-demo-dock-links a:hover{background:#19436a}
 @media(max-width:640px){.nexora-demo-dock{top:auto;bottom:100px}.nexora-demo-dock-panel{max-height:65vh}.nexora-demo-dock-toggle{padding:12px 9px}}
+
+
+.payment-setup-list{color:#c8d7eb;line-height:1.8;padding-left:22px}
+.payment-setup-list li{margin:7px 0}
+.payment-setup-provider-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:18px 0}
+.payment-setup-provider-grid .payment-card{height:100%}
+.payment-setup-provider-grid a{color:#8ce6ed;text-decoration:underline;text-underline-offset:3px}
+@media(max-width:700px){.payment-setup-provider-grid{grid-template-columns:1fr}}
