@@ -68,9 +68,12 @@ export default function PortalClient() {
         setMessage("আপনার customer account বর্তমানে সক্রিয় নয়। সহায়তার জন্য NEXORA support-এ যোগাযোগ করুন।");
         return;
       }
+      const due = new Date();
+      due.setDate(due.getDate() + 10);
+      const dueDate = due.getFullYear() + "-" + String(due.getMonth() + 1).padStart(2, "0") + "-" + String(due.getDate()).padStart(2, "0");
       await addDoc(collection(db, "projects"), {
         ownerUid: user.uid, ownerEmail: user.email, title: title.trim(), service,
-        status: "pending", createdAt: serverTimestamp(), dueDate: null, paymentStatus: "unpaid"
+        status: "pending", createdAt: serverTimestamp(), dueDate, paymentStatus: "unpaid"
       });
       setTitle(""); setMessage("আপনার প্রজেক্ট অনুরোধ জমা হয়েছে। NEXORA টিম পর্যালোচনা করবে।");
     } catch (err) { setMessage(err instanceof Error ? err.message : "Could not submit request."); }
