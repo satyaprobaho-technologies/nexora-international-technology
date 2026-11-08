@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     return NextResponse.json(result);
   } catch (error) {
     const message = error instanceof Error ? error.message : "Payment initiation failed";
-    const status = /Authentication|verified email/i.test(message) ? 401 : /not configured/i.test(message) ? 503 : 400;
+    const status = /Authentication|verified email/i.test(message) ? 401 : /not configured|disabled until merchant onboarding/i.test(message) ? 503 : 400;
     return NextResponse.json({ error: message }, { status });
   }
 }
