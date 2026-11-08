@@ -19,7 +19,7 @@ export default function DemosPage() {
       </header>
       <section id="all-demos" className="section templates-section">
         <div className="section-head">
-          <div><p className="eyebrow">NEXORA WEBSITE SHOWCASE</p><h1>Explore all 50 website demos.</h1></div>
+          <div><p className="eyebrow">NEXORA WEBSITE SHOWCASE</p><h2>Explore all 50 website demos.</h2></div>
           <p className="section-intro">Choose a design category, preview its complete multi-section concept, and request a version customised for your organisation.</p>
         </div>
         <div className="demo-catalog-toolbar">
@@ -38,7 +38,7 @@ export default function DemosPage() {
               </div>
               <div className="demo-catalog-info">
                 <span className="demo-catalog-number">DEMO {String(i + 1).padStart(2, "0")} / 50</span>
-                <h2>{demo.name}</h2><p>{demo.intro}</p>
+                <h3>{demo.name}</h3><p>{demo.intro}</p>
                 <div className="demo-module-tags">{demo.sections.map(section => <span key={section.title}>{section.title}</span>)}</div>
                 <Link href={`/demos/${demo.slug}`}>Open full demo & modules ↗</Link>
               </div>
