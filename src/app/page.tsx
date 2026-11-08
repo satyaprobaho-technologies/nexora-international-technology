@@ -1,4 +1,5 @@
 import Link from "next/link";
+import InquiryForm from "@/components/InquiryForm";
 
 const services = [
   { n: "Website Design & Development", d: "Responsive business websites, landing pages, portfolios, blogs and custom web applications.", tags: ["Next.js", "WordPress", "E-commerce"] },
@@ -86,8 +87,8 @@ export default function Home() {
 
       <section id="contact" className="contact-section">
         <p className="eyebrow">LET'S MAKE IT HAPPEN</p><h2>Have a project in mind?</h2><p>Tell us a little about it. We’ll be happy to discuss the next step.</p>
+        <InquiryForm />
         <a className="contact-email" href={`mailto:${email}?subject=${subject}`}>{email} ↗</a>
-        <p className="small-note">Click the email address to contact NEXORA using your email application.</p>
       </section>
       <footer><Link className="brand" href="/">NEXORA <small>INTERNATIONAL TECHNOLOGY</small></Link><p>Your Digital World Starts Here.</p><span>© {new Date().getFullYear()} NEXORA INTERNATIONAL TECHNOLOGY. All rights reserved.</span></footer>
     </main>
