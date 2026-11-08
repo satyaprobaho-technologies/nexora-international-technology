@@ -6,6 +6,7 @@ import { addDoc, collection, doc, getDoc, onSnapshot, orderBy, query, serverTime
 import Link from "next/link";
 import { auth, db } from "@/lib/firebase";
 
+type PaymentMethods = { enabled?: boolean; bkash?: { number: string; label: string } | null; nagad?: { number: string; label: string } | null; instructions?: string };
 type Project = { id: string; title?: string; service?: string; status?: string; paymentStatus?: string; dueDate?: string; quoteAmount?: number; quoteCurrency?: string; budget?: string; timeline?: string; brief?: string; createdAt?: unknown };
 
 export default function PortalClient() {
@@ -26,10 +27,18 @@ export default function PortalClient() {
   const [billingName, setBillingName] = useState("");
   const [billingPhone, setBillingPhone] = useState("");
   const [billingAddress, setBillingAddress] = useState("");
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethods | null>(null);
 
   useEffect(() => onAuthStateChanged(auth, (next) => { setUser(next); setLoading(false); }), []);
   useEffect(() => {
-    if (!user) { setProjects([]); return; }
+    if (!user) { setProjects([]); setPaymentMethods(null); return; }
+    (async () => {
+      try {
+        const token = await user.getIdToken();
+        const response = await fetch("/api/payment-methods", { headers: { authorization: `Bearer ${token}` } });
+        if (response.ok) setPaymentMethods(await response.json());
+      } catch { setPaymentMethods(null); }
+    })();
     const q = query(collection(db, "projects"), where("ownerUid", "==", user.uid));
     return onSnapshot(q, (snap) => setProjects(snap.docs.map((d) => ({ id: d.id, ...d.data() } as Project))), (err) => setMessage(err.message));
   }, [user]);
@@ -149,6 +158,7 @@ export default function PortalClient() {
         <div className="portal-form-row"><label>Estimated budget<select value={budget} onChange={e=>setBudget(e.target.value)}><option>Not sure yet</option><option>Under USD 500</option><option>USD 500–1,500</option><option>USD 1,500–5,000</option><option>USD 5,000–15,000</option><option>USD 15,000+</option></select></label><label>Target timeline<select value={timeline} onChange={e=>setTimeline(e.target.value)}><option>Flexible</option><option>Within 2 weeks</option><option>Within 1 month</option><option>Within 2–3 months</option><option>3+ months</option></select></label></div>
         <button className="portal-button" disabled={saving}>{saving ? "Submitting…" : "Submit project request"}</button>
       </form></div>
+      <div className="portal-panel"><h2>Available payment methods</h2>{paymentMethods?.enabled && (paymentMethods.bkash || paymentMethods.nagad) ? <><p className="portal-muted">আপনার ইনভয়েসের পরিমাণ NEXORA-র সঙ্গে নিশ্চিত করে নিচের অনুমোদিত প্রদর্শিত নম্বরে পেমেন্ট করতে পারবেন।</p>{paymentMethods.bkash && <p><b>bKash:</b> {paymentMethods.bkash.number}</p>}{paymentMethods.nagad && <p><b>Nagad:</b> {paymentMethods.nagad.number}</p>}{paymentMethods.instructions && <p className="portal-muted">{paymentMethods.instructions}</p>}<p className="portal-muted">পেমেন্ট করার পর Sender Number ও Transaction ID NEXORA-কে জানান। যাচাই না হওয়া পর্যন্ত আপনার পেমেন্টের অবস্থা Paid হবে না।</p></> : <p className="portal-muted">বর্তমানে কোনো ম্যানুয়াল পেমেন্ট পদ্ধতি চালু নেই।</p>}</div>
       <div className="portal-panel"><h2>Billing information for future checkout</h2><p className="portal-muted">Billing details are collected for invoice preparation. Online payment is currently disabled while NEXORA completes merchant onboarding. Do not send card details, wallet PINs or OTPs here.</p><div className="portal-form"><label>Billing name<input value={billingName} onChange={e=>setBillingName(e.target.value)} autoComplete="name" /></label><label>Mobile number<input value={billingPhone} onChange={e=>setBillingPhone(e.target.value)} autoComplete="tel" /></label><label>Billing address<input value={billingAddress} onChange={e=>setBillingAddress(e.target.value)} autoComplete="street-address" /></label></div></div>
       <div className="portal-panel"><h2>Your projects</h2>{projects.length ? <div className="portal-project-list">{projects.map(p=><article key={p.id}><div><b>{p.title}</b><small>{p.service}</small><small>Budget: {p.budget || "Not specified"} · Timeline: {p.timeline || "Flexible"}</small>{p.brief && <p className="portal-project-brief">{p.brief}</p>}</div><span className="portal-status">{p.status || "pending"}</span>{typeof p.quoteAmount === "number" && <><p className="portal-quote">NEXORA quotation: {p.quoteCurrency || "USD"} {p.quoteAmount.toLocaleString()}</p>{p.paymentStatus === "quote_sent" && <button className="portal-button" disabled={saving} onClick={()=>acceptQuote(p)}>Accept quotation & request invoice</button>}{p.paymentStatus === "awaiting_payment" && <p className="portal-muted">Online payment is not active yet. NEXORA will provide an approved payment method after merchant setup is complete.</p>}</>}<p className="portal-due-note">Payment status: {(p.paymentStatus || "awaiting_quote").replaceAll("_"," ")}</p>{p.paymentStatus === "awaiting_payment" && p.dueDate && <p className="portal-due-alert">Payment due by {p.dueDate}. Contact NEXORA for official payment instructions.</p>}</article>)}</div> : <p className="portal-muted">No projects yet. Submit your first request above.</p>}</div>
       {message && <p className="portal-message">{message}</p>}

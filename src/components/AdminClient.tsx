@@ -25,6 +25,11 @@ export default function AdminClient() {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [search, setSearch] = useState("");
   const [saving, setSaving] = useState("");
+  const [bkashNumber, setBkashNumber] = useState("");
+  const [nagadNumber, setNagadNumber] = useState("");
+  const [bkashEnabled, setBkashEnabled] = useState(false);
+  const [nagadEnabled, setNagadEnabled] = useState(false);
+  const [paymentInstructions, setPaymentInstructions] = useState("ইনভয়েসের নির্ধারিত টাকা পাঠানোর আগে NEXORA-র সঙ্গে পরিমাণ নিশ্চিত করুন। টাকা পাঠানোর পর Sender Number ও Transaction ID জমা দিন। অ্যাডমিন টাকা গ্রহণ যাচাই না করা পর্যন্ত পেমেন্ট Paid হবে না।");
 
   useEffect(() => onAuthStateChanged(auth, (next) => { setUser(next); setReady(true); }), []);
   useEffect(() => {
@@ -50,6 +55,34 @@ export default function AdminClient() {
       } catch (err) { setMessage(err instanceof Error ? err.message : "Unable to load admin data."); }
     })();
   }, [user]);
+
+  useEffect(() => {
+    if (!user || user.email !== ADMIN_EMAIL || !user.emailVerified) return;
+    (async () => {
+      try {
+        const token = await user.getIdToken();
+        const response = await fetch("/api/admin/payment-methods", { headers: { authorization: `Bearer ${token}` } });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "Payment settings could not be loaded.");
+        setBkashNumber(data.bkash?.number || ""); setNagadNumber(data.nagad?.number || "");
+        setBkashEnabled(data.bkash?.enabled === true); setNagadEnabled(data.nagad?.enabled === true);
+        setPaymentInstructions(data.instructions || "");
+      } catch (err) { setMessage(err instanceof Error ? err.message : "Payment settings could not be loaded."); }
+    })();
+  }, [user]);
+
+  async function savePaymentMethods() {
+    if (!user) return;
+    setSaving("payment-methods"); setMessage("");
+    try {
+      const token = await user.getIdToken();
+      const response = await fetch("/api/admin/payment-methods", { method: "PUT", headers: { "content-type": "application/json", authorization: `Bearer ${token}` }, body: JSON.stringify({ bkash: { number: bkashNumber, enabled: bkashEnabled }, nagad: { number: nagadNumber, enabled: nagadEnabled }, instructions: paymentInstructions }) });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "Payment settings could not be saved.");
+      setMessage("পেমেন্ট নম্বর ও গ্রাহক প্রদর্শনের সেটিংস সংরক্ষিত হয়েছে।");
+    } catch (err) { setMessage(err instanceof Error ? err.message : "Payment settings could not be saved."); }
+    finally { setSaving(""); }
+  }
 
   async function login(e: FormEvent) {
     e.preventDefault(); setMessage("");
@@ -122,6 +155,7 @@ export default function AdminClient() {
     <div className="portal-heading"><div><p className="portal-kicker">NEXORA CONTROL CENTER</p><h1>Admin Dashboard</h1><p className="portal-muted">Signed in as {user.email}</p></div></div>
     <div className="admin-stats"><article><b>{customers.length}</b><span>Customers</span></article><article><b>{projects.length}</b><span>Projects</span></article><article><b>{projects.filter(p=>p.status==="pending").length}</b><span>Pending</span></article><article><b>{projects.filter(p=>p.paymentStatus!=="paid").length}</b><span>Unpaid</span></article></div>
     <section className="portal-panel"><h2>Find customer or project</h2><input className="admin-search" placeholder="Search by any customer email or project name…" value={search} onChange={e=>setSearch(e.target.value)} /></section>
+    <section className="portal-panel"><h2>Customer payment methods</h2><p className="portal-muted">এখানে নম্বর পরিবর্তন ও চালু/বন্ধ করলে গ্রাহক পোর্টালে তা দেখা যাবে। নম্বরগুলো সার্ভার-সুরক্ষিত সেটিংসে সংরক্ষিত থাকে।</p><div className="portal-form"><label>bKash number<input inputMode="numeric" value={bkashNumber} onChange={e=>setBkashNumber(e.target.value)} /></label><label><input type="checkbox" checked={bkashEnabled} onChange={e=>setBkashEnabled(e.target.checked)} /> গ্রাহকদের জন্য bKash চালু</label><label>Nagad number<input inputMode="numeric" value={nagadNumber} onChange={e=>setNagadNumber(e.target.value)} /></label><label><input type="checkbox" checked={nagadEnabled} onChange={e=>setNagadEnabled(e.target.checked)} /> গ্রাহকদের জন্য Nagad চালু</label><label>গ্রাহকের জন্য পেমেন্ট নির্দেশনা<textarea rows={3} value={paymentInstructions} onChange={e=>setPaymentInstructions(e.target.value)} /></label><button type="button" className="portal-button" disabled={saving==="payment-methods"} onClick={savePaymentMethods}>{saving==="payment-methods" ? "Saving…" : "Save & enable payment methods"}</button></div></section>
     <section className="portal-panel"><h2>Password help requests ({resetRequests.filter(r=>r.status!=="sent").length} pending)</h2><p className="portal-muted">গ্রাহকরা পাসওয়ার্ডে সমস্যায় পড়লে এখানে সহায়তার অনুরোধ পাঠাতে পারবেন। রিসেট লিংক পাঠালে সেটি গ্রাহকের ইমেইলে যাবে।</p><div className="admin-table">{resetRequests.length ? resetRequests.map(r=><article key={r.id}><div><b>{r.email || "Unknown email"}</b><small>{r.status === "sent" ? "Reset link sent" : "Needs password help"}</small></div><button className="portal-button" disabled={saving===r.id || r.status==="sent"} onClick={()=>sendCustomerReset(r)}>{saving===r.id ? "Sending…" : r.status==="sent" ? "Sent" : "Send reset link"}</button></article>) : <p className="portal-muted">No password help requests yet.</p>}</div></section>
     <section className="portal-panel"><h2>Customers ({visibleCustomers.length})</h2><div className="admin-table">{visibleCustomers.map(c=><article key={c.id}><div><b>{c.name || "Customer"}</b><small>{c.email}</small></div><button className="portal-outline" disabled={saving===c.email} onClick={()=>sendResetToCustomerEmail(c.email)}>{saving===c.email ? "Sending…" : "Send password reset"}</button><select value={c.status||"active"} onChange={e=>updateCustomer(c.id,e.target.value)}><option value="active">Active</option><option value="suspended">Suspended</option></select></article>)}</div></section>
     <section className="portal-panel"><h2>Quotation acceptances ({quoteApprovals.length})</h2><div className="admin-table">{quoteApprovals.length ? quoteApprovals.map(q=><article key={q.id}><div><b>{q.ownerEmail}</b><small>Project: {q.projectId}</small><small>Accepted quote: {q.quoteCurrency || "USD"} {q.quoteAmount?.toLocaleString()}</small></div><span className="portal-status">{q.status || "customer_accepted"}</span></article>) : <p className="portal-muted">No accepted quotations yet.</p>}</div></section>
