@@ -97,13 +97,14 @@ export default function Home() {
       </section>
 
       <section id="payments" className="section payment-section">
-        <div className="section-head"><div><p className="eyebrow">PAYMENT POLICY</p><h2>Simple, non-card payment options.</h2></div><p className="section-intro">NEXORA will not accept credit, debit or other bank-card payments. Non-card methods may be offered only after the relevant provider account and secure payment verification are configured.</p></div>
+        <div className="section-head"><div><p className="eyebrow">PAYMENT POLICY</p><h2>Local & international payments.</h2></div><p className="section-intro">NEXORA plans to accept eligible local mobile-wallet payments and international Visa/Mastercard payments through an approved, hosted payment provider. Card details will be entered only on the provider's secure checkout—not stored by NEXORA.</p></div>
         <div className="payment-grid">
-          <article className="payment-card"><span className="payment-state">PLANNED METHODS</span><h3>bKash · Nagad · Rocket</h3><p>Mobile financial services, subject to provider onboarding and integration.</p></article>
-          <article className="payment-card"><span className="payment-state">PLANNED METHOD</span><h3>Bank Transfer</h3><p>Manual bank transfer with order reference and payment confirmation.</p></article>
-          <article className="payment-card disabled"><span className="payment-state">NOT ACCEPTED</span><h3>All Card Payments</h3><p>Credit cards, debit cards, Visa, Mastercard and American Express are disabled.</p></article>
+          <article className="payment-card"><span className="payment-state">PLANNED · SUBJECT TO APPROVAL</span><h3>International Visa · Mastercard</h3><p>International bank-issued cards through an approved gateway, with supported currencies and BDT settlement confirmed by the provider.</p></article>
+          <article className="payment-card"><span className="payment-state">PLANNED · SUBJECT TO APPROVAL</span><h3>bKash · Nagad · Rocket</h3><p>Local mobile financial services through a merchant gateway or separately approved merchant integrations.</p></article>
+          <article className="payment-card"><span className="payment-state">PLANNED</span><h3>Bank Transfer</h3><p>Manual bank transfer with an official invoice, order reference and verified settlement.</p></article>
         </div>
-        <p className="payment-disclaimer">No online checkout or payment collection is active on this website yet. Please contact NEXORA for an enquiry; do not send money until an official payment instruction is provided.</p>
+        <p className="payment-disclaimer">Online payment is not active yet. Merchant onboarding, business documents, bank settlement details, provider approval and live credentials are still required. Do not send money until an official invoice and payment link are issued.</p>
+        <p className="payment-disclaimer"><Link href="/payment-setup">Merchant onboarding checklist & application links ↗</Link></p>
       </section>
 
       <section id="contact" className="contact-section">
