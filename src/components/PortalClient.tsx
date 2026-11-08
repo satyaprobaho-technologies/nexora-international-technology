@@ -58,6 +58,15 @@ export default function PortalClient() {
     }
   }
 
+  async function requestPasswordHelp() {
+    if (!user?.email) return;
+    setMessage("");
+    try {
+      await addDoc(collection(db, "passwordResetRequests"), {uid: user.uid, email: user.email, status: "pending", createdAt: serverTimestamp()});
+      setMessage("আপনার পাসওয়ার্ড সহায়তার অনুরোধ অ্যাডমিনের কাছে পাঠানো হয়েছে। NEXORA টিম আপনার ইমেইলে নিরাপদ রিসেট লিংক পাঠাবে।");
+    } catch (err) { setMessage(err instanceof Error ? err.message : "সহায়তার অনুরোধ পাঠানো যায়নি।"); }
+  }
+
   async function submitProject(e: FormEvent) {
     e.preventDefault(); if (!user || !title.trim()) return;
     if (!user.emailVerified) { setMessage("প্রজেক্ট জমা দেওয়ার আগে ইমেইল যাচাই করুন।"); return; }
@@ -97,6 +106,7 @@ export default function PortalClient() {
       {message && <p className="portal-message">{message}</p>}
     </section> : <section className="portal-dashboard">
       <div className="portal-heading"><div><p className="portal-kicker">CUSTOMER DASHBOARD</p><h1>Hello, {user.displayName || user.email}</h1><p className="portal-muted">{user.email}</p></div><button className="portal-outline" onClick={()=>signOut(auth)}>Sign out</button></div>
+      <div className="portal-panel"><h2>Password assistance</h2><p className="portal-muted">পাসওয়ার্ড নিয়ে সমস্যা হলে অ্যাডমিনকে জানান। আপনার ইমেইলে নিরাপদ রিসেট লিংক পাঠানো হবে; কেউ আপনার পুরোনো পাসওয়ার্ড দেখতে পাবে না।</p><button type="button" className="portal-outline" onClick={requestPasswordHelp}>Request password reset help</button></div>
       <div className="portal-panel"><h2>Request a new project</h2><form className="portal-form" onSubmit={submitProject}>
         <label>Project / website name<input required value={title} onChange={e=>setTitle(e.target.value)} placeholder="e.g. My business website" /></label>
         <label>Service<select value={service} onChange={e=>setService(e.target.value)}><option>Website design & development</option><option>Domain registration assistance</option><option>Web hosting</option><option>Business email & DNS</option><option>Website maintenance</option><option>Mobile app / web application</option></select></label>
