@@ -6,7 +6,7 @@ import { addDoc, collection, doc, getDoc, onSnapshot, orderBy, query, serverTime
 import Link from "next/link";
 import { auth, db } from "@/lib/firebase";
 
-type Project = { id: string; title?: string; service?: string; status?: string; paymentStatus?: string; dueDate?: string; createdAt?: unknown };
+type Project = { id: string; title?: string; service?: string; status?: string; paymentStatus?: string; dueDate?: string; quoteAmount?: number; quoteCurrency?: string; budget?: string; timeline?: string; brief?: string; createdAt?: unknown };
 
 export default function PortalClient() {
   const [user, setUser] = useState<User | null>(null);
@@ -114,7 +114,7 @@ export default function PortalClient() {
         <div className="portal-form-row"><label>Estimated budget<select value={budget} onChange={e=>setBudget(e.target.value)}><option>Not sure yet</option><option>Under USD 500</option><option>USD 500–1,500</option><option>USD 1,500–5,000</option><option>USD 5,000–15,000</option><option>USD 15,000+</option></select></label><label>Target timeline<select value={timeline} onChange={e=>setTimeline(e.target.value)}><option>Flexible</option><option>Within 2 weeks</option><option>Within 1 month</option><option>Within 2–3 months</option><option>3+ months</option></select></label></div>
         <button className="portal-button" disabled={saving}>{saving ? "Submitting…" : "Submit project request"}</button>
       </form></div>
-      <div className="portal-panel"><h2>Your projects</h2>{projects.length ? <div className="portal-project-list">{projects.map(p=><article key={p.id}><div><b>{p.title}</b><small>{p.service}</small></div><span className="portal-status">{p.status || "pending"}</span>{p.paymentStatus !== "paid" && p.dueDate && (() => { const days = Math.ceil((new Date(p.dueDate + "T23:59:59").getTime() - Date.now()) / 86400000); return <p className={days < 0 ? "portal-due-alert overdue" : days <= 10 ? "portal-due-alert" : "portal-due-note"}>{days < 0 ? `Payment deadline passed ${Math.abs(days)} day(s) ago. Please contact NEXORA.` : days <= 10 ? `Payment reminder: ${days} day(s) left. Please contact NEXORA to confirm payment.` : `Payment due by ${p.dueDate}`}</p>; })()}</article>)}</div> : <p className="portal-muted">No projects yet. Submit your first request above.</p>}</div>
+      <div className="portal-panel"><h2>Your projects</h2>{projects.length ? <div className="portal-project-list">{projects.map(p=><article key={p.id}><div><b>{p.title}</b><small>{p.service}</small><small>Budget: {p.budget || "Not specified"} · Timeline: {p.timeline || "Flexible"}</small>{p.brief && <p className="portal-project-brief">{p.brief}</p>}</div><span className="portal-status">{p.status || "pending"}</span>{typeof p.quoteAmount === "number" && <p className="portal-quote">NEXORA quotation: {p.quoteCurrency || "USD"} {p.quoteAmount.toLocaleString()}</p>}<p className="portal-due-note">Payment status: {(p.paymentStatus || "awaiting_quote").replaceAll("_"," ")}</p>{p.paymentStatus === "awaiting_payment" && p.dueDate && <p className="portal-due-alert">Payment due by {p.dueDate}. Contact NEXORA for official payment instructions.</p>}</article>)}</div> : <p className="portal-muted">No projects yet. Submit your first request above.</p>}</div>
       {message && <p className="portal-message">{message}</p>}
     </section>}
     <p className="portal-foot">Secure customer access · NEXORA INTERNATIONAL TECHNOLOGY</p>
