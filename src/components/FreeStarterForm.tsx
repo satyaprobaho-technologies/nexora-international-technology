@@ -2,7 +2,7 @@
 
 import { FormEvent } from "react";
 
-const inbox = "computer26training@gmail.com";
+const inbox = "24customar.support@gmail.com";
 
 export default function FreeStarterForm() {
   function submit(event: FormEvent<HTMLFormElement>) {
