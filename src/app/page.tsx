@@ -74,6 +74,16 @@ export default function Home() {
         <a className="button secondary" href={`mailto:${email}?subject=${encodeURIComponent("Domain and hosting enquiry")}`}>Ask about domain & hosting ↗</a>
       </section>
 
+      <section id="payments" className="section payment-section">
+        <div className="section-head"><div><p className="eyebrow">PAYMENT POLICY</p><h2>Simple, non-card payment options.</h2></div><p className="section-intro">NEXORA will not accept credit, debit or other bank-card payments. Non-card methods may be offered only after the relevant provider account and secure payment verification are configured.</p></div>
+        <div className="payment-grid">
+          <article className="payment-card"><span className="payment-state">PLANNED METHODS</span><h3>bKash · Nagad · Rocket</h3><p>Mobile financial services, subject to provider onboarding and integration.</p></article>
+          <article className="payment-card"><span className="payment-state">PLANNED METHOD</span><h3>Bank Transfer</h3><p>Manual bank transfer with order reference and payment confirmation.</p></article>
+          <article className="payment-card disabled"><span className="payment-state">NOT ACCEPTED</span><h3>All Card Payments</h3><p>Credit cards, debit cards, Visa, Mastercard and American Express are disabled.</p></article>
+        </div>
+        <p className="payment-disclaimer">No online checkout or payment collection is active on this website yet. Please contact NEXORA for an enquiry; do not send money until an official payment instruction is provided.</p>
+      </section>
+
       <section id="contact" className="contact-section">
         <p className="eyebrow">LET'S MAKE IT HAPPEN</p><h2>Have a project in mind?</h2><p>Tell us a little about it. We’ll be happy to discuss the next step.</p>
         <a className="contact-email" href={`mailto:${email}?subject=${subject}`}>{email} ↗</a>
