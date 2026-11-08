@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useState } from "react";
-import { createUserWithEmailAndPassword, onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, User } from "firebase/auth";
+import { createUserWithEmailAndPassword, onAuthStateChanged, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, User } from "firebase/auth";
 import { addDoc, collection, onSnapshot, orderBy, query, serverTimestamp, where } from "firebase/firestore";
 import Link from "next/link";
 import { auth, db } from "@/lib/firebase";
@@ -38,6 +38,11 @@ export default function PortalClient() {
           uid: credential.user.uid, name: name.trim(), email: credential.user.email,
           role: "customer", createdAt: serverTimestamp(), status: "active"
         });
+        await sendEmailVerification(credential.user);
+        await signOut(auth);
+        setRegister(false);
+        setPassword("");
+        setMessage("অ্যাকাউন্ট তৈরি হয়েছে। আপনার ইমেইলে পাঠানো verification link-এ ক্লিক করে অ্যাকাউন্ট সক্রিয় করুন, তারপর Sign in করুন।");
       } else await signInWithEmailAndPassword(auth, email.trim(), password);
     } catch (err) { setMessage(err instanceof Error ? err.message : "Could not complete sign-in."); }
   }
@@ -55,6 +60,7 @@ export default function PortalClient() {
 
   async function submitProject(e: FormEvent) {
     e.preventDefault(); if (!user || !title.trim()) return;
+    if (!user.emailVerified) { setMessage("প্রজেক্ট জমা দেওয়ার আগে ইমেইল যাচাই করুন।"); return; }
     setSaving(true); setMessage("");
     try {
       await addDoc(collection(db, "projects"), {
