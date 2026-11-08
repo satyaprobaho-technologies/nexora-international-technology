@@ -31,7 +31,8 @@ export default function AdminClient() {
       try {
         const [c, p, qa] = await Promise.all([
           getDocs(query(collection(db, "customers"), orderBy("createdAt", "desc"))),
-          getDocs(query(collection(db, "projects"), orderBy("createdAt", "desc")))
+          getDocs(query(collection(db, "projects"), orderBy("createdAt", "desc"))),
+          getDocs(query(collection(db, "quoteApprovals"), orderBy("createdAt", "desc")))
         ]);
         setCustomers(c.docs.map(d=>({id:d.id,...d.data()} as Customer)));
         setProjects(p.docs.map(d=>({id:d.id,...d.data()} as Project)));
