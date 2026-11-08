@@ -429,3 +429,19 @@ body{top:0!important}
 .admin-project-brief,.portal-project-brief{margin:8px 0;color:#a9bbd1;font-size:12px;line-height:1.6;white-space:pre-wrap}.admin-quote-field{display:grid;gap:5px;color:#a9bbd1;font-size:11px;min-width:110px}.admin-quote-field input{width:120px;max-width:100%;background:#07182b;color:#fff;border:1px solid #355675;border-radius:6px;padding:9px}.portal-quote{color:#72d7ad;font-weight:700;font-size:13px}
 
 .portal-project-list .portal-button{margin:10px 0;padding:11px 15px;border:0;border-radius:7px;background:#62c4ff;color:#061426;font-weight:800;cursor:pointer}
+
+
+/* Global collapsible demo directory */
+.nexora-demo-dock{position:fixed;right:0;top:42%;z-index:80;display:flex;align-items:flex-start;gap:0;font-family:'DM Sans',Arial,sans-serif}
+.nexora-demo-dock-toggle{border:1px solid #315678;border-right:0;border-radius:12px 0 0 12px;background:#0d2948;color:#eaf5ff;padding:14px 11px;display:flex;align-items:center;gap:8px;writing-mode:vertical-rl;transform:rotate(180deg);font-weight:700;letter-spacing:.4px;box-shadow:0 8px 30px #0005;cursor:pointer}
+.nexora-demo-dock-icon{font-size:18px}
+.nexora-demo-dock-panel{width:min(340px,calc(100vw - 56px));max-height:72vh;overflow:auto;background:#0b1d33;border:1px solid #315678;border-right:0;border-radius:14px 0 0 14px;padding:20px;box-shadow:0 12px 40px #0008;color:#f1f6ff}
+.nexora-demo-dock-kicker{font-size:10px;letter-spacing:2px;color:#8ce6ed;font-weight:800;margin:0 0 8px}
+.nexora-demo-dock-panel h2{font-size:20px;margin:0 0 8px}
+.nexora-demo-dock-note{font-size:12px;line-height:1.5;color:#a9bbd1;margin:0 0 14px}
+.nexora-demo-dock-all{display:block;text-decoration:none;background:#17436a;border:1px solid #3c719e;border-radius:8px;padding:10px 12px;font-size:12px;font-weight:700;margin:10px 0}
+.nexora-demo-dock-all.secondary{background:transparent}
+.nexora-demo-dock-links{display:grid;gap:4px;margin:12px 0}
+.nexora-demo-dock-links a{display:flex;justify-content:space-between;gap:10px;text-decoration:none;padding:9px 10px;border-radius:7px;background:#102944;color:#dceaff;font-size:13px}
+.nexora-demo-dock-links a:hover{background:#19436a}
+@media(max-width:640px){.nexora-demo-dock{top:auto;bottom:100px}.nexora-demo-dock-panel{max-height:65vh}.nexora-demo-dock-toggle{padding:12px 9px}}
