@@ -18,7 +18,7 @@ export default function PortalClient() {
   const [message, setMessage] = useState("");
   const [projects, setProjects] = useState<Project[]>([]);
   const [title, setTitle] = useState("");
-  const [service, setService] = useState("Website design & development");
+  const [service, setService] = useState("Custom software / SaaS development");\n  const [brief, setBrief] = useState("");\n  const [budget, setBudget] = useState("Not sure yet");\n  const [timeline, setTimeline] = useState("Flexible");
   const [saving, setSaving] = useState(false);
 
   useEffect(() => onAuthStateChanged(auth, (next) => { setUser(next); setLoading(false); }), []);
@@ -84,14 +84,14 @@ export default function PortalClient() {
         ownerUid: user.uid, ownerEmail: user.email, title: title.trim(), service,
         status: "pending", createdAt: serverTimestamp(), dueDate, paymentStatus: "unpaid"
       });
-      setTitle(""); setMessage("আপনার প্রজেক্ট অনুরোধ জমা হয়েছে। NEXORA টিম পর্যালোচনা করবে।");
+      setTitle(""); setBrief(""); setBudget("Not sure yet"); setTimeline("Flexible"); setMessage("আপনার প্রজেক্ট অনুরোধ জমা হয়েছে। NEXORA টিম পর্যালোচনা করবে এবং পরবর্তী ধাপ জানাবে।");
     } catch (err) { setMessage(err instanceof Error ? err.message : "Could not submit request."); }
     finally { setSaving(false); }
   }
 
   if (loading) return <main className="portal-shell"><p>Loading secure portal…</p></main>;
   return <main className="portal-shell">
-    <div className="portal-top"><Link className="portal-brand" href="/">NEXORA <small>INTERNATIONAL TECHNOLOGY</small></Link><Link href="/">Back to website ↗</Link></div>
+    <div className="portal-top"><Link className="portal-brand" href="/">NEXORA <small>INTERNATIONAL TECHNOLOGY</small></Link><div><Link href="/solutions">Solutions</Link> · <Link href="/pricing">Pricing</Link> · <Link href="/">Back to website ↗</Link></div></div>
     {!user ? <section className="portal-panel">
       <p className="portal-kicker">CUSTOMER ACCESS</p><h1>{register ? "Create your account" : "Welcome back"}</h1>
       <p className="portal-muted">Register or sign in to submit project requests and track your work.</p>
@@ -109,7 +109,7 @@ export default function PortalClient() {
       <div className="portal-panel"><h2>Password assistance</h2><p className="portal-muted">পাসওয়ার্ড নিয়ে সমস্যা হলে অ্যাডমিনকে জানান। আপনার ইমেইলে নিরাপদ রিসেট লিংক পাঠানো হবে; কেউ আপনার পুরোনো পাসওয়ার্ড দেখতে পাবে না।</p><button type="button" className="portal-outline" onClick={requestPasswordHelp}>Request password reset help</button></div>
       <div className="portal-panel"><h2>Request a new project</h2><form className="portal-form" onSubmit={submitProject}>
         <label>Project / website name<input required value={title} onChange={e=>setTitle(e.target.value)} placeholder="e.g. My business website" /></label>
-        <label>Service<select value={service} onChange={e=>setService(e.target.value)}><option>Website design & development</option><option>Domain registration assistance</option><option>Web hosting</option><option>Business email & DNS</option><option>Website maintenance</option><option>Mobile app / web application</option></select></label>
+        <label>Service<select value={service} onChange={e=>setService(e.target.value)}><option>Custom software / SaaS development</option><option>Accounting, CRM, HR or ERP software</option><option>AI & business automation</option><option>Website design & development</option><option>Mobile app development</option><option>Domain registration assistance</option><option>Web hosting & cloud services</option><option>Business email & DNS</option><option>Cybersecurity & system integration</option><option>Website maintenance</option></select></label>
         <button className="portal-button" disabled={saving}>{saving ? "Submitting…" : "Submit project request"}</button>
       </form></div>
       <div className="portal-panel"><h2>Your projects</h2>{projects.length ? <div className="portal-project-list">{projects.map(p=><article key={p.id}><div><b>{p.title}</b><small>{p.service}</small></div><span className="portal-status">{p.status || "pending"}</span>{p.paymentStatus !== "paid" && p.dueDate && (() => { const days = Math.ceil((new Date(p.dueDate + "T23:59:59").getTime() - Date.now()) / 86400000); return <p className={days < 0 ? "portal-due-alert overdue" : days <= 10 ? "portal-due-alert" : "portal-due-note"}>{days < 0 ? `Payment deadline passed ${Math.abs(days)} day(s) ago. Please contact NEXORA.` : days <= 10 ? `Payment reminder: ${days} day(s) left. Please contact NEXORA to confirm payment.` : `Payment due by ${p.dueDate}`}</p>; })()}</article>)}</div> : <p className="portal-muted">No projects yet. Submit your first request above.</p>}</div>
