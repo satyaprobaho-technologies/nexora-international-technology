@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import DemoBusinessModules from "@/components/DemoBusinessModules";
 
 type Props = { slug:string; name:string; title:string; tagline:string; intro:string; number:number; accent:string };
@@ -36,7 +37,7 @@ const icons = ["▦","✦","▣","⚙"];
 export default function DemoWorkspace({slug,name,title,tagline,intro,number,accent}:Props) {
  const config=navConfig[slug]??generic;
  const jump=(id:string)=>document.getElementById(id)?.scrollIntoView({behavior:"smooth",block:"start"});
- return <main className="demo-workspace" style={{"--workspace-accent":accent} as React.CSSProperties}>
+ return <main className="demo-workspace" style={{"--workspace-accent":accent} as CSSProperties}>
   <aside className="dw-sidebar">
    <Link href="/demos" className="dw-brand"><span className="dw-brand-mark">N</span><span>NEXORA<small>LIVE WEBSITE DEMO</small></span></Link>
    <div className="dw-side-caption">WORKSPACE</div>
