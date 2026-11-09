@@ -1,7 +1,7 @@
 import Link from "next/link";
 import InquiryForm from "@/components/InquiryForm";
 import FreeStarterForm from "@/components/FreeStarterForm";
-import { DEMO_SITES } from "@/lib/demo-sites";
+import DemoCatalog from "@/components/DemoCatalog";
 
 const services = [
   { n: "Website Design & Development", d: "Responsive business websites, landing pages, portfolios, blogs and custom web applications.", tags: ["Next.js", "WordPress", "E-commerce"] },
@@ -54,20 +54,7 @@ export default function Home() {
 
       <section id="templates" className="section templates-section">
         <div className="section-head"><div><p className="eyebrow">WEBSITE STARTER IDEAS</p><h2>৫০টি ওয়েবসাইট<br />ডেমো দেখুন।</h2></div><p className="section-intro">প্রতিটি কার্ডে ডিজাইনের ঝলক, পেজের ধরন ও মডিউল দেখুন। পছন্দ হলে খুলুন সম্পূর্ণ মাল্টি-সেকশন ডেমো—তারপর আপনার প্রতিষ্ঠানের নামে কাস্টমাইজ করার অনুরোধ দিন।</p></div>
-        <div className="demo-catalog-toolbar"><div><strong>{DEMO_SITES.length}</strong><span>টি আলাদা ওয়েবসাইট ডেমো ও মডিউল</span></div><a href="#demo-card-01">ডেমো কার্ডগুলো দেখুন ↓</a></div>
-        <div className="demo-catalog-grid">{DEMO_SITES.map((demo, i) => <article id={`demo-card-${String(i + 1).padStart(2, "0")}`} className="demo-catalog-card" key={demo.slug}>
-          <div className="demo-catalog-preview" style={{ borderTopColor: demo.accent }}>
-            <div className="demo-catalog-browser"><i></i><i></i><i></i><span>WEBSITE PREVIEW / {String(i + 1).padStart(2, "0")}</span></div>
-            <div className="demo-catalog-hero" style={{ background: `linear-gradient(120deg, ${demo.accent}22, #ffffff)` }}>
-              <small>{demo.name.toUpperCase()}</small><b>{demo.title}</b><span>{demo.tagline}</span><em style={{ background: demo.accent }}>EXPLORE ↗</em>
-            </div>
-            <div className="demo-catalog-bars"><i></i><i></i><i></i></div>
-          </div>
-          <div className="demo-catalog-info"><span className="demo-catalog-number">DEMO {String(i + 1).padStart(2, "0")} / 50</span><h3>{demo.name}</h3><p>{demo.intro}</p>
-            <div className="demo-module-tags">{demo.sections.map((section) => <span key={section.title}>{section.title}</span>)}</div>
-            <Link href={`/demos/${demo.slug}`}>সম্পূর্ণ ডেমো ও মডিউল দেখুন ↗</Link>
-          </div>
-        </article>)}</div>
+        <DemoCatalog />
       </section>
 
 
