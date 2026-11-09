@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { DEMO_SITES } from "@/lib/demo-sites";
 import DemoProtection from "@/components/DemoProtection";
 import DemoInteractive from "@/components/DemoInteractive";
-import DemoBusinessModules from "@/components/DemoBusinessModules";
+import DemoWorkspace from "@/components/DemoWorkspace";
 
 const demoImages: Record<string, string> = {
   school:"photo-1503676260728-1c00da094a0b", college:"photo-1523050854058-8df90110c9f1", university:"photo-1562774053-701939374585", courses:"photo-1516321318423-f06f85e504b3", coaching:"photo-1434030216411-0b793f4b4173",
@@ -110,35 +110,6 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
   const accentStyle = { "--demo-accent": demo.accent } as CSSProperties;
   return (
     <DemoProtection>
-      <main className="demo-page" style={accentStyle}>
-        <div className="demo-preview-ribbon">NEXORA DESIGN SHOWCASE · SAMPLE CONTENT · NOT A LIVE SERVICE</div>
-        <header className="demo-nav">
-          <Link href="/" className="demo-brand">{demo.title}<span>{demo.name} · DESIGN CONCEPT</span></Link>
-          <nav className="demo-menu">{detail.nav.map((item,i)=><a key={item} href={targets[i] ?? "#business-modules"}>{item}</a>)}</nav>
-          <Link className="demo-nav-cta" href="#demo-enquiry">Build this site ↗</Link>
-        </header>
-        <section className="demo-hero" id="overview">
-          <div className="demo-hero-copy">
-            <p className="demo-kicker">{demo.name} <span> / </span> CONCEPT {String(number).padStart(2,"0")}</p>
-            <h1>{demo.title}</h1><h2>{demo.tagline}</h2>
-            <p className="demo-hero-description">{detail.label}{/[.!?]$/.test(detail.label) ? " " : ". "}{demo.intro}</p>
-            <div className="demo-hero-actions"><a className="demo-cta" href="#business-modules">Explore interactive modules ↘</a><Link className="demo-cta demo-cta-light" href="#demo-enquiry">Request a custom website ↗</Link></div>
-            <div className="demo-hero-proof"><span>✳ Thoughtful design</span><span>✳ Responsive layout</span><span>✳ Tailored content</span></div>
-          </div>
-          <div className="demo-hero-visual" aria-label="Abstract website design preview">
-            <div className="demo-visual-orbit"></div><div className="demo-visual-orbit second"></div>
-            <div className="demo-visual-card"><div className="demo-visual-top"><i></i><i></i><i></i><span>LIVE PREVIEW</span></div><div className="demo-visual-art"><img className="demo-visual-image" src={demoImageUrl(slug)} alt={`${demo.name} website preview`} /><b>{demo.title}</b><span>{demo.tagline}</span><div className="demo-art-lines"><i></i><i></i><i></i></div><em>DISCOVER MORE ↗</em></div><div className="demo-visual-bottom"><span>01 / 03</span><b>{demo.name.toUpperCase()}</b></div></div>
-            <div className="demo-floating-note"><strong>01—50</strong><span>CURATED WEBSITE CONCEPTS</span></div>
-          </div>
-        </section>
-        <section className="demo-stats" id="highlights">{detail.stats.map((item,i)=><div key={item}><b>0{i+1}</b><span>{item}</span></div>)}</section>
-        <section className="demo-section demo-intro-section"><div><p className="demo-kicker">DESIGNED WITH PURPOSE</p><h2>A better experience for every visitor.</h2></div><p>{demo.intro} This concept brings the most important information forward, makes the next step easy to find and gives the brand a consistent visual identity across devices.</p></section>
-        <DemoInteractive slug={slug} />
-        <DemoBusinessModules slug={slug} />
-        <section className="demo-quote"><span>“</span><blockquote>{detail.quote}</blockquote><p>{demo.title.toUpperCase()} EXPERIENCE</p></section>
-        <section className="demo-contact" id="contact"><p className="demo-kicker">YOUR IDEA, OUR NEXT PROJECT</p><h2>Like what you see?</h2><p>We can customise this concept for your organisation, region and international customers with your brand, languages, currencies, pages and required workflows.</p><Link className="demo-cta" href="/#contact">Request this solution from NEXORA ↗</Link><small>Interactive sample preview only · Submit a project enquiry to request a quotation. No live orders, bookings or payments are processed here.</small></section>
-        <footer className="demo-footer"><span>© NEXORA INTERNATIONAL TECHNOLOGY · CONCEPT {String(number).padStart(2,"0")} / 50</span><Link href="/#templates">Browse all 50 demos ↗</Link></footer>
-      </main>
+      <DemoWorkspace slug={slug} name={demo.name} title={demo.title} tagline={demo.tagline} intro={demo.intro} number={number} accent={demo.accent} />
     </DemoProtection>
-  );
-}
+  );}
