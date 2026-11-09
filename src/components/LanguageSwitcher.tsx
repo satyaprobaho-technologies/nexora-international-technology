@@ -27,6 +27,12 @@ export default function LanguageSwitcher() {
   const poller = useRef<number | null>(null);
 
   useEffect(() => {
+    const saved = document.cookie.match(/(?:^|;\\s*)googtrans=([^;]+)/);
+    if (saved?.[1]) {
+      const parts = decodeURIComponent(saved[1]).split("/");
+      const savedLanguage = parts[parts.length - 1];
+      if (LANGUAGES.some(([code]) => code === savedLanguage)) setLanguage(savedLanguage);
+    }
     let attempts = 0;
     poller.current = window.setInterval(() => {
       attempts += 1;
@@ -70,6 +76,11 @@ export default function LanguageSwitcher() {
 
   function changeLanguage(nextLanguage: string) {
     setLanguage(nextLanguage);
+    if (nextLanguage === "en") {
+      document.cookie = "googtrans=;path=/;max-age=0;SameSite=Lax";
+    } else {
+      document.cookie = `googtrans=/en/${nextLanguage};path=/;max-age=31536000;SameSite=Lax`;
+    }
     const combo = document.querySelector<HTMLSelectElement>(".goog-te-combo");
     if (!combo) {
       setReady(false);
