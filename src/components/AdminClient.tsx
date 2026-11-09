@@ -2,7 +2,7 @@
 
 import { FormEvent, useEffect, useState } from "react";
 import { onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, User } from "firebase/auth";
-import { collection, doc, getDocs, orderBy, query, serverTimestamp, updateDoc } from "firebase/firestore";
+import { collection, doc, getDoc, getDocs, orderBy, query, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 import Link from "next/link";
 import { ADMIN_EMAIL, auth, db } from "@/lib/firebase";
 
@@ -60,13 +60,11 @@ export default function AdminClient() {
     if (!user || user.email !== ADMIN_EMAIL || !user.emailVerified) return;
     (async () => {
       try {
-        const token = await user.getIdToken();
-        const response = await fetch("/api/admin/payment-methods", { headers: { authorization: `Bearer ${token}` } });
-        const data = await response.json();
-        if (!response.ok) throw new Error(data.error || "Payment settings could not be loaded.");
+        const snapshot = await getDoc(doc(db, "settings", "paymentMethods"));
+        const data = snapshot.exists() ? snapshot.data() : {};
         setBkashNumber(data.bkash?.number || ""); setNagadNumber(data.nagad?.number || "");
         setBkashEnabled(data.bkash?.enabled === true); setNagadEnabled(data.nagad?.enabled === true);
-        setPaymentInstructions(data.instructions || "");
+        setPaymentInstructions(data.instructions || "ইনভয়েসের নির্ধারিত টাকা পাঠানোর আগে NEXORA-র সঙ্গে পরিমাণ নিশ্চিত করুন। টাকা পাঠানোর পর Sender Number ও Transaction ID জমা দিন। অ্যাডমিন টাকা গ্রহণ যাচাই না করা পর্যন্ত পেমেন্ট Paid হবে না।");
       } catch (err) { setMessage(err instanceof Error ? err.message : "Payment settings could not be loaded."); }
     })();
   }, [user]);
@@ -75,10 +73,18 @@ export default function AdminClient() {
     if (!user) return;
     setSaving("payment-methods"); setMessage("");
     try {
-      const token = await user.getIdToken();
-      const response = await fetch("/api/admin/payment-methods", { method: "PUT", headers: { "content-type": "application/json", authorization: `Bearer ${token}` }, body: JSON.stringify({ bkash: { number: bkashNumber, enabled: bkashEnabled }, nagad: { number: nagadNumber, enabled: nagadEnabled }, instructions: paymentInstructions }) });
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.error || "Payment settings could not be saved.");
+      const cleanBkash = bkashNumber.replace(/[^0-9]/g, "").slice(0, 14);
+      const cleanNagad = nagadNumber.replace(/[^0-9]/g, "").slice(0, 14);
+      if ((bkashEnabled && !/^01[3-9][0-9]{8}$/.test(cleanBkash)) || (nagadEnabled && !/^01[3-9][0-9]{8}$/.test(cleanNagad))) {
+        throw new Error("চালু করতে হলে বৈধ ১১ সংখ্যার বাংলাদেশি মোবাইল নম্বর দিন।");
+      }
+      await setDoc(doc(db, "settings", "paymentMethods"), {
+        bkash: { number: cleanBkash, enabled: bkashEnabled, label: "bKash" },
+        nagad: { number: cleanNagad, enabled: nagadEnabled, label: "Nagad" },
+        instructions: paymentInstructions.slice(0, 1000),
+        updatedAt: new Date().toISOString()
+      });
+      setBkashNumber(cleanBkash); setNagadNumber(cleanNagad);
       setMessage("পেমেন্ট নম্বর ও গ্রাহক প্রদর্শনের সেটিংস সংরক্ষিত হয়েছে।");
     } catch (err) { setMessage(err instanceof Error ? err.message : "Payment settings could not be saved."); }
     finally { setSaving(""); }
