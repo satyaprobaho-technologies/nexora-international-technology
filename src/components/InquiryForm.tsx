@@ -31,11 +31,17 @@ export default function InquiryForm() {
         <label>What do you need?
           <select name="service" required defaultValue="">
             <option value="" disabled>Select a service</option>
-            <option>Custom software / SaaS development</option>\n            <option>Accounting, CRM, HR or ERP software</option>\n            <option>AI & business automation</option>\n            <option>Mobile app development</option>\n            <option>Website design & development</option>
+            <option>Custom software / SaaS development</option>
+            <option>Accounting, CRM, HR or ERP software</option>
+            <option>AI & business automation</option>
+            <option>Mobile app development</option>
+            <option>Website design & development</option>
             <option>Domain registration assistance</option>
             <option>Web hosting</option>
             <option>Business email & DNS</option>
-            <option>Cloud, hosting & DevOps</option>\n            <option>Cybersecurity & system integration</option>\n            <option>Maintenance & support</option>
+            <option>Cloud, hosting & DevOps</option>
+            <option>Cybersecurity & system integration</option>
+            <option>Maintenance & support</option>
             <option>Other enquiry</option>
           </select>
         </label>
