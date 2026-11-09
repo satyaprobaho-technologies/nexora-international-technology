@@ -36,6 +36,66 @@ const names:Record<string,string[]> = {
 const prices:Record<string,number[]> = {
  restaurant:[280,350,520,220],grocery:[650,950,1250,780],shop:[850,1250,650,420],fashion:[2200,2600,2850,950],electronics:[78000,5900,12500,4200],furniture:[68000,42000,35000,18500],pharmacy:[450,650,850,720],hotel:[8500,14000,12000,5000],resort:[12000,16000,21000,4500],travel:[6500,8500,12000,18500],tour:[1200,1800,2500,3200],booking:[500,800,1200,1500],beauty:[1200,2000,2500,4500],fitness:[1800,3500,1200,2500]
 };
+
+const moduleLabels:Record<string,string[]> = {
+ school:["Academic Overview","Online Admissions","Student & Guardian Portal","School Administration"],
+ college:["Departments & Courses","College Admissions","Student Services","College Administration"],
+ university:["Degree Catalogue","Application & Enrolment","Research & Student Portal","University Administration"],
+ courses:["Course Catalogue","Course Enrolment","Learner Dashboard","Learning Management"],
+ coaching:["Batch & Subject Directory","Batch Registration","Student Progress Portal","Coaching Administration"],
+ portfolio:["Project Showcase","Project Enquiry","Client Workspace","Portfolio Content Manager"],
+ agency:["Creative Services","Project Brief Intake","Client Review Portal","Agency Operations"],
+ corporate:["Business Solutions","Corporate Enquiries","Partner Workspace","Corporate Administration"],
+ startup:["Product Features","Early Access Registration","Member Workspace","Product Operations"],
+ consulting:["Advisory Services","Consultation Booking","Client Engagement Portal","Consulting CRM"],
+ accounting:["Accounting Services","Client Onboarding","Secure Client Document Area","Accounts Practice Dashboard"],
+ law:["Practice Areas","Consultation Intake","Client Matter Portal","Legal Office Dashboard"],
+ banking:["Account Information","Service Enquiry","Customer Finance Portal","Banking Operations Preview"],
+ insurance:["Coverage Catalogue","Quote & Claim Enquiry","Policyholder Information","Insurance Operations"],
+ realestate:["Property Listings","Viewing Scheduler","Buyer & Seller Workspace","Property CRM"],
+ hotel:["Rooms & Suites","Reservation Enquiry","Guest Services Portal","Hotel Front Desk"],
+ resort:["Villas & Experiences","Stay Planner","Guest Concierge Portal","Resort Operations"],
+ travel:["Destination Catalogue","Trip Planning Request","Traveller Workspace","Travel Agency CRM"],
+ tour:["Tour & Itinerary Catalogue","Tour Reservation","Traveller Information","Tour Operations"],
+ restaurant:["Menu & Table Services","Food Order & Table Request","Guest Loyalty Area","Restaurant POS & Kitchen"],
+ hospital:["Departments & Specialists","Appointment & Referral","Patient Services Portal","Hospital Administration"],
+ clinic:["Consultation Services","Appointment Scheduling","Patient Records Preview","Clinic Administration"],
+ dental:["Dental Treatments","Dental Appointment","Patient Smile Plan","Dental Clinic Dashboard"],
+ diagnostic:["Test Directory","Test Booking","Patient Report Collection","Diagnostic Centre Operations"],
+ pharmacy:["Wellness Catalogue","Product Enquiry","Customer Care Area","Pharmacy Store Administration"],
+ ngo:["Programmes & Impact","Volunteer Registration","Donor & Volunteer Area","NGO Programme Dashboard"],
+ community:["Community Directory","Event Registration","Member Area","Community Administration"],
+ news:["Editorial Sections","Newsletter Registration","Reader Account","Editorial CMS"],
+ blog:["Article Library","Reader Subscription","Author Workspace","Editorial Dashboard"],
+ event:["Agenda & Speakers","Attendee Registration","Attendee Portal","Event Operations"],
+ shop:["Product Catalogue","Shopping Cart & Checkout","Customer Order Portal","E-commerce Store Admin"],
+ fashion:["Collections & Size Guide","Style Enquiry","Customer Wishlist","Boutique Inventory"],
+ electronics:["Device Catalogue","Product Support Request","Warranty & Service Portal","Electronics Store Admin"],
+ grocery:["Fresh Produce Catalogue","Grocery Basket & Delivery","Customer Order Portal","Grocery Inventory"],
+ furniture:["Room Collections","Showroom Appointment","Customer Project Book","Furniture Catalogue Admin"],
+ beauty:["Treatment Menu","Stylist Appointment","Client Beauty Profile","Salon Front Desk"],
+ fitness:["Membership Plans","Class & Trainer Booking","Member Fitness Portal","Gym Operations"],
+ automotive:["Workshop Services","Vehicle Service Booking","Vehicle Service History","Workshop Management"],
+ construction:["Construction Services","Project Consultation","Client Project Tracker","Project Operations"],
+ interior:["Interior Design Portfolio","Design Consultation","Client Design Workspace","Studio Project Dashboard"],
+ logistics:["Freight & Shipment Services","Shipment Booking","Business Client Portal","Fleet & Dispatch Dashboard"],
+ cleaning:["Cleaning Service Catalogue","Service Scheduling","Customer Service History","Cleaning Team Operations"],
+ repair:["Repair Service Directory","Repair Ticket Submission","Customer Repair Tracker","Workshop Operations"],
+ photo:["Photography Portfolio","Session Booking","Client Gallery","Studio Management"],
+ wedding:["Wedding Packages","Event Consultation","Couple Planning Workspace","Wedding Operations"],
+ saas:["Product Feature Hub","Workspace Registration","Team Workspace","SaaS Admin Console"],
+ app:["App Feature Catalogue","App Access Request","User Account Centre","App Content Dashboard"],
+ technology:["Technology Solutions","Technical Consultation","Support Client Portal","IT Service Desk"],
+ membership:["Membership Plans","Membership Registration","Member Benefits Portal","Membership Administration"],
+ booking:["Service Directory","Appointment Scheduler","Customer Booking Portal","Provider Dashboard"]
+};
+const moduleGroups:Record<string,string[]> = {
+ school:["programs","admission","student","management"],college:["programs","admission","student","management"],university:["programs","admission","student","management"],courses:["programs","admission","student","management"],coaching:["programs","admission","student","management"],
+ restaurant:["products","cart","delivery","management"],grocery:["products","cart","delivery","management"],shop:["products","cart","delivery","management"],fashion:["products","cart","delivery","management"],electronics:["products","cart","delivery","management"],furniture:["products","cart","delivery","management"],pharmacy:["products","cart","delivery","management"],
+ hotel:["services","booking","account","management"],resort:["services","booking","account","management"],travel:["services","booking","account","management"],tour:["services","booking","account","management"],booking:["services","booking","account","management"],
+ hospital:["services","appointment","patient","management"],clinic:["services","appointment","patient","management"],dental:["services","appointment","patient","management"],diagnostic:["services","appointment","patient","management"],beauty:["services","appointment","patient","management"],fitness:["services","appointment","patient","management"]
+};
+
 const isEdu=(s:string)=>education.includes(s);
 const isFood=(s:string)=>food.includes(s);
 const isShop=(s:string)=>shop.includes(s);
@@ -56,15 +116,13 @@ export default function DemoBusinessModules({slug}:{slug:string}) {
  const [date,setDate]=useState("");
  const [address,setAddress]=useState("");
  const [tab,setTab]=useState("overview");
- const items=names[slug]??["Service Information","Featured Package","Customer Support","Request Consultation"];
+ const items=names[slug]??(moduleLabels[slug]??["Service Information","Featured Package","Customer Support","Request Consultation"]).slice(0,4);
  const unitPrices=prices[slug]??[0,0,0,0];
  const total=cart.reduce((sum,i)=>sum+(unitPrices[i]||0),0);
  const modules=useMemo(()=>{
-  if(isEdu(slug)) return [{id:"programs",label:"Programs / Classes"},{id:"admission",label:"Online Admission"},{id:"student",label:"Student Portal"},{id:"management",label:"Admin Dashboard"}];
-  if(isFood(slug)||isShop(slug)) return [{id:"products",label:"Products / Menu"},{id:"cart",label:isFood(slug)?"Food Cart":"Shopping Cart"},{id:"delivery",label:"Delivery & Checkout"},{id:"management",label:"Admin Dashboard"}];
-  if(isStay(slug)) return [{id:"services",label:"Packages & Services"},{id:"booking",label:"Booking Request"},{id:"account",label:"Guest Account"},{id:"management",label:"Admin Dashboard"}];
-  if(isCare(slug)) return [{id:"services",label:"Services"},{id:"appointment",label:"Appointment"},{id:"patient",label:"Patient Account"},{id:"management",label:"Admin Dashboard"}];
-  return [{id:"services",label:"Services & Modules"},{id:"request",label:"Request / Enquiry"},{id:"account",label:"Customer Account"},{id:"management",label:"Admin Dashboard"}];
+  const ids=moduleGroups[slug]??["services","request","account","management"];
+  const labels=moduleLabels[slug]??["Business Services","Online Enquiry","Customer Account","Business Administration"];
+  return ids.map((id,index)=>({id,label:labels[index]}));
  },[slug]);
  const jump=(id:string)=>{setTab(id);document.getElementById("biz-"+id)?.scrollIntoView({behavior:"smooth",block:"start"})};
  const submit=(e:FormEvent<HTMLFormElement>,message:string)=>{e.preventDefault();setNotice(message)};
