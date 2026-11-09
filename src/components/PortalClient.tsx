@@ -5,6 +5,7 @@ import { createUserWithEmailAndPassword, onAuthStateChanged, sendEmailVerificati
 import { addDoc, collection, doc, getDoc, onSnapshot, orderBy, query, serverTimestamp, where } from "firebase/firestore";
 import Link from "next/link";
 import { auth, db } from "@/lib/firebase";
+import { DEMO_SITES } from "@/lib/demo-sites";
 
 type PaymentMethods = { enabled?: boolean; bkash?: { number: string; label: string } | null; nagad?: { number: string; label: string } | null; instructions?: string };
 type Project = { id: string; title?: string; service?: string; status?: string; paymentStatus?: string; dueDate?: string; quoteAmount?: number; quoteCurrency?: string; budget?: string; timeline?: string; brief?: string; createdAt?: unknown };
@@ -28,6 +29,16 @@ export default function PortalClient() {
   const [billingPhone, setBillingPhone] = useState("");
   const [billingAddress, setBillingAddress] = useState("");
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethods | null>(null);
+
+  useEffect(() => {
+    const slug = new URLSearchParams(window.location.search).get("demo");
+    if (!slug) return;
+    const demo = DEMO_SITES.find((item) => item.slug === slug);
+    if (!demo) return;
+    setTitle(`Website: ${demo.name} — ${demo.title}`);
+    setService("Website design & development");
+    setBrief(`I want to purchase/customise the NEXORA ${demo.name} demo ( ${demo.title} ). Please contact me with the final quotation, delivery timeline and next steps.`);
+  }, []);
 
   useEffect(() => onAuthStateChanged(auth, (next) => { setUser(next); setLoading(false); }), []);
   useEffect(() => {
