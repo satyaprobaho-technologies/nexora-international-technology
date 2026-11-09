@@ -34,9 +34,15 @@ export default function PortalClient() {
     if (!user) { setProjects([]); setPaymentMethods(null); return; }
     (async () => {
       try {
-        const token = await user.getIdToken();
-        const response = await fetch("/api/payment-methods", { headers: { authorization: `Bearer ${token}` } });
-        if (response.ok) setPaymentMethods(await response.json());
+        const snapshot = await getDoc(doc(db, "settings", "paymentMethods"));
+        if (!snapshot.exists()) { setPaymentMethods({ enabled: false }); return; }
+        const data = snapshot.data();
+        setPaymentMethods({
+          enabled: Boolean(data.bkash?.enabled || data.nagad?.enabled),
+          bkash: data.bkash?.enabled ? { number: String(data.bkash.number || ""), label: "bKash" } : null,
+          nagad: data.nagad?.enabled ? { number: String(data.nagad.number || ""), label: "Nagad" } : null,
+          instructions: String(data.instructions || "")
+        });
       } catch { setPaymentMethods(null); }
     })();
     const q = query(collection(db, "projects"), where("ownerUid", "==", user.uid));
