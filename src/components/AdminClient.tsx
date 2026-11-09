@@ -36,22 +36,27 @@ export default function AdminClient() {
     if (!user || user.email !== ADMIN_EMAIL || !user.emailVerified) { setCustomers([]); setProjects([]); return; }
     (async () => {
       try {
-        const [c, p, qa, pay] = await Promise.all([
+        setMessage("");
+        const results = await Promise.allSettled([
           getDocs(query(collection(db, "customers"), orderBy("createdAt", "desc"))),
           getDocs(query(collection(db, "projects"), orderBy("createdAt", "desc"))),
           getDocs(query(collection(db, "quoteApprovals"), orderBy("createdAt", "desc"))),
-          getDocs(query(collection(db, "payments"), orderBy("createdAt", "desc")))
+          getDocs(query(collection(db, "payments"), orderBy("createdAt", "desc"))),
+          getDocs(query(collection(db, "passwordResetRequests"), orderBy("createdAt", "desc")))
         ]);
-        setCustomers(c.docs.map(d=>({id:d.id,...d.data()} as Customer)));
-        setProjects(p.docs.map(d=>({id:d.id,...d.data()} as Project)));
-        setQuoteApprovals(qa.docs.map(d=>({id:d.id,...d.data()} as QuoteApproval)));
-        setPayments(pay.docs.map(d=>({id:d.id,...d.data()} as Payment)));
-        try {
-          const r = await getDocs(query(collection(db, "passwordResetRequests"), orderBy("createdAt", "desc")));
-          setResetRequests(r.docs.map(d=>({id:d.id,...d.data()} as ResetRequest)));
-        } catch {
-          setResetRequests([]);
-        }
+        const errors: string[] = [];
+        const [c, p, qa, pay, resets] = results;
+        if (c.status === "fulfilled") setCustomers(c.value.docs.map(d=>({id:d.id,...d.data()} as Customer)));
+        else errors.push("Customers");
+        if (p.status === "fulfilled") setProjects(p.value.docs.map(d=>({id:d.id,...d.data()} as Project)));
+        else errors.push("Projects");
+        if (qa.status === "fulfilled") setQuoteApprovals(qa.value.docs.map(d=>({id:d.id,...d.data()} as QuoteApproval)));
+        else errors.push("Quotation acceptances");
+        if (pay.status === "fulfilled") setPayments(pay.value.docs.map(d=>({id:d.id,...d.data()} as Payment)));
+        else errors.push("Payments");
+        if (resets.status === "fulfilled") setResetRequests(resets.value.docs.map(d=>({id:d.id,...d.data()} as ResetRequest)));
+        else errors.push("Password help requests");
+        if (errors.length) setMessage("Some dashboard sections could not be loaded: " + errors.join(", ") + ". Check the matching Firestore rules.");
       } catch (err) { setMessage(err instanceof Error ? err.message : "Unable to load admin data."); }
     })();
   }, [user]);
