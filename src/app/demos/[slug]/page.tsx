@@ -122,7 +122,7 @@ export default async function DemoPage({ params }: { params: Promise<{ slug: str
             <p className="demo-kicker">{demo.name} <span> / </span> CONCEPT {String(number).padStart(2,"0")}</p>
             <h1>{demo.title}</h1><h2>{demo.tagline}</h2>
             <p className="demo-hero-description">{detail.label}{/[.!?]$/.test(detail.label) ? " " : ". "}{demo.intro}</p>
-            <div className="demo-hero-actions"><a className="demo-cta" href="#catalogue">Explore the experience ↘</a><Link className="demo-cta demo-cta-light" href="#demo-enquiry">Request a custom website ↗</Link></div>
+            <div className="demo-hero-actions"><a className="demo-cta" href="#business-modules">Explore interactive modules ↘</a><Link className="demo-cta demo-cta-light" href="#demo-enquiry">Request a custom website ↗</Link></div>
             <div className="demo-hero-proof"><span>✳ Thoughtful design</span><span>✳ Responsive layout</span><span>✳ Tailored content</span></div>
           </div>
           <div className="demo-hero-visual" aria-label="Abstract website design preview">
