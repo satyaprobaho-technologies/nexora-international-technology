@@ -4,7 +4,9 @@ import { initiateSslcommerz } from "@/lib/payments/sslcommerz";
 
 export const runtime = "nodejs";
 
-export async function POST(request: Request) {
+export async function POST(_request: Request) {
+  return NextResponse.json({ error: "Online gateway checkout is disabled. NEXORA does not accept card payments. Contact support for approved local payment instructions." }, { status: 503 });
+  /*
   try {
     const customer = await requireCustomer(request);
     const body = await request.json() as { projectId?: string; name?: string; phone?: string; address?: string };
@@ -21,4 +23,5 @@ export async function POST(request: Request) {
     const status = /Authentication|verified email/i.test(message) ? 401 : /not configured|disabled until merchant onboarding/i.test(message) ? 503 : 400;
     return NextResponse.json({ error: message }, { status });
   }
+  */
 }
