@@ -7,6 +7,13 @@ service cloud.firestore {
         && request.auth.token.email == "computer26training@gmail.com"
         && request.auth.token.email_verified == true;
     }
+    match /settings/{settingId} {
+      allow read: if signedIn()
+        && request.auth.token.email_verified == true
+        && settingId == "paymentMethods";
+      allow create, update: if isAdmin() && settingId == "paymentMethods";
+      allow delete: if false;
+    }
     match /customers/{uid} {
       allow create: if signedIn() && request.auth.uid == uid
         && request.resource.data.email == request.auth.token.email
