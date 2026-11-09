@@ -84,13 +84,13 @@ export default function Home() {
       </section>
 
       <section id="payments" className="section payment-section">
-        <div className="section-head"><div><p className="eyebrow">PAYMENT POLICY</p><h2>Local & international payments.</h2></div><p className="section-intro">NEXORA plans to accept eligible local mobile-wallet payments and international Visa/Mastercard payments through an approved, hosted payment provider. Card details will be entered only on the provider's secure checkout—not stored by NEXORA.</p></div>
+        <div className="section-head"><div><p className="eyebrow">PAYMENT POLICY</p><h2>Approved local payment options.</h2></div><p className="section-intro">NEXORA will only enable verified local mobile-wallet or bank-transfer options after merchant approval. Visa, Mastercard and all other card payments are not accepted.</p></div>
         <div className="payment-grid">
-          <article className="payment-card"><span className="payment-state">PLANNED · SUBJECT TO APPROVAL</span><h3>International Visa · Mastercard</h3><p>International bank-issued cards through an approved gateway, with supported currencies and BDT settlement confirmed by the provider.</p></article>
-          <article className="payment-card"><span className="payment-state">PLANNED · SUBJECT TO APPROVAL</span><h3>bKash · Nagad · Rocket</h3><p>Local mobile financial services through a merchant gateway or separately approved merchant integrations.</p></article>
-          <article className="payment-card"><span className="payment-state">PLANNED</span><h3>Bank Transfer</h3><p>Manual bank transfer with an official invoice, order reference and verified settlement.</p></article>
+          <article className="payment-card disabled"><span className="payment-state">NOT ACCEPTED</span><h3>Credit & debit cards</h3><p>Visa, Mastercard and other card payments are disabled. Never submit card numbers, CVV, PIN or OTP to NEXORA.</p></article>
+          <article className="payment-card"><span className="payment-state">NOT ACTIVE · PENDING APPROVAL</span><h3>bKash · Nagad · Rocket</h3><p>Local mobile-wallet payments may be enabled only after approved merchant onboarding and transaction verification.</p></article>
+          <article className="payment-card"><span className="payment-state">NOT ACTIVE · PENDING SETUP</span><h3>Bank Transfer</h3><p>Manual bank transfer will be available only after official business banking details and invoice verification are configured.</p></article>
         </div>
-        <p className="payment-disclaimer">Online payment is not active yet. Merchant onboarding, business documents, bank settlement details, provider approval and live credentials are still required. Do not send money until an official invoice and payment link are issued.</p>
+        <p className="payment-disclaimer">No payment method is currently active. Do not send money until NEXORA provides an official invoice and confirms an approved local payment method.</p>
         <p className="payment-disclaimer"><Link href="/payment-setup">Merchant onboarding checklist & application links ↗</Link></p>
       </section>
 
