@@ -48,6 +48,18 @@ export default function SoftwareDemosPage() {
       </section>
       <section className="section software-demo-section">
         <div className="section-head"><div><p className="eyebrow">AVAILABLE PREVIEWS</p><h2>Choose a software demo.</h2></div><p className="section-intro">Open a demo to test its sample workflow and see how it could be customised for your organisation.</p></div>
+        <article className="software-demo-card" style={{ marginBottom: 22, border: "2px solid #0b8f83" }}>
+          <div className="software-demo-card-top" style={{ borderTopColor: "#0b8f83" }}>
+            <span>FEATURED SOFTWARE · MOBILE RESPONSIVE</span><b style={{ color: "#0b8f83" }}>৳ ৫০,০০০ · DEMO PRICE</b>
+          </div>
+          <div className="software-demo-card-body">
+            <p className="software-demo-type">Pharmacy Management Pro · Live interactive demo</p>
+            <h3>NEXORA Pharmacy Management System</h3>
+            <p>মোবাইল ও কম্পিউটার উপযোগী ফার্মেসি ম্যানেজমেন্ট ডেমো। বিক্রয়/POS, ওষুধের স্টক, ব্যাচ ও মেয়াদ, ক্রয়, কাস্টমার এবং আলাদা Accounts & Finance বিভাগসহ পূর্ণাঙ্গ মডিউল দেখুন।</p>
+            <div className="software-demo-tags">{["Dashboard","Sales / POS","Inventory","Purchase","Customers","Separate Accounts","Reports","Expiry Alerts","Staff & Permissions","Multi-branch"].map(module => <span key={module}>{module}</span>)}</div>
+            <a className="software-demo-open" href="/pharmacy-demo/">Open Pharmacy Pro live demo ↗</a>
+          </div>
+        </article>
         <div className="software-demo-grid">
           {software.map((item, index) => (
             <article className="software-demo-card" key={item.slug}>
