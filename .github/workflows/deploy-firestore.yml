@@ -14,20 +14,34 @@ permissions:
 
 jobs:
   deploy-rules:
-    if: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON != '' }}
     runs-on: ubuntu-latest
     steps:
       - name: Check out repository
         uses: actions/checkout@v4
+      - name: Check whether Firebase deployment credentials are configured
+        id: credentials
+        env:
+          FIREBASE_SERVICE_ACCOUNT_JSON: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
+        run: |
+          if [ -n "$FIREBASE_SERVICE_ACCOUNT_JSON" ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "Firestore rules were not deployed: add FIREBASE_SERVICE_ACCOUNT_JSON to GitHub Actions secrets."
+          fi
       - name: Set up Node.js
+        if: steps.credentials.outputs.available == 'true'
         uses: actions/setup-node@v4
         with:
           node-version: "20"
       - name: Authenticate to Google Cloud
+        if: steps.credentials.outputs.available == 'true'
         uses: google-github-actions/auth@v2
         with:
           credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_JSON }}
       - name: Install Firebase CLI
+        if: steps.credentials.outputs.available == 'true'
         run: npm install --global firebase-tools
       - name: Deploy Firestore rules
+        if: steps.credentials.outputs.available == 'true'
         run: firebase deploy --only firestore:rules --project nexora-technology --non-interactive
