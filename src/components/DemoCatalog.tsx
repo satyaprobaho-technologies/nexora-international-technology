@@ -42,7 +42,7 @@ export default function DemoCatalog({ showHeading = false }: { showHeading?: boo
         </div>
         <div className="demo-catalog-info"><span className="demo-catalog-number">DEMO {String(i + 1).padStart(2, "0")} / 50</span><h3>{demo.name}</h3><p>{demo.intro}</p>
           <div className="demo-module-tags">{demo.sections.map(section => <span key={section.title}>{section.title}</span>)}</div>
-          <div className="demo-card-actions"><button type="button" onClick={() => setSelected({ slug: demo.slug, title: demo.name })}>Quick live preview ↗</button><Link href={`/demos/${demo.slug}`}>Open full demo & modules ↗</Link></div>
+          <div className="demo-card-actions"><button type="button" onClick={() => setSelected({ slug: demo.slug, title: demo.name })}>Quick live preview ↗</button><Link href={`/demos/${demo.slug}`}>Open full demo & modules ↗</Link><Link className="button" href={`/portal?demo=${encodeURIComponent(demo.slug)}`}>Buy Now ↗</Link></div>
         </div>
       </article>)}
     </div>
