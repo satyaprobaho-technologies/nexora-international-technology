@@ -42,7 +42,7 @@ async function fetchPublic(raw: string) {
   for (let i = 0; i < 4; i++) {
     const response = await fetch(url, {
       redirect: "manual",
-      signal: AbortSignal.timeout(6500),
+      signal: AbortSignal.timeout(4000),
       headers: { "User-Agent": "NEXORA-Public-Contact-Finder/1.0 (+https://nexora-international-technology.vercel.app)" }
     });
     if ([301, 302, 303, 307, 308].includes(response.status)) {
@@ -88,44 +88,36 @@ export async function POST(request: Request) {
     const body = await request.json() as { websites?: string[] };
     const websites = Array.isArray(body.websites) ? [...new Set(body.websites.map((v) => String(v).trim()).filter(Boolean))].slice(0, 5) : [];
     if (!websites.length) return jsonError(new Error("কমপক্ষে একটি ওয়েবসাইট URL দিন।"));
-    const results = [];
-    for (const website of websites) {
+    const results = await Promise.all(websites.map(async (website) => {
       try {
-        const start = await safeUrl(/^https?:\/\//i.test(website) ? website : "https://" + website);
+        const start = await safeUrl(/^https?:\\/\\//i.test(website) ? website : "https://" + website);
         const origin = start.origin;
         let robots = "";
         try {
           const robotUrl = await safeUrl(new URL("/robots.txt", origin).toString());
           const robotResponse = await fetch(robotUrl, {
-            redirect: "manual", signal: AbortSignal.timeout(3500),
+            redirect: "manual", signal: AbortSignal.timeout(2500),
             headers: { "User-Agent": "NEXORA-Public-Contact-Finder/1.0" }
           });
           if (robotResponse.ok) robots = (await robotResponse.text()).slice(0, 100_000);
-        } catch { /* robots unavailable: still only inspect standard public pages */ }
-        const pages = [];
-        const paths = [start.pathname === "/" ? "/" : start.pathname, ...PATHS.slice(1)];
-        const seen = new Set<string>();
-        for (const path of paths) {
-          const target = new URL(path, origin);
-          if (seen.has(target.toString())) continue;
-          seen.add(target.toString());
-          if (robots && !robotsAllows(robots, target.pathname)) continue;
-          try {
-            const page = await fetchPublic(target.toString());
-            if (page) pages.push(page);
-          } catch { /* one inaccessible page should not stop the domain */ }
-        }
+        } catch { /* robots unavailable: inspect only standard public pages */ }
+        const paths = [...new Set([start.pathname === "/" ? "/" : start.pathname, ...PATHS.slice(1)])];
+        const allowed = paths.filter((path) => !robots || robotsAllows(robots, path));
+        const pages = (await Promise.all(allowed.map(async (path) => {
+          try { return await fetchPublic(new URL(path, origin).toString()); }
+          catch { return null; }
+        }))).filter((page): page is NonNullable<typeof page> => page !== null);
         const contacts = new Map<string, string>();
         for (const page of pages) for (const email of extractEmails(page.html)) {
           if (!contacts.has(email)) contacts.set(email, page.url);
         }
-        results.push({ website: origin, emails: [...contacts].map(([email, sourceUrl]) => ({
+        return { website: origin, emails: [...contacts].map(([email, sourceUrl]) => ({
           email, sourceUrl, consent: false, consentStatus: "Not confirmed"
-        })), pagesScanned: pages.length });
+        })), pagesScanned: pages.length };
       } catch (error) {
-        results.push({ website, emails: [], pagesScanned: 0, error: error instanceof Error ? error.message : "ওয়েবসাইট পরীক্ষা করা যায়নি।" });
+        return { website, emails: [], pagesScanned: 0, error: error instanceof Error ? error.message : "ওয়েবসাইট পরীক্ষা করা যায়নি।" };
       }
-    }
+    }));
     return Response.json({ results, notice: "শুধু প্রকাশ্যে দৃশ্যমান ওয়েবসাইটের ইমেইল সংগ্রহ করা হয়েছে; সম্মতি স্বয়ংক্রিয়ভাবে ধরে নেওয়া হয়নি।" });
   } catch (error) {
     return jsonError(error, error instanceof Error && error.message.includes("Authentication") ? 401 : 400);
