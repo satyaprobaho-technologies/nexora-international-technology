@@ -12,7 +12,7 @@ type Campaign = { id: string; name?: string; subject?: string; audience?: string
 type ReplyAddress = { id: string; email: string; label: string; active: boolean };
 type DraftContact = { email: string; name: string; segment: "business" | "individual"; consent: boolean; consentSource: string };
 type FoundEmail = { email: string; sourceUrl: string; consent: false; consentStatus: string };
-type FinderResult = { website: string; emails: FoundEmail[]; pagesScanned: number; error?: string; excluded?: boolean; exclusionReason?: string };
+type FinderResult = { website: string; emails: FoundEmail[]; pagesScanned: number; error?: string; excluded?: boolean; exclusionReason?: string };\ntype DiscoveredSite = { website: string; directoryUrl: string; listingLabel: string };
 
 const panel: React.CSSProperties = { background: "#fff", border: "1px solid #e5e7eb", borderRadius: 18, padding: 22, marginBottom: 18 };
 const field: React.CSSProperties = { width: "100%", padding: "12px 14px", border: "1px solid #d1d5db", borderRadius: 10, font: "inherit", marginTop: 6, color: "#111827", background: "#fff" };
@@ -51,7 +51,7 @@ export default function MarketingClient() {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const [tab, setTab] = useState<"contacts" | "campaigns" | "finder">("contacts");
-  const [finderInput, setFinderInput] = useState("");
+  const [finderInput, setFinderInput] = useState("");\n  const [directoryInput, setDirectoryInput] = useState("");\n  const [discoveredSites, setDiscoveredSites] = useState<DiscoveredSite[]>([]);\n  const [discoveryLimit, setDiscoveryLimit] = useState(20);
   const [finderCountry, setFinderCountry] = useState("United States");
   const [finderResults, setFinderResults] = useState<FinderResult[]>([]);
   const [segment, setSegment] = useState<"business" | "individual">("business");
@@ -141,6 +141,27 @@ export default function MarketingClient() {
     finally { setBusy(false); }
   }
 
+
+  async function discoverBusinessWebsites() {
+    const directoryUrls = [...new Set(directoryInput.split(/[\\n,;]+/).map((v) => v.trim()).filter(Boolean))];
+    if (!directoryUrls.length) { setMessage("প্রকাশ্য ব্যবসায়িক ডিরেক্টরির URL দিন।"); return; }
+    if (directoryUrls.length > 5) { setMessage("একবারে সর্বোচ্চ ৫টি ডিরেক্টরি স্ক্যান করা যাবে।"); return; }
+    setBusy(true); setMessage(""); setDiscoveredSites([]);
+    try {
+      const result = await api("/api/admin/marketing/discover", {
+        method: "POST", body: JSON.stringify({ directoryUrls, limit: discoveryLimit })
+      });
+      const sites: DiscoveredSite[] = result.candidates || [];
+      setDiscoveredSites(sites);
+      setFinderInput(sites.map((site) => site.website).join("\\n"));
+      const sourceSummary = (result.sources || []).map((source: { url: string; found: number; error?: string }) =>
+        source.error ? source.url + ": " + source.error : source.url + ": " + source.found + "টি website link"
+      ).join(" · ");
+      setMessage(`${sites.length}টি সম্ভাব্য website পাওয়া গেছে। Country নির্বাচন করে নিচের Email Finder চালান। ${sourceSummary}`);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Business directory discovery ব্যর্থ হয়েছে।");
+    } finally { setBusy(false); }
+  }
 
   async function findPublicEmails() {
     const websites = [...new Set(finderInput.split(/[\n,;]+/).map((v) => v.trim()).filter(Boolean))];
@@ -294,6 +315,20 @@ export default function MarketingClient() {
         <section style={panel}><h2 style={{ marginTop: 0 }}>Recent campaigns</h2><p style={{ color: "#667085", fontSize: 13 }}>Brevo থেকে লাইভ রিপোর্ট: Open Rate, Click Rate, Delivered, Bounce ও Unsubscribe।</p>{campaigns.length ? campaigns.map(c=><article key={c.id} style={{ padding: 12, borderBottom: "1px solid #e5e7eb" }}><b>{c.name}</b><div style={{ color: "#667085", fontSize: 13 }}>{c.subject} · {c.audience} · {c.providerStatus || c.status}</div>{c.analytics ? <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(110px,1fr))", gap: 10, marginTop: 12 }}>{[["Open rate",`${c.analytics.openRate.toFixed(2)}%`],["Click rate",`${c.analytics.clickRate.toFixed(2)}%`],["Delivered",c.analytics.delivered],["Opened",c.analytics.opens],["Clickers",c.analytics.clickers],["Bounces",c.analytics.bounces],["Unsubscribed",c.analytics.unsubscriptions]].map(([label,value])=><div key={String(label)} style={{ background: "#f8fafc", borderRadius: 9, padding: 10 }}><div style={{ color: "#667085", fontSize: 11 }}>{label}</div><strong>{value}</strong></div>)}</div> : <div style={{ color: "#667085", fontSize: 12, marginTop: 8 }}>রিপোর্ট এখনো পাওয়া যায়নি; Campaign পাঠানো ও Brevo analytics প্রস্তুত হলে এখানে দেখা যাবে।</div>}</article>) : <p style={{ color: "#667085" }}>এখনো কোনো ক্যাম্পেইন নেই।</p>}</section>
 
       </> : <>
+        <section style={panel}>
+          <h2 style={{ marginTop: 0 }}>International Business Discovery</h2>
+          <p style={{ color: "#667085" }}>প্রকাশ্য chamber, association বা business directory-এর URL দিন। সিস্টেম সেখানকার বাহ্যিক কোম্পানি ওয়েবসাইটের লিংক বের করবে; এরপর নিচের Email Finder দিয়ে প্রকাশ্য যোগাযোগের ঠিকানা সংগ্রহ করতে পারবেন।</p>
+          <label style={{ display: "block", fontWeight: 700 }}>Business directory URLs (সর্বোচ্চ ৫টি)<textarea style={{ ...field, minHeight: 90 }} value={directoryInput} onChange={e=>setDirectoryInput(e.target.value)} placeholder={"https://example-country-chamber.org/members\nhttps://example-association.org/directory"} /></label>
+          <label style={{ display: "block", fontWeight: 700, marginTop: 12 }}>সর্বোচ্চ website link<select style={field} value={discoveryLimit} onChange={e=>setDiscoveryLimit(Number(e.target.value))}><option value={10}>১০টি</option><option value={20}>২০টি</option><option value={30}>৩০টি</option></select></label>
+          <button style={{ ...button, marginTop: 12 }} disabled={busy || !directoryInput.trim()} onClick={()=>void discoverBusinessWebsites()}>{busy ? "Discovering public business websites…" : "Discover business websites"}</button>
+          {discoveredSites.length > 0 && <div style={{ marginTop: 14 }}>
+            <b>Discovered websites ({discoveredSites.length})</b>
+            <p style={{ color: "#667085", fontSize: 12 }}>তালিকাটি directory link থেকে তৈরি। কোম্পানির ধরন ও country যাচাই করুন; IT/software/telecom কোম্পানি বাদ দিন।</p>
+            <div style={{ maxHeight: 220, overflow: "auto", border: "1px solid #e5e7eb", borderRadius: 10, padding: 10 }}>
+              {discoveredSites.map(site=><div key={site.website} style={{ padding: "7px 0", borderBottom: "1px solid #f0f1f3" }}><a href={site.website} target="_blank" rel="noreferrer">{site.website}</a><div style={{ color: "#667085", fontSize: 12 }}>{site.listingLabel} · <a href={site.directoryUrl} target="_blank" rel="noreferrer">directory source</a></div></div>)}
+            </div>
+          </div>}
+        </section>
         <section style={panel}>
           <h2 style={{ marginTop: 0 }}>Public Website Email Finder</h2>
           <p style={{ color: "#667085" }}>কোম্পানির নিজস্ব ওয়েবসাইটে প্রকাশ্যে থাকা যোগাযোগের ইমেইল খুঁজুন। প্রতি বার সর্বোচ্চ ৫টি ওয়েবসাইট; Home, Contact, About ও নীতিমালা পৃষ্ঠা দেখা হবে। কোনো পেইড API প্রয়োজন নেই।</p>
