@@ -9,7 +9,7 @@ const EMAIL_RE = /[a-zA-Z0-9.!#$%&'*+/=?^`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,6
 const PATHS = ["/", "/contact", "/contact-us", "/about", "/about-us", "/privacy", "/terms"];
 
 // Conservative exclusion for clearly identified IT/software vendors.
-const IT_SOFTWARE_RE = /\\b(?:software\\s+(?:development|company|solutions|services)|software\\s+house|IT\\s+(?:services|consulting|solutions|company)|information\\s+technology|SaaS|cloud\\s+(?:computing|services)|cyber\\s*security|web\\s+(?:development|hosting|design)\\s+(?:company|services)|app\\s+development|mobile\\s+app\\s+development|digital\\s+agency|managed\\s+IT|data\\s+center|computer\\s+(?:repair|services)|technology\\s+company)\\b/i;
+const IT_SOFTWARE_RE = /\b(?:software\s+(?:development|company|solutions|services)|software\s+house|IT\s+(?:services|consulting|solutions|company)|information\s+technology|SaaS|cloud\s+(?:computing|services)|cyber\s*security|web\s+(?:development|hosting|design)\s+(?:company|services)|app\s+development|mobile\s+app\s+development|digital\s+agency|managed\s+IT|data\s+center|computer\s+(?:repair|services)|technology\s+company)\b/i;
 
 function isPrivateIp(ip: string) {
   if (isIP(ip) === 4) {
