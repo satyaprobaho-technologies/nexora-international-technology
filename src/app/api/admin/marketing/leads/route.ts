@@ -44,6 +44,7 @@ export async function POST(request: Request) {
     const saved: Array<{ email: string; status: string }> = [];
     const skipped: string[] = [];
     const candidates: Array<{ ref: FirebaseFirestore.DocumentReference; data: Record<string, unknown>; email: string }> = [];
+    const seenEmails = new Set<string>();
     for (const item of body.leads) {
       const email = String(item.email || "").trim().toLowerCase();
       const sourceUrl = String(item.sourceUrl || "").trim();
@@ -53,6 +54,8 @@ export async function POST(request: Request) {
       let parsed: URL;
       try { parsed = new URL(sourceUrl); } catch { skipped.push(email); continue; }
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || !["http:", "https:"].includes(parsed.protocol)) { skipped.push(email); continue; }
+      if (seenEmails.has(email)) { skipped.push(email); continue; }
+      seenEmails.add(email);
 
       const ref = adminDb.collection("marketingPublicLeads").doc(email.replaceAll("/", "_"));
       candidates.push({ ref, email, data: {
