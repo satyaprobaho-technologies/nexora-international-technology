@@ -31,15 +31,21 @@ export async function POST(request: Request) {
   try {
     await requireMarketingAdmin(request);
     const apiKey = process.env.BREVO_API_KEY;
-    const senderEmail = process.env.BREVO_SENDER_EMAIL;
-    const senderName = process.env.BREVO_SENDER_NAME || "NEXORA INTERNATIONAL TECHNOLOGY";
-    if (!apiKey || !senderEmail) {
-      return jsonError(new Error("Brevo সংযোগ সম্পূর্ণ হয়নি। Vercel Environment Variables-এ API key ও verified sender email সেট করুন।"), 503);
-    }
+    if (!apiKey) return jsonError(new Error("Brevo API Key কনফিগার করা নেই।"), 503);
     const body = await request.json() as {
       name?: string; subject?: string; htmlContent?: string;
-      audience?: string; confirmed?: boolean; replyTo?: string;
+      audience?: string; confirmed?: boolean; replyTo?: string; senderId?: number;
     };
+    const senderResponse = await fetch("https://api.brevo.com/v3/senders", {
+      headers: { "api-key": apiKey }
+    });
+    if (!senderResponse.ok) return jsonError(new Error("Brevo Sender তালিকা পাওয়া যায়নি। API permission পরীক্ষা করুন।"), 502);
+    const senderPayload = await senderResponse.json() as { senders?: Array<{ id: number; name: string; email: string; active: boolean }> };
+    const availableSenders = senderPayload.senders || [];
+    const chosenSender = availableSenders.find((sender) => sender.id === Number(body.senderId) && sender.active === true);
+    if (!chosenSender) return jsonError(new Error("নির্বাচিত Gmail Sender Brevo-তে যাচাইকৃত/সক্রিয় নয়। Brevo-তে verify করে আবার নির্বাচন করুন।"), 400);
+    const senderEmail = chosenSender.email;
+    const senderName = chosenSender.name || process.env.BREVO_SENDER_NAME || "NEXORA INTERNATIONAL TECHNOLOGY";
     const name = String(body.name || "").trim().slice(0, 100);
     const subject = String(body.subject || "").trim().slice(0, 150);
     const htmlContent = String(body.htmlContent || "").trim();
@@ -77,7 +83,7 @@ export async function POST(request: Request) {
     if (!sendResponse.ok) {
       const detail = await sendResponse.text();
       await adminDb.collection("marketingCampaigns").add({
-        brevoCampaignId: created.id, name, subject, audience,
+        brevoCampaignId: created.id, name, subject, audience, senderEmail,
         status: "send_failed", error: detail.slice(0, 1000),
         createdAt: FieldValue.serverTimestamp()
       });
@@ -85,7 +91,7 @@ export async function POST(request: Request) {
     }
 
     const record = await adminDb.collection("marketingCampaigns").add({
-      brevoCampaignId: created.id, name, subject, audience,
+      brevoCampaignId: created.id, name, subject, audience, senderEmail,
       status: "scheduled", provider: "Brevo",
       createdAt: FieldValue.serverTimestamp()
     });
