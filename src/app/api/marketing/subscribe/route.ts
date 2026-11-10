@@ -81,7 +81,9 @@ export async function POST(request: Request) {
     });
     if (!allowed) return jsonError("অনেকবার চেষ্টা করা হয়েছে। এক ঘণ্টা পরে আবার চেষ্টা করুন।", 429);
 
-    const contactRef = adminDb.collection("marketingContacts").doc(email.replaceAll("/", "_"));
+    const contactId = email.replaceAll("/", "_");
+    const contactRef = adminDb.collection("marketingContacts").doc(contactId);
+    const newsletterRef = adminDb.collection("newsletterSignups").doc(contactId);
     const existing = await contactRef.get();
     if (existing.exists && existing.data()?.consent === true && existing.data()?.status === "active") {
       return Response.json({ message: "এই ইমেইলটি ইতিমধ্যে নিশ্চিত করা আছে।" });
@@ -107,6 +109,14 @@ export async function POST(request: Request) {
         updatedAt: FieldValue.serverTimestamp(),
         createdAt: existing.exists ? existing.data()?.createdAt || FieldValue.serverTimestamp() : FieldValue.serverTimestamp(),
       }, { merge: true });
+      tx.set(newsletterRef, {
+        email, name, consent: true,
+        consentSource: "NEXORA website newsletter signup",
+        status: "pending_confirmation", marketingEligible: false,
+        brevoSyncStatus: "pending_confirmation", expiresAt,
+        createdAt: existing.exists ? existing.data()?.createdAt || FieldValue.serverTimestamp() : FieldValue.serverTimestamp(),
+        updatedAt: FieldValue.serverTimestamp(),
+      }, { merge: true });
       tx.set(tokenRef, { email, expiresAt, createdAt: FieldValue.serverTimestamp() });
     });
 
@@ -116,6 +126,12 @@ export async function POST(request: Request) {
     } catch {
       await adminDb.runTransaction(async (tx) => {
         tx.delete(tokenRef);
+        tx.set(newsletterRef, {
+          status: "confirmation_email_failed",
+          marketingEligible: false,
+          brevoSyncStatus: "confirmation_email_failed",
+          updatedAt: FieldValue.serverTimestamp(),
+        }, { merge: true });
         tx.set(contactRef, {
           status: "confirmation_email_failed",
           marketingEligible: false,
