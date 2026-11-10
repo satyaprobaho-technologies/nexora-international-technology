@@ -9,6 +9,8 @@ type Contact = { id: string; email: string; name?: string; segment: string; cons
 type Campaign = { id: string; name?: string; subject?: string; audience?: string; status?: string; providerStatus?: string | null; analytics?: { sent: number; delivered: number; opens: number; openRate: number; clickers: number; clickRate: number; unsubscriptions: number; bounces: number } | null; createdAt?: { seconds?: number } };
 type Sender = { id: number; name: string; email: string; active: boolean };
 type DraftContact = { email: string; name: string; segment: "business" | "individual"; consent: boolean; consentSource: string };
+type FoundEmail = { email: string; sourceUrl: string; consent: false; consentStatus: string };
+type FinderResult = { website: string; emails: FoundEmail[]; pagesScanned: number; error?: string };
 
 const panel: React.CSSProperties = { background: "#fff", border: "1px solid #e5e7eb", borderRadius: 18, padding: 22, marginBottom: 18 };
 const field: React.CSSProperties = { width: "100%", padding: "12px 14px", border: "1px solid #d1d5db", borderRadius: 10, font: "inherit", marginTop: 6, color: "#111827", background: "#fff" };
@@ -42,7 +44,9 @@ export default function MarketingClient() {
   const [newSenderName, setNewSenderName] = useState("NEXORA INTERNATIONAL TECHNOLOGY");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
-  const [tab, setTab] = useState<"contacts" | "campaigns">("contacts");
+  const [tab, setTab] = useState<"contacts" | "campaigns" | "finder">("contacts");
+  const [finderInput, setFinderInput] = useState("");
+  const [finderResults, setFinderResults] = useState<FinderResult[]>([]);
   const [segment, setSegment] = useState<"business" | "individual">("business");
   const [consent, setConsent] = useState(false);
   const [consentSource, setConsentSource] = useState("");
@@ -119,6 +123,27 @@ export default function MarketingClient() {
     } finally { setBusy(false); }
   }
 
+
+  async function findPublicEmails() {
+    const websites = finderInput.split(/[\\n,;]+/).map((v) => v.trim()).filter(Boolean);
+    if (!websites.length) { setMessage("কমপক্ষে একটি ওয়েবসাইট URL লিখুন।"); return; }
+    if (websites.length > 5) { setMessage("একবারে সর্বোচ্চ ৫টি ওয়েবসাইট পরীক্ষা করা যাবে।"); return; }
+    setBusy(true); setMessage(""); setFinderResults([]);
+    try {
+      const result = await api("/api/admin/marketing/email-finder", { method: "POST", body: JSON.stringify({ websites }) });
+      setFinderResults(result.results || []);
+      const count = (result.results || []).reduce((n: number, item: FinderResult) => n + item.emails.length, 0);
+      setMessage(count + "টি প্রকাশ্য ইমেইল পাওয়া গেছে। এগুলোর মার্কেটিং সম্মতি নিশ্চিত নয়।");
+    } catch (error) { setMessage(error instanceof Error ? error.message : "Email Finder চালানো যায়নি।"); }
+    finally { setBusy(false); }
+  }
+  function exportFinderCsv() {
+    const rows = [["Email", "Website", "Source URL", "Consent status"], ...finderResults.flatMap((r) => r.emails.map((e) => [e.email, r.website, e.sourceUrl, "Not confirmed"]))];
+    const csv = rows.map((row) => row.map((v) => '"' + String(v).replaceAll('"', '""') + '"').join(",")).join("\\r\\n");
+    const url = URL.createObjectURL(new Blob(["\\uFEFF" + csv], { type: "text/csv;charset=utf-8" }));
+    const a = document.createElement("a"); a.href = url; a.download = "nexora-public-emails.csv"; a.click(); URL.revokeObjectURL(url);
+  }
+
   async function sendCampaign() {
     if (!window.confirm("আপনি কি নির্বাচিত সম্মতিপ্রাপ্ত গ্রাহকদের কাছে এই ইমেইল ক্যাম্পেইন পাঠাতে চান? পাঠানোর পর এটি ফিরিয়ে নেওয়া যাবে না।")) return;
     setBusy(true); setMessage("");
@@ -146,6 +171,7 @@ export default function MarketingClient() {
       <nav style={{ display: "flex", gap: 8, marginBottom: 16 }}>
         <button style={{ ...button, background: tab==="contacts" ? "#155eef" : "#e5e7eb", color: tab==="contacts" ? "#fff" : "#344054" }} onClick={()=>setTab("contacts")}>Email Contacts</button>
         <button style={{ ...button, background: tab==="campaigns" ? "#155eef" : "#e5e7eb", color: tab==="campaigns" ? "#fff" : "#344054" }} onClick={()=>setTab("campaigns")}>Campaigns</button>
+        <button style={{ ...button, background: tab==="finder" ? "#155eef" : "#e5e7eb", color: tab==="finder" ? "#fff" : "#344054" }} onClick={()=>setTab("finder")}>Email Finder</button>
       </nav>
       {tab==="contacts" ? <>
         <section style={panel}>
@@ -163,7 +189,7 @@ export default function MarketingClient() {
           <h2 style={{ marginTop: 0 }}>Contact database ({filtered.length})</h2><input style={field} value={search} onChange={e=>setSearch(e.target.value)} placeholder="ইমেইল বা নাম দিয়ে খুঁজুন"/>
           <div style={{ overflowX: "auto", marginTop: 12 }}><table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}><thead><tr>{["Email","Name","Category","Consent","Brevo sync"].map(x=><th key={x} style={{ padding: 10, borderBottom: "1px solid #e5e7eb", color: "#667085" }}>{x}</th>)}</tr></thead><tbody>{filtered.map(c=><tr key={c.id}>{[c.email,c.name||"—",c.segment==="business"?"Business":"Individual",c.consent?"Yes":"No",c.brevoSyncStatus||"—"].map((v,i)=><td key={i} style={{ padding: 10, borderBottom: "1px solid #f0f1f3" }}>{v}</td>)}</tr>)}</tbody></table></div>
         </section>
-      </> : <>
+      </> : tab==="campaigns" ? <>
         <section style={panel}>
           <h2 style={{ marginTop: 0 }}>Create email campaign</h2>
           <p style={{ color: "#667085" }}>পাঠানোর আগে বিষয়, বার্তা ও প্রাপক যাচাই করুন। Brevo API-এর মাধ্যমে ক্যাম্পেইন পাঠানো হবে।</p>
@@ -185,6 +211,20 @@ export default function MarketingClient() {
           {!contacts.length && <p style={{ color: "#b54708" }}>প্রথমে সম্মতিপ্রাপ্ত কন্টাক্ট যোগ করুন এবং Brevo list configuration সম্পন্ন করুন।</p>}
         </section>
         <section style={panel}><h2 style={{ marginTop: 0 }}>Recent campaigns</h2><p style={{ color: "#667085", fontSize: 13 }}>Brevo থেকে লাইভ রিপোর্ট: Open Rate, Click Rate, Delivered, Bounce ও Unsubscribe।</p>{campaigns.length ? campaigns.map(c=><article key={c.id} style={{ padding: 12, borderBottom: "1px solid #e5e7eb" }}><b>{c.name}</b><div style={{ color: "#667085", fontSize: 13 }}>{c.subject} · {c.audience} · {c.providerStatus || c.status}</div>{c.analytics ? <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(110px,1fr))", gap: 10, marginTop: 12 }}>{[["Open rate",`${c.analytics.openRate.toFixed(2)}%`],["Click rate",`${c.analytics.clickRate.toFixed(2)}%`],["Delivered",c.analytics.delivered],["Opened",c.analytics.opens],["Clickers",c.analytics.clickers],["Bounces",c.analytics.bounces],["Unsubscribed",c.analytics.unsubscriptions]].map(([label,value])=><div key={String(label)} style={{ background: "#f8fafc", borderRadius: 9, padding: 10 }}><div style={{ color: "#667085", fontSize: 11 }}>{label}</div><strong>{value}</strong></div>)}</div> : <div style={{ color: "#667085", fontSize: 12, marginTop: 8 }}>রিপোর্ট এখনো পাওয়া যায়নি; Campaign পাঠানো ও Brevo analytics প্রস্তুত হলে এখানে দেখা যাবে।</div>}</article>) : <p style={{ color: "#667085" }}>এখনো কোনো ক্যাম্পেইন নেই।</p>}</section>
+
+      </> : <>
+        <section style={panel}>
+          <h2 style={{ marginTop: 0 }}>Public Website Email Finder</h2>
+          <p style={{ color: "#667085" }}>কোম্পানির নিজস্ব ওয়েবসাইটে প্রকাশ্যে থাকা যোগাযোগের ইমেইল খুঁজুন। প্রতি বার সর্বোচ্চ ৫টি ওয়েবসাইট; Home, Contact, About ও নীতিমালা পৃষ্ঠা দেখা হবে। কোনো পেইড API প্রয়োজন নেই।</p>
+          <label style={{ display: "block", fontWeight: 700 }}>Website URL / Domain (প্রতি লাইনে একটি)<textarea style={{ ...field, minHeight: 120 }} value={finderInput} onChange={e=>setFinderInput(e.target.value)} placeholder={"https://example.com\nexample.org"} /></label>
+          <button style={{ ...button, marginTop: 12 }} disabled={busy || !finderInput.trim()} onClick={()=>void findPublicEmails()}>{busy ? "Searching public pages…" : "Find public emails"}</button>
+          <p style={{ color: "#667085", fontSize: 12 }}>শুধু প্রকাশ্য ওয়েবপেজ; লগইন, CAPTCHA, ব্যক্তিগত Gmail, ডেটা ব্রোকার বা SMTP probing নয়। ওয়েবসাইটের robots.txt ও নিরাপত্তা সীমা মানা হয়। ফলাফল deliverability-verified নয়।</p>
+        </section>
+        {finderResults.length > 0 && <section style={panel}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}><h2 style={{ marginTop: 0 }}>Finder results ({finderResults.reduce((n,r)=>n+r.emails.length,0)})</h2><button style={button} onClick={exportFinderCsv}>Export CSV</button></div>
+          {finderResults.map((r)=><div key={r.website} style={{ padding: "12px 0", borderBottom: "1px solid #e5e7eb" }}><b>{r.website}</b><span style={{ color: "#667085", marginLeft: 8, fontSize: 12 }}>{r.pagesScanned} pages scanned</span>{r.error && <p style={{ color: "#b42318" }}>{r.error}</p>}{r.emails.length ? <div style={{ overflowX: "auto" }}><table style={{ width: "100%", textAlign: "left", borderCollapse: "collapse" }}><thead><tr>{["Email","Source","Consent"].map(x=><th key={x} style={{ padding: 8, borderBottom: "1px solid #e5e7eb" }}>{x}</th>)}</tr></thead><tbody>{r.emails.map(e=><tr key={e.email}><td style={{ padding: 8 }}>{e.email}</td><td style={{ padding: 8 }}><a href={e.sourceUrl} target="_blank" rel="noreferrer">View page</a></td><td style={{ padding: 8, color: "#b54708" }}>Not confirmed</td></tr>)}</tbody></table></div> : !r.error && <p style={{ color: "#667085" }}>কোনো প্রকাশ্য ইমেইল পাওয়া যায়নি।</p>}</div>)}
+          <p style={{ color: "#b54708", fontSize: 13, marginBottom: 0 }}>গুরুত্বপূর্ণ: Finder-এ পাওয়া ঠিকানাগুলো স্বয়ংক্রিয়ভাবে Marketing Contacts বা Brevo-তে যোগ হয় না। মালিকের স্পষ্ট সম্মতি ছাড়া প্রচারমূলক ইমেইল পাঠাবেন না।</p>
+        </section>}
       </>}
       {message && <div role="status" style={{ ...panel, borderColor: "#b2ddff", color: "#175cd3" }}>{message}</div>}
       <p style={{ color: "#667085", fontSize: 12 }}>Admin: {user.email} · API credentials are kept server-side. Only consented contacts can be imported and targeted.</p>
