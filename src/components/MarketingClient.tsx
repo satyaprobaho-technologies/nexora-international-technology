@@ -12,7 +12,8 @@ type Campaign = { id: string; name?: string; subject?: string; audience?: string
 type ReplyAddress = { id: string; email: string; label: string; active: boolean };
 type DraftContact = { email: string; name: string; segment: "business" | "individual"; consent: boolean; consentSource: string };
 type FoundEmail = { email: string; sourceUrl: string; consent: false; consentStatus: string };
-type FinderResult = { website: string; emails: FoundEmail[]; pagesScanned: number; error?: string; excluded?: boolean; exclusionReason?: string };\ntype DiscoveredSite = { website: string; directoryUrl: string; listingLabel: string };
+type FinderResult = { website: string; emails: FoundEmail[]; pagesScanned: number; error?: string; excluded?: boolean; exclusionReason?: string };
+type DiscoveredSite = { website: string; directoryUrl: string; listingLabel: string };
 
 const panel: React.CSSProperties = { background: "#fff", border: "1px solid #e5e7eb", borderRadius: 18, padding: 22, marginBottom: 18 };
 const field: React.CSSProperties = { width: "100%", padding: "12px 14px", border: "1px solid #d1d5db", borderRadius: 10, font: "inherit", marginTop: 6, color: "#111827", background: "#fff" };
@@ -143,7 +144,7 @@ export default function MarketingClient() {
 
 
   async function discoverBusinessWebsites() {
-    const directoryUrls = [...new Set(directoryInput.split(/[\\n,;]+/).map((v) => v.trim()).filter(Boolean))];
+    const directoryUrls = [...new Set(directoryInput.split(/[\n,;]+/).map((v) => v.trim()).filter(Boolean))];
     if (!directoryUrls.length) { setMessage("প্রকাশ্য ব্যবসায়িক ডিরেক্টরির URL দিন।"); return; }
     if (directoryUrls.length > 5) { setMessage("একবারে সর্বোচ্চ ৫টি ডিরেক্টরি স্ক্যান করা যাবে।"); return; }
     setBusy(true); setMessage(""); setDiscoveredSites([]);
@@ -153,7 +154,7 @@ export default function MarketingClient() {
       });
       const sites: DiscoveredSite[] = result.candidates || [];
       setDiscoveredSites(sites);
-      setFinderInput(sites.map((site) => site.website).join("\\n"));
+      setFinderInput(sites.map((site) => site.website).join("\n"));
       const sourceSummary = (result.sources || []).map((source: { url: string; found: number; error?: string }) =>
         source.error ? source.url + ": " + source.error : source.url + ": " + source.found + "টি website link"
       ).join(" · ");
