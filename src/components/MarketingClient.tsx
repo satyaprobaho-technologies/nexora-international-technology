@@ -6,7 +6,7 @@ import Link from "next/link";
 import { ADMIN_EMAIL, auth } from "@/lib/firebase";
 
 type Contact = { id: string; email: string; name?: string; segment: string; consent?: boolean; status?: string; brevoSyncStatus?: string };
-type Campaign = { id: string; name?: string; subject?: string; audience?: string; status?: string; createdAt?: { seconds?: number } };
+type Campaign = { id: string; name?: string; subject?: string; audience?: string; status?: string; providerStatus?: string | null; analytics?: { sent: number; delivered: number; opens: number; openRate: number; clickers: number; clickRate: number; unsubscriptions: number; bounces: number } | null; createdAt?: { seconds?: number } };
 type Sender = { id: number; name: string; email: string; active: boolean };
 type DraftContact = { email: string; name: string; segment: "business" | "individual"; consent: boolean; consentSource: string };
 
@@ -184,7 +184,7 @@ export default function MarketingClient() {
           <button style={{ ...button, marginTop: 16 }} disabled={busy || !selectedSenderId || !contacts.some(c=>c.consent && c.status==="active")} onClick={()=>void sendCampaign()}>{busy ? "Please wait…" : "Send campaign now"}</button>
           {!contacts.length && <p style={{ color: "#b54708" }}>প্রথমে সম্মতিপ্রাপ্ত কন্টাক্ট যোগ করুন এবং Brevo list configuration সম্পন্ন করুন।</p>}
         </section>
-        <section style={panel}><h2 style={{ marginTop: 0 }}>Recent campaigns</h2>{campaigns.length ? campaigns.map(c=><article key={c.id} style={{ padding: 12, borderBottom: "1px solid #e5e7eb" }}><b>{c.name}</b><div style={{ color: "#667085", fontSize: 13 }}>{c.subject} · {c.audience} · {c.status}</div></article>) : <p style={{ color: "#667085" }}>এখনো কোনো ক্যাম্পেইন নেই।</p>}</section>
+        <section style={panel}><h2 style={{ marginTop: 0 }}>Recent campaigns</h2><p style={{ color: "#667085", fontSize: 13 }}>Brevo থেকে লাইভ রিপোর্ট: Open Rate, Click Rate, Delivered, Bounce ও Unsubscribe।</p>{campaigns.length ? campaigns.map(c=><article key={c.id} style={{ padding: 12, borderBottom: "1px solid #e5e7eb" }}><b>{c.name}</b><div style={{ color: "#667085", fontSize: 13 }}>{c.subject} · {c.audience} · {c.providerStatus || c.status}</div>{c.analytics ? <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(110px,1fr))", gap: 10, marginTop: 12 }}>{[["Open rate",`${c.analytics.openRate.toFixed(2)}%`],["Click rate",`${c.analytics.clickRate.toFixed(2)}%`],["Delivered",c.analytics.delivered],["Opened",c.analytics.opens],["Clickers",c.analytics.clickers],["Bounces",c.analytics.bounces],["Unsubscribed",c.analytics.unsubscriptions]].map(([label,value])=><div key={String(label)} style={{ background: "#f8fafc", borderRadius: 9, padding: 10 }}><div style={{ color: "#667085", fontSize: 11 }}>{label}</div><strong>{value}</strong></div>)}</div> : <div style={{ color: "#667085", fontSize: 12, marginTop: 8 }}>রিপোর্ট এখনো পাওয়া যায়নি; Campaign পাঠানো ও Brevo analytics প্রস্তুত হলে এখানে দেখা যাবে।</div>}</article>) : <p style={{ color: "#667085" }}>এখনো কোনো ক্যাম্পেইন নেই।</p>}</section>
       </>}
       {message && <div role="status" style={{ ...panel, borderColor: "#b2ddff", color: "#175cd3" }}>{message}</div>}
       <p style={{ color: "#667085", fontSize: 12 }}>Admin: {user.email} · API credentials are kept server-side. Only consented contacts can be imported and targeted.</p>
