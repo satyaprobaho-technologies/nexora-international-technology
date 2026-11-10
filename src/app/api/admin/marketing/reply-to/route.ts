@@ -23,7 +23,7 @@ export async function POST(request: Request) {
     const body = await request.json() as { email?: string; label?: string };
     const email = String(body.email || "").trim().toLowerCase();
     const label = String(body.label || "").trim().slice(0, 70);
-    if (!/^[^\\s@]+@gmail\\.com$/i.test(email)) return jsonError(new Error("শুধু বৈধ @gmail.com ঠিকানা যোগ করুন।"));
+    if (!/^[^\s@]+@gmail\.com$/i.test(email)) return jsonError(new Error("শুধু বৈধ @gmail.com ঠিকানা যোগ করুন।"));
     await collection().doc(email).set({
       email, label: label || email, active: true,
       updatedAt: FieldValue.serverTimestamp(), createdAt: FieldValue.serverTimestamp()
@@ -39,7 +39,7 @@ export async function PATCH(request: Request) {
     await requireMarketingAdmin(request);
     const body = await request.json() as { email?: string; active?: boolean; label?: string };
     const email = String(body.email || "").trim().toLowerCase();
-    if (!/^[^\\s@]+@gmail\\.com$/i.test(email) || typeof body.active !== "boolean") {
+    if (!/^[^\s@]+@gmail\.com$/i.test(email) || typeof body.active !== "boolean") {
       return jsonError(new Error("সঠিক Gmail ঠিকানা এবং active status প্রয়োজন।"));
     }
     const ref = collection().doc(email);
