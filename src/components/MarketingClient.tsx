@@ -7,6 +7,7 @@ import { ADMIN_EMAIL, auth } from "@/lib/firebase";
 
 type Contact = { id: string; email: string; name?: string; segment: string; consent?: boolean; status?: string; brevoSyncStatus?: string };
 type PublicLead = { id: string; email: string; name?: string; sourceName?: string; sourceUrl?: string; country?: string; consentStatus?: string };
+type PublicLeadStats = { total: number; today: number; averagePerDay: number; last7Days: Array<{ date: string; count: number }> };
 type SignupStats = { total: number; confirmed: number; pending: number; today: number; last7Days: Array<{ date: string; count: number }> };
 type Campaign = { id: string; name?: string; subject?: string; audience?: string; status?: string; providerStatus?: string | null; analytics?: { sent: number; delivered: number; opens: number; openRate: number; clickers: number; clickRate: number; unsubscriptions: number; bounces: number } | null; createdAt?: { seconds?: number } };
 type ReplyAddress = { id: string; email: string; label: string; active: boolean };
@@ -72,6 +73,7 @@ export default function MarketingClient() {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [signupStats, setSignupStats] = useState<SignupStats>({ total: 0, confirmed: 0, pending: 0, today: 0, last7Days: [] });
   const [publicLeads, setPublicLeads] = useState<PublicLead[]>([]);
+  const [leadStats, setLeadStats] = useState<PublicLeadStats>({ total: 0, today: 0, averagePerDay: 0, last7Days: [] });
   const [leadsCursor, setLeadsCursor] = useState<string | null>(null);
   const [leadsHasMore, setLeadsHasMore] = useState(false);
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
@@ -109,6 +111,7 @@ export default function MarketingClient() {
     if (cursor) params.set("cursor", cursor);
     const result = await api(`/api/admin/marketing/leads?${params.toString()}`);
     setPublicLeads((current) => append ? [...current, ...(result.leads || [])] : (result.leads || []));
+    if (result.stats) setLeadStats(result.stats);
     setLeadsCursor(result.nextCursor || null);
     setLeadsHasMore(Boolean(result.hasMore));
   }
@@ -345,15 +348,26 @@ export default function MarketingClient() {
           <label style={{ display: "block", fontWeight: 700 }}>Public leads CSV<input style={field} type="file" accept=".csv,text/csv" onChange={handlePublicLeadFile} disabled={busy} /></label>
         </section>
         <section style={panel}>
-          <h2 style={{ marginTop: 0 }}>Public Business Leads — Consent Pending ({publicLeads.length})</h2>
+          <h2 style={{ marginTop: 0 }}>Public Business Leads — Consent Pending ({leadStats.total.toLocaleString("en-US")})</h2>
           <p style={{ color: "#667085" }}>প্রকাশ্য ওয়েবসাইট থেকে পাওয়া যোগাযোগের ঠিকানা। এগুলো মার্কেটিং সম্মতিপ্রাপ্ত নয় এবং Brevo campaign-এ পাঠানো হয় না।</p>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))", gap: 10, margin: "12px 0" }}>
+            {[
+              ["ডেটাবেজে মোট লিড", leadStats.total.toLocaleString("en-US")],
+              ["আজ নতুন যোগ", leadStats.today.toLocaleString("en-US")],
+              ["গত ৭ দিনের গড়/দিন", leadStats.averagePerDay.toLocaleString("en-US")],
+              ["১০ লাখ পূরণে আনুমানিক দিন", leadStats.averagePerDay > 0 ? Math.ceil(Math.max(0, 1000000 - leadStats.total) / leadStats.averagePerDay).toLocaleString("en-US") : "তথ্য জমলে হিসাব হবে"]
+            ].map(([label, value]) => <div key={label} style={{ background: "#f8fafc", border: "1px solid #e5e7eb", borderRadius: 10, padding: 12 }}><div style={{ color: "#667085", fontSize: 12 }}>{label}</div><strong style={{ fontSize: 20 }}>{value}</strong></div>)}
+          </div>
+          <div style={{ overflowX: "auto", margin: "10px 0 16px" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}><thead><tr><th style={{ padding: 8, borderBottom: "1px solid #e5e7eb" }}>বাংলাদেশ সময়ের তারিখ</th><th style={{ padding: 8, borderBottom: "1px solid #e5e7eb" }}>নতুন লিড</th></tr></thead><tbody>{leadStats.last7Days.map(day => <tr key={day.date}><td style={{ padding: 8, borderBottom: "1px solid #f0f1f3" }}>{day.date}</td><td style={{ padding: 8, borderBottom: "1px solid #f0f1f3" }}>{day.count.toLocaleString("en-US")}</td></tr>)}</tbody></table>
+          </div>
           <div style={{ background: "#f8fafc", border: "1px solid #d0d5dd", borderRadius: 12, padding: 14, margin: "12px 0 16px" }}>
             <b>Import public leads CSV (Consent Pending)</b>
             <p style={{ color: "#667085", fontSize: 13, margin: "6px 0" }}>Email, Country এবং Source URL থাকা CSV এখানে আপলোড করুন। Organization / Source URL / Country কলাম থাকলে সেগুলোও সংরক্ষিত হবে। এই আপলোড Brevo marketing contacts-এ যোগ করবে না।</p>
             <input style={field} type="file" accept=".csv,text/csv" onChange={importPublicLeadsFile} disabled={busy} />
           </div>
           <div style={{ overflowX: "auto" }}><table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}><thead><tr>{["Email","Country","Source","Consent","Source URL"].map(x=><th key={x} style={{ padding: 10, borderBottom: "1px solid #e5e7eb", color: "#667085" }}>{x}</th>)}</tr></thead><tbody>{publicLeads.map(lead=><tr key={lead.id}><td style={{ padding: 10, borderBottom: "1px solid #f0f1f3" }}>{lead.email}</td><td style={{ padding: 10, borderBottom: "1px solid #f0f1f3" }}>{lead.country || "Unknown"}</td><td style={{ padding: 10, borderBottom: "1px solid #f0f1f3" }}>{lead.sourceName || "—"}</td><td style={{ padding: 10, borderBottom: "1px solid #f0f1f3", color: "#b54708" }}>Pending</td><td style={{ padding: 10, borderBottom: "1px solid #f0f1f3" }}>{lead.sourceUrl ? <a href={lead.sourceUrl} target="_blank" rel="noreferrer">Source</a> : "—"}</td></tr>)}</tbody></table></div>
-          <p style={{ color: "#667085", fontSize: 12 }}>এই পৃষ্ঠায় {publicLeads.length}টি লিড দেখানো হচ্ছে।</p>
+          <p style={{ color: "#667085", fontSize: 12 }}>এই পৃষ্ঠায় {publicLeads.length}টি লিড দেখানো হচ্ছে; ডেটাবেজে মোট {leadStats.total.toLocaleString("en-US")}টি।</p>
           {leadsHasMore && <button style={button} disabled={busy} onClick={()=>void loadMoreLeads()}>{busy ? "Loading…" : "আরও ১০০টি লিড দেখুন"}</button>}
         </section>
       </> : tab==="campaigns" ? <>
