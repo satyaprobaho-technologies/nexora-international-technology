@@ -12,7 +12,7 @@ type Campaign = { id: string; name?: string; subject?: string; audience?: string
 type ReplyAddress = { id: string; email: string; label: string; active: boolean };
 type DraftContact = { email: string; name: string; segment: "business" | "individual"; consent: boolean; consentSource: string };
 type FoundEmail = { email: string; sourceUrl: string; consent: false; consentStatus: string };
-type FinderResult = { website: string; emails: FoundEmail[]; pagesScanned: number; error?: string };
+type FinderResult = { website: string; emails: FoundEmail[]; pagesScanned: number; error?: string; excluded?: boolean; exclusionReason?: string };
 
 const panel: React.CSSProperties = { background: "#fff", border: "1px solid #e5e7eb", borderRadius: 18, padding: 22, marginBottom: 18 };
 const field: React.CSSProperties = { width: "100%", padding: "12px 14px", border: "1px solid #d1d5db", borderRadius: 10, font: "inherit", marginTop: 6, color: "#111827", background: "#fff" };
@@ -125,30 +125,43 @@ export default function MarketingClient() {
 
 
   async function findPublicEmails() {
-    const websites = finderInput.split(/[\n,;]+/).map((v) => v.trim()).filter(Boolean);
+    const websites = [...new Set(finderInput.split(/[\\n,;]+/).map((v) => v.trim()).filter(Boolean))];
     if (!websites.length) { setMessage("কমপক্ষে একটি ওয়েবসাইট URL লিখুন।"); return; }
-    if (websites.length > 5) { setMessage("একবারে সর্বোচ্চ ৫টি ওয়েবসাইট পরীক্ষা করা যাবে।"); return; }
+    if (websites.length > 100) { setMessage("একবারে সর্বোচ্চ ১০০টি ওয়েবসাইট দেওয়া যাবে; পরের ব্যাচ আলাদাভাবে চালান।"); return; }
+    if (!finderCountry.trim()) { setMessage("Lead সংরক্ষণের আগে দেশ নির্বাচন/লিখুন।"); return; }
     setBusy(true); setMessage(""); setFinderResults([]);
+    const allResults: FinderResult[] = [];
+    let totalFound = 0, totalSaved = 0, totalSkipped = 0, totalExcluded = 0;
     try {
-      const result = await api("/api/admin/marketing/email-finder", { method: "POST", body: JSON.stringify({ websites }) });
-      const found: FinderResult[] = result.results || [];
-      setFinderResults(found);
-      const leads = found.flatMap((r) => r.emails.map((e) => ({
-        email: e.email, name: "", category: "business", country: finderCountry, sourceUrl: e.sourceUrl, sourceName: r.website
-      })));
-      let totalSaved = 0, totalSkipped = 0;
-      for (let i = 0; i < leads.length; i += 100) {
-        const saved = await api("/api/admin/marketing/leads", {
-          method: "POST",
-          body: JSON.stringify({ leads: leads.slice(i, i + 100) })
+      // The API accepts five sites per request; process larger user batches sequentially.
+      for (let i = 0; i < websites.length; i += 5) {
+        const result = await api("/api/admin/marketing/email-finder", {
+          method: "POST", body: JSON.stringify({ websites: websites.slice(i, i + 5) })
         });
-        totalSaved += saved.saved?.length || 0;
-        totalSkipped += saved.skipped?.length || 0;
+        const found: FinderResult[] = result.results || [];
+        allResults.push(...found);
+        totalExcluded += found.filter((r) => r.excluded).length;
+        const leads = found.flatMap((r) => r.emails.map((e) => ({
+          email: e.email, name: "", category: "business", country: finderCountry.trim(),
+          sourceUrl: e.sourceUrl, sourceName: r.website
+        })));
+        totalFound += leads.length;
+        for (let j = 0; j < leads.length; j += 100) {
+          const saved = await api("/api/admin/marketing/leads", {
+            method: "POST", body: JSON.stringify({ leads: leads.slice(j, j + 100) })
+          });
+          totalSaved += saved.saved?.length || 0;
+          totalSkipped += saved.skipped?.length || 0;
+        }
+        setFinderResults([...allResults]);
       }
       await load();
-      setMessage(`${leads.length}টি প্রকাশ্য ইমেইল পাওয়া গেছে; ${totalSaved}টি নতুন Lead স্বয়ংক্রিয়ভাবে ডেটাবেজে যোগ হয়েছে এবং ${totalSkipped}টি ডুপ্লিকেট/অবৈধ ঠিকানা বাদ গেছে। সব Lead Consent Pending; Brevo-তে পাঠানো হয়নি।`);
-    } catch (error) { setMessage(error instanceof Error ? error.message : "Email Finder বা স্বয়ংক্রিয় সংরক্ষণ ব্যর্থ হয়েছে।"); }
-    finally { setBusy(false); }
+      setMessage(`${websites.length}টি ওয়েবসাইট পরীক্ষা; ${totalFound}টি প্রকাশ্য ইমেইল পাওয়া; ${totalSaved}টি নতুন Consent Pending Lead সংরক্ষিত; ${totalSkipped}টি ডুপ্লিকেট/অবৈধ; IT/software হিসেবে ${totalExcluded}টি ওয়েবসাইট বাদ। Lead-গুলো Brevo-তে পাঠানো হয়নি।`);
+    } catch (error) {
+      setFinderResults([...allResults]);
+      setMessage((error instanceof Error ? error.message : "Email Finder বা সংরক্ষণ ব্যর্থ হয়েছে।") +
+        ` ইতোমধ্যে ${totalSaved}টি Lead সংরক্ষিত হয়েছে; অবশিষ্ট ওয়েবসাইট পরে আবার চালাতে পারবেন।`);
+    } finally { setBusy(false); }
   }
 
   async function saveFinderLeads() {
