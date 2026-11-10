@@ -13,9 +13,11 @@ type ContactInput = {
 };
 
 function listIdFor(segment: "business" | "individual") {
+  // These fallbacks match the verified NEXORA Brevo lists. Environment variables
+  // can still override them for deployments using a different list arrangement.
   const raw = segment === "business"
-    ? process.env.BREVO_BUSINESS_LIST_ID
-    : process.env.BREVO_INDIVIDUAL_LIST_ID;
+    ? process.env.BREVO_BUSINESS_LIST_ID || "3"
+    : process.env.BREVO_INDIVIDUAL_LIST_ID || "4";
   const id = Number(raw);
   return Number.isSafeInteger(id) && id > 0 ? id : null;
 }
