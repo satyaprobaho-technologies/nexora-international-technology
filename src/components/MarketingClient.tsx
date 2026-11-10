@@ -63,10 +63,17 @@ export default function MarketingClient() {
   async function load() {
     if (!user || user.email !== ADMIN_EMAIL || !user.emailVerified) return;
     try {
-      const [c, m, s] = await Promise.all([api("/api/admin/marketing/contacts"), api("/api/admin/marketing/campaigns"), api("/api/admin/marketing/senders")]);
-      setContacts(c.contacts || []); setCampaigns(m.campaigns || []); setSenders(s.senders || []);
-      const active = (s.senders || []).filter((sender: Sender) => sender.active);
-      setSelectedSenderId((current) => current || String(active[0]?.id || ""));
+      const [c, m] = await Promise.all([api("/api/admin/marketing/contacts"), api("/api/admin/marketing/campaigns")]);
+      setContacts(c.contacts || []); setCampaigns(m.campaigns || []);
+      try {
+        const s = await api("/api/admin/marketing/senders");
+        setSenders(s.senders || []);
+        const active = (s.senders || []).filter((sender: Sender) => sender.active);
+        setSelectedSenderId((current) => current || String(active[0]?.id || ""));
+      } catch {
+        setSenders([]);
+        setMessage("Brevo Sender তালিকা লোড হয়নি। API Key-তে Sender read permission দিন অথবা Brevo-তে Sender verify করুন।");
+      }
     } catch (error) { setMessage(error instanceof Error ? error.message : "ডেটা লোড করা যায়নি।"); }
   }
   useEffect(() => { if (user?.email === ADMIN_EMAIL && user.emailVerified) void load(); }, [user]);
