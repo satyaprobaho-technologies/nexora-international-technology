@@ -7,6 +7,7 @@ import { ADMIN_EMAIL, auth } from "@/lib/firebase";
 
 type Contact = { id: string; email: string; name?: string; segment: string; consent?: boolean; status?: string; brevoSyncStatus?: string };
 type PublicLead = { id: string; email: string; name?: string; sourceName?: string; sourceUrl?: string; consentStatus?: string };
+type SignupStats = { total: number; confirmed: number; pending: number; today: number; last7Days: Array<{ date: string; count: number }> };
 type Campaign = { id: string; name?: string; subject?: string; audience?: string; status?: string; providerStatus?: string | null; analytics?: { sent: number; delivered: number; opens: number; openRate: number; clickers: number; clickRate: number; unsubscriptions: number; bounces: number } | null; createdAt?: { seconds?: number } };
 type ReplyAddress = { id: string; email: string; label: string; active: boolean };
 type DraftContact = { email: string; name: string; segment: "business" | "individual"; consent: boolean; consentSource: string };
@@ -38,6 +39,7 @@ export default function MarketingClient() {
   const [user, setUser] = useState<User | null>(null);
   const [ready, setReady] = useState(false);
   const [contacts, setContacts] = useState<Contact[]>([]);
+  const [signupStats, setSignupStats] = useState<SignupStats>({ total: 0, confirmed: 0, pending: 0, today: 0, last7Days: [] });
   const [publicLeads, setPublicLeads] = useState<PublicLead[]>([]);
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [replyAddresses, setReplyAddresses] = useState<ReplyAddress[]>([]);
@@ -71,8 +73,8 @@ export default function MarketingClient() {
   async function load() {
     if (!user || user.email !== ADMIN_EMAIL || !user.emailVerified) return;
     try {
-      const [c, m, r, l] = await Promise.all([api("/api/admin/marketing/contacts"), api("/api/admin/marketing/campaigns"), api("/api/admin/marketing/reply-to"), api("/api/admin/marketing/leads")]);
-      setContacts(c.contacts || []); setCampaigns(m.campaigns || []); setReplyAddresses(r.addresses || []); setPublicLeads(l.leads || []);
+      const [c, m, r, l, s] = await Promise.all([api("/api/admin/marketing/contacts"), api("/api/admin/marketing/campaigns"), api("/api/admin/marketing/reply-to"), api("/api/admin/marketing/leads"), api("/api/admin/marketing/signup-stats")]);
+      setContacts(c.contacts || []); setCampaigns(m.campaigns || []); setReplyAddresses(r.addresses || []); setPublicLeads(l.leads || []); setSignupStats(s);
     } catch (error) { setMessage(error instanceof Error ? error.message : "ডেটা লোড করা যায়নি।"); }
   }
   useEffect(() => { if (user?.email === ADMIN_EMAIL && user.emailVerified) void load(); }, [user]);
@@ -195,8 +197,13 @@ export default function MarketingClient() {
         <span style={{ background: "#eaf2ff", color: "#155eef", padding: "9px 13px", borderRadius: 999, fontWeight: 700 }}>Brevo integration</span>
       </header>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))", gap: 14, marginBottom: 20 }}>
-        {[["Contacts", contacts.length],["Business", contacts.filter(c=>c.segment==="business").length],["Individual", contacts.filter(c=>c.segment==="individual").length],["Campaigns", campaigns.length]].map(([label,value])=><div key={String(label)} style={{ ...panel, margin: 0 }}><div style={{ color: "#667085", fontSize: 13 }}>{label}</div><div style={{ fontSize: 30, fontWeight: 800 }}>{value}</div></div>)}
+        {[[ "Total signups", signupStats.total ],[ "Confirmed", signupStats.confirmed ],[ "Awaiting confirmation", signupStats.pending ],[ "Today", signupStats.today ],[ "Business (loaded)", contacts.filter(c=>c.segment==="business").length ],[ "Individual (loaded)", contacts.filter(c=>c.segment==="individual").length ],[ "Campaigns", campaigns.length ]].map(([label,value])=><div key={String(label)} style={{ ...panel, margin: 0 }}><div style={{ color: "#667085", fontSize: 13 }}>{label}</div><div style={{ fontSize: 30, fontWeight: 800 }}>{Number(value).toLocaleString("en-US")}</div></div>)}
       </div>
+      <section style={panel}>
+        <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}><div><h2 style={{ margin: 0 }}>Newsletter signups — last 7 days</h2><p style={{ color: "#667085", margin: "6px 0 0" }}>Bangladesh time · confirmed and pending signups · daily voluntary target: 100,000</p></div><strong style={{ color: "#155eef" }}>{signupStats.today.toLocaleString("en-US")} / 100,000 today</strong></div>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(7,minmax(0,1fr))", gap: 8, marginTop: 16 }}>{signupStats.last7Days.map(day=><div key={day.date} style={{ background: "#f8fafc", borderRadius: 9, padding: 10, textAlign: "center" }}><div style={{ color: "#667085", fontSize: 11 }}>{day.date}</div><strong>{day.count.toLocaleString("en-US")}</strong></div>)}</div>
+        <p style={{ color: "#667085", fontSize: 12, marginBottom: 0 }}>Only people who submit the form and confirm their email become marketing-eligible. The daily target is a goal, not a guaranteed acquisition rate.</p>
+      </section>
       <nav style={{ display: "flex", gap: 8, marginBottom: 16 }}>
         <button style={{ ...button, background: tab==="contacts" ? "#155eef" : "#e5e7eb", color: tab==="contacts" ? "#fff" : "#344054" }} onClick={()=>setTab("contacts")}>Email Contacts</button>
         <button style={{ ...button, background: tab==="campaigns" ? "#155eef" : "#e5e7eb", color: tab==="campaigns" ? "#fff" : "#344054" }} onClick={()=>setTab("campaigns")}>Campaigns</button>

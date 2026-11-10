@@ -2,6 +2,7 @@ import Link from "next/link";
 import InquiryForm from "@/components/InquiryForm";
 import FreeStarterForm from "@/components/FreeStarterForm";
 import DemoCatalog from "@/components/DemoCatalog";
+import NewsletterSignup from "@/components/NewsletterSignup";
 
 const services = [
   { n: "Website Design & Development", d: "Responsive business websites, landing pages, portfolios, blogs and custom web applications.", tags: ["Next.js", "WordPress", "E-commerce"] },
@@ -93,6 +94,8 @@ export default function Home() {
         <p className="payment-disclaimer">No payment method is currently active. Do not send money until NEXORA provides an official invoice and confirms an approved local payment method.</p>
         <p className="payment-disclaimer"><Link href="/payment-setup">Merchant onboarding checklist & application links ↗</Link></p>
       </section>
+
+      <NewsletterSignup />
 
       <section id="contact" className="contact-section">
         <p className="eyebrow">LET'S MAKE IT HAPPEN</p><h2>Have a project in mind?</h2><p>Tell us a little about it. We’ll be happy to discuss the next step.</p>

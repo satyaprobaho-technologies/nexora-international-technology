@@ -527,3 +527,17 @@ body{top:0!important}
 .dw-footer a{color:var(--workspace-accent);text-decoration:none;font-weight:800}
 @media(max-width:1000px){.demo-workspace{grid-template-columns:210px minmax(0,1fr)}.dw-metrics,.dw-quick-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.dw-overview{padding:22px 20px 4px}.dw-topbar{padding:15px 20px}}
 @media(max-width:700px){.demo-workspace{display:block}.dw-sidebar{position:relative;height:auto;padding:10px 12px;display:block}.dw-brand{padding:3px 3px 10px}.dw-side-caption,.dw-sidebar-bottom{display:none}.dw-sidebar .dw-side-link{display:none}.dw-sidebar .dw-side-link.active{display:inline-flex;width:auto;padding:8px 11px;margin-right:5px}.dw-topbar{position:relative;padding:13px 15px}.dw-topbar h1{font-size:16px}.dw-top-actions{gap:8px}.dw-demo-pill{font-size:8px;padding:7px}.dw-overview{padding:15px 12px 0}.dw-welcome{padding:20px;gap:10px}.dw-welcome-art{width:75px;height:75px;flex-basis:75px}.dw-welcome-art span{font-size:30px}.dw-welcome-art small{font-size:5px}.dw-metrics{gap:8px}.dw-metrics article{padding:12px}.dw-metrics article>b{font-size:15px}.dw-quick-head{align-items:start;flex-direction:column}.dw-quick-grid{gap:8px}.dw-quick-grid button{min-height:100px;padding:11px}.dw-module-wrap .biz-suite{padding:25px 12px 15px}.dw-module-wrap .biz-module-nav{top:0}.dw-footer{padding:15px;flex-direction:column}.dw-module-wrap .biz-admin-table{overflow-x:auto}}
+
+
+/* Voluntary newsletter signup */
+.newsletter-section{padding:76px max(8vw,24px);display:grid;grid-template-columns:1fr 1fr;gap:45px;align-items:center;background:linear-gradient(120deg,#0d2947,#102b49);border-top:1px solid #294967;border-bottom:1px solid #294967}
+.newsletter-copy{max-width:570px}.newsletter-copy h2{font-size:clamp(30px,4vw,46px)}.newsletter-copy>p:not(.eyebrow){color:#c1d1e3;line-height:1.8}.newsletter-copy>small{display:block;color:#91a8c0;line-height:1.7;font-size:11px;margin-top:18px}
+.newsletter-form{padding:24px;background:#0b1d32;border:1px solid #315575;border-radius:12px}
+.newsletter-form>label:not(.newsletter-consent){display:flex;flex-direction:column;gap:8px;color:#dceafa;font-size:13px;font-weight:600;margin-bottom:15px}
+.newsletter-form input[type=email],.newsletter-form input[name=name]{width:100%;border:1px solid #355675;border-radius:7px;background:#07182b;color:#f5f9ff;padding:13px;font:14px Arial,sans-serif}
+.newsletter-consent{display:flex;align-items:flex-start;gap:10px;color:#c1d1e3;font-size:12px;line-height:1.7;margin:18px 0}
+.newsletter-consent input{margin-top:3px;accent-color:#168de0;flex:0 0 auto}
+.newsletter-form button:disabled{opacity:.6;cursor:wait}
+.newsletter-message{color:#ffb4b4;font-size:12px;line-height:1.6}.newsletter-message.success{color:#79ddb2}
+.newsletter-trap{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}
+@media(max-width:700px){.newsletter-section{grid-template-columns:1fr;padding:58px 22px;gap:25px}.newsletter-form{padding:18px}}
