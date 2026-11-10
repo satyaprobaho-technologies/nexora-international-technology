@@ -62,28 +62,29 @@ export async function POST(request: Request) {
     const newsletterRef = adminDb.collection("newsletterSignups").doc(contactId);
     const apiKey = process.env.BREVO_API_KEY;
     const listId = Number(process.env.BREVO_INDIVIDUAL_LIST_ID);
-    let brevoSyncStatus = "not_configured";
-
-    if (apiKey && Number.isSafeInteger(listId) && listId > 0) {
-      const contactSnapshot = await contactRef.get();
-      const name = String(contactSnapshot.data()?.name || "");
-      const response = await fetch("https://api.brevo.com/v3/contacts", {
-        method: "POST",
-        headers: { "api-key": apiKey, "Content-Type": "application/json", accept: "application/json" },
-        body: JSON.stringify({
-          email,
-          attributes: name ? { FIRSTNAME: name } : {},
-          listIds: [listId],
-          updateEnabled: true,
-        }),
-      });
-      if (!response.ok) {
-        const detail = await response.text().catch(() => "");
-        console.error("Brevo confirmed contact sync failed", response.status, detail.slice(0, 500));
-        return page("Confirmation could not be completed", "Your email was verified, but it could not be added to the NEXORA list right now. Please try again later.");
-      }
-      brevoSyncStatus = "synced";
+    if (!apiKey || !Number.isSafeInteger(listId) || listId <= 0) {
+      console.error("Newsletter confirmation blocked: Brevo API key or individual list ID is not configured");
+      return page("Confirmation temporarily unavailable", "Your email address has been verified, but the newsletter service is not fully configured yet. Please try again later. Your address has not been activated for marketing.");
     }
+
+    const contactSnapshot = await contactRef.get();
+    const name = String(contactSnapshot.data()?.name || "");
+    const response = await fetch("https://api.brevo.com/v3/contacts", {
+      method: "POST",
+      headers: { "api-key": apiKey, "Content-Type": "application/json", accept: "application/json" },
+      body: JSON.stringify({
+        email,
+        attributes: name ? { FIRSTNAME: name } : {},
+        listIds: [listId],
+        updateEnabled: true,
+      }),
+    });
+    if (!response.ok) {
+      const detail = await response.text().catch(() => "");
+      console.error("Brevo confirmed contact sync failed", response.status, detail.slice(0, 500));
+      return page("Confirmation could not be completed", "Your email was verified, but it could not be added to the NEXORA list right now. Please try again later.");
+    }
+    const brevoSyncStatus = "synced";
 
     await adminDb.runTransaction(async (tx) => {
       const currentToken = await tx.get(tokenRef);
