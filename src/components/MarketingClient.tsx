@@ -38,6 +38,8 @@ export default function MarketingClient() {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [senders, setSenders] = useState<Sender[]>([]);
   const [selectedSenderId, setSelectedSenderId] = useState("");
+  const [newSenderEmail, setNewSenderEmail] = useState("");
+  const [newSenderName, setNewSenderName] = useState("NEXORA INTERNATIONAL TECHNOLOGY");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const [tab, setTab] = useState<"contacts" | "campaigns">("contacts");
@@ -99,6 +101,24 @@ export default function MarketingClient() {
     await importContacts(items);
     e.target.value = "";
   }
+  async function addSender() {
+    if (!/^[^\\s@]+@gmail\\.com$/i.test(newSenderEmail.trim())) {
+      setMessage("সঠিক @gmail.com ঠিকানা লিখুন।"); return;
+    }
+    setBusy(true); setMessage("");
+    try {
+      const result = await api("/api/admin/marketing/senders", {
+        method: "POST",
+        body: JSON.stringify({ email: newSenderEmail.trim(), name: newSenderName.trim() })
+      });
+      setMessage(result.message || "Sender যোগ করার অনুরোধ পাঠানো হয়েছে।");
+      setNewSenderEmail("");
+      await load();
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Gmail Sender যোগ করা যায়নি।");
+    } finally { setBusy(false); }
+  }
+
   async function sendCampaign() {
     if (!window.confirm("আপনি কি নির্বাচিত সম্মতিপ্রাপ্ত গ্রাহকদের কাছে এই ইমেইল ক্যাম্পেইন পাঠাতে চান? পাঠানোর পর এটি ফিরিয়ে নেওয়া যাবে না।")) return;
     setBusy(true); setMessage("");
@@ -149,9 +169,16 @@ export default function MarketingClient() {
           <p style={{ color: "#667085" }}>পাঠানোর আগে বিষয়, বার্তা ও প্রাপক যাচাই করুন। Brevo API-এর মাধ্যমে ক্যাম্পেইন পাঠানো হবে।</p>
           <label style={{ display: "block", fontWeight: 700, marginTop: 12 }}>Campaign name<input style={field} value={campaignName} onChange={e=>setCampaignName(e.target.value)} /></label>
           <label style={{ display: "block", fontWeight: 700, marginTop: 12 }}>Email subject<input style={field} value={subject} onChange={e=>setSubject(e.target.value)} /></label>
-          <label style={{ display: "block", fontWeight: 700, marginTop: 12 }}>Sender Gmail<select style={field} value={selectedSenderId} onChange={e=>setSelectedSenderId(e.target.value)}><option value="">Sender নির্বাচন করুন</option>{senders.filter(s=>s.active).map(s=><option key={s.id} value={s.id}>{s.name} — {s.email}</option>)}</select></label>
-          <div style={{ color: "#667085", fontSize: 13, marginTop: 8 }}>যাচাইকৃত Sender: {senders.filter(s=>s.active).length}টি · মোট Sender: {senders.length}টি. নতুন Gmail যোগ করতে Brevo-তে Sender verify করে এখানে refresh করুন। <button type="button" style={{ ...button, marginLeft: 8, padding: "6px 10px" }} disabled={busy} onClick={()=>void load()}>Refresh</button></div>
-          {!senders.length && <p style={{ color: "#b54708" }}>Brevo-তে আগে আপনার Gmail Sender যোগ ও verify করুন। এরপর Refresh চাপুন।</p>}
+          <section style={{ border: "1px solid #dbeafe", borderRadius: 12, padding: 14, marginTop: 14 }}>
+            <h3 style={{ margin: "0 0 8px" }}>Add Gmail sender (১০টির বেশি যোগ করা যাবে)</h3>
+            <label style={{ display: "block", fontWeight: 700, marginTop: 8 }}>Gmail address<input style={field} type="email" value={newSenderEmail} onChange={e=>setNewSenderEmail(e.target.value)} placeholder="yourname@gmail.com" /></label>
+            <label style={{ display: "block", fontWeight: 700, marginTop: 8 }}>Sender name<input style={field} value={newSenderName} onChange={e=>setNewSenderName(e.target.value)} /></label>
+            <button type="button" style={{ ...button, marginTop: 10 }} disabled={busy || !newSenderEmail.trim()} onClick={()=>void addSender()}>{busy ? "Please wait…" : "Add & send verification"}</button>
+            <p style={{ color: "#667085", fontSize: 12, marginBottom: 0 }}>Brevo প্রতিটি Gmail ঠিকানায় verification email পাঠাবে। Inbox/Spam থেকে verify না হওয়া পর্যন্ত সেটি campaign sender হিসেবে ব্যবহার করা যাবে না।</p>
+          </section>
+          <label style={{ display: "block", fontWeight: 700, marginTop: 12 }}>Verified Gmail sender<select style={field} value={selectedSenderId} onChange={e=>setSelectedSenderId(e.target.value)}><option value="">Sender নির্বাচন করুন</option>{senders.filter(s=>s.active).map(s=><option key={s.id} value={s.id}>{s.name} — {s.email}</option>)}</select></label>
+          <div style={{ color: "#667085", fontSize: 13, marginTop: 8 }}>যাচাইকৃত Sender: {senders.filter(s=>s.active).length}টি · মোট Sender: {senders.length}টি <button type="button" style={{ ...button, marginLeft: 8, padding: "6px 10px" }} disabled={busy} onClick={()=>void load()}>Refresh</button></div>
+          {!senders.length && <p style={{ color: "#b54708" }}>Brevo-তে এখনো Sender পাওয়া যায়নি। প্রথমে Gmail যোগ করুন ও verify করুন।</p>}
           <label style={{ display: "block", fontWeight: 700, marginTop: 12 }}>Recipients<select style={field} value={audience} onChange={e=>setAudience(e.target.value)}><option value="both">ব্যবসা + ব্যক্তিগত গ্রাহক</option><option value="business">শুধু ব্যবসাপ্রতিষ্ঠান</option><option value="individual">শুধু ব্যক্তিগত গ্রাহক</option></select></label>
           <label style={{ display: "block", fontWeight: 700, marginTop: 12 }}>Email content (HTML)<textarea style={{ ...field, minHeight: 220, fontFamily: "monospace" }} value={html} onChange={e=>setHtml(e.target.value)} /></label>
           <button style={{ ...button, marginTop: 16 }} disabled={busy || !selectedSenderId || !contacts.some(c=>c.consent && c.status==="active")} onClick={()=>void sendCampaign()}>{busy ? "Please wait…" : "Send campaign now"}</button>
