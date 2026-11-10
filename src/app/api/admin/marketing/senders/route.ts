@@ -40,7 +40,7 @@ export async function POST(request: Request) {
     const body = await request.json() as { email?: string; name?: string };
     const email = String(body.email || "").trim().toLowerCase();
     const name = String(body.name || "NEXORA INTERNATIONAL TECHNOLOGY").trim().slice(0, 70);
-    if (!/^[^\\s@]+@gmail\\.com$/i.test(email)) {
+    if (!/^[^\s@]+@gmail\.com$/i.test(email)) {
       return jsonError(new Error("শুধু বৈধ @gmail.com ঠিকানা যোগ করুন।"));
     }
     if (!name) return jsonError(new Error("Sender Name প্রয়োজন।"));
