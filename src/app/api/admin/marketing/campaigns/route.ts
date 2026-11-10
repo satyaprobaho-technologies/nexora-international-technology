@@ -42,8 +42,15 @@ export async function POST(request: Request) {
     };
     const name = String(body.name || "").trim().slice(0, 100);
     const subject = String(body.subject || "").trim().slice(0, 150);
-    const htmlContent = String(body.htmlContent || "").trim();
+    let htmlContent = String(body.htmlContent || "").trim();
     const audience = ["both", "business", "individual"].includes(String(body.audience)) ? String(body.audience) : "both";
+    const replyTo = String(body.replyTo || "").trim().toLowerCase();
+    if (replyTo) {
+      const mailbox = await adminDb.collection("marketingReplyToAddresses").doc(replyTo).get();
+      if (!mailbox.exists || mailbox.data()?.active !== true) {
+        return jsonError(new Error("নির্বাচিত Reply-To Gmail ঠিকানাটি Admin Panel-এ সংরক্ষিত/সক্রিয় নয়।"));
+      }
+    }
     if (body.confirmed !== true) return jsonError(new Error("পাঠানোর আগে ক্যাম্পেইন নিশ্চিত করুন।"));
     if (!name || !subject || htmlContent.replace(/<[^>]*>/g, "").trim().length < 20) {
       return jsonError(new Error("ক্যাম্পেইনের নাম, বিষয় এবং কমপক্ষে ২০ অক্ষরের বার্তা প্রয়োজন।"));
@@ -58,7 +65,7 @@ export async function POST(request: Request) {
       headers: { "api-key": apiKey, "Content-Type": "application/json" },
       body: JSON.stringify({
         name, subject, sender: { name: senderName, email: senderEmail },
-        replyTo: body.replyTo || senderEmail,
+        replyTo: replyTo || senderEmail,
         htmlContent,
         recipients: { listIds: recipients },
         tag: "nexora-admin-marketing"
