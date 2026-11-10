@@ -57,7 +57,9 @@ export async function POST(request: Request) {
     }
 
     const email = String(tokenData.email || "");
-    const contactRef = adminDb.collection("marketingContacts").doc(email.replaceAll("/", "_"));
+    const contactId = email.replaceAll("/", "_");
+    const contactRef = adminDb.collection("marketingContacts").doc(contactId);
+    const newsletterRef = adminDb.collection("newsletterSignups").doc(contactId);
     const apiKey = process.env.BREVO_API_KEY;
     const listId = Number(process.env.BREVO_INDIVIDUAL_LIST_ID);
     let brevoSyncStatus = "not_configured";
@@ -88,6 +90,14 @@ export async function POST(request: Request) {
       if (!currentToken.exists) throw new Error("Confirmation link already used");
       const currentExpiry = currentToken.data()?.expiresAt as Timestamp | undefined;
       if (!currentExpiry || currentExpiry.toMillis() < Date.now()) throw new Error("Confirmation link expired");
+      tx.set(newsletterRef, {
+        consent: true,
+        marketingEligible: true,
+        status: "active",
+        confirmedAt: FieldValue.serverTimestamp(),
+        brevoSyncStatus,
+        updatedAt: FieldValue.serverTimestamp(),
+      }, { merge: true });
       tx.set(contactRef, {
         consent: true,
         marketingEligible: true,
