@@ -132,6 +132,24 @@ export default function MarketingClient() {
     } catch (error) { setMessage(error instanceof Error ? error.message : "Email Finder চালানো যায়নি।"); }
     finally { setBusy(false); }
   }
+  async function saveFinderLeads() {
+    const leads = finderResults.flatMap((r) => r.emails.map((e) => ({
+      email: e.email, name: "", category: "business", sourceUrl: e.sourceUrl, sourceName: r.website
+    })));
+    if (!leads.length) { setMessage("সংরক্ষণের মতো কোনো প্রকাশ্য ইমেইল নেই।"); return; }
+    setBusy(true); setMessage("");
+    try {
+      let totalSaved = 0, totalSkipped = 0;
+      for (let i = 0; i < leads.length; i += 100) {
+        const result = await api("/api/admin/marketing/leads", { method: "POST", body: JSON.stringify({ leads: leads.slice(i, i + 100) }) });
+        totalSaved += result.saved?.length || 0;
+        totalSkipped += result.skipped?.length || 0;
+      }
+      setMessage(`${totalSaved}টি Consent Pending lead ডেটাবেজে সংরক্ষিত; ${totalSkipped}টি ডুপ্লিকেট/অবৈধ ঠিকানা বাদ। এগুলো Brevo-তে যোগ বা ক্যাম্পেইনে সক্রিয় হয়নি।`);
+    } catch (error) { setMessage(error instanceof Error ? error.message : "লিড সংরক্ষণ করা যায়নি।"); }
+    finally { setBusy(false); }
+  }
+
   function exportFinderCsv() {
     const rows = [["Email", "Website", "Source URL", "Consent status"], ...finderResults.flatMap((r) => r.emails.map((e) => [e.email, r.website, e.sourceUrl, "Not confirmed"]))];
     const csv = rows.map((row) => row.map((v) => '"' + String(v).replaceAll('"', '""') + '"').join(",")).join("\r\n");
@@ -222,7 +240,7 @@ export default function MarketingClient() {
           <p style={{ color: "#667085", fontSize: 12 }}>শুধু প্রকাশ্য ওয়েবপেজ; লগইন, CAPTCHA, ব্যক্তিগত Gmail, ডেটা ব্রোকার বা SMTP probing নয়। ওয়েবসাইটের robots.txt ও নিরাপত্তা সীমা মানা হয়। ফলাফল deliverability-verified নয়।</p>
         </section>
         {finderResults.length > 0 && <section style={panel}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}><h2 style={{ marginTop: 0 }}>Finder results ({finderResults.reduce((n,r)=>n+r.emails.length,0)})</h2><button style={button} onClick={exportFinderCsv}>Export CSV</button></div>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 12, flexWrap: "wrap" }}><h2 style={{ marginTop: 0 }}>Finder results ({finderResults.reduce((n,r)=>n+r.emails.length,0)})</h2><div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}><button style={{ ...button, background: "#067647" }} disabled={busy} onClick={()=>void saveFinderLeads()}>Save as Consent Pending Leads</button><button style={button} onClick={exportFinderCsv}>Export CSV</button></div></div>
           {finderResults.map((r)=><div key={r.website} style={{ padding: "12px 0", borderBottom: "1px solid #e5e7eb" }}><b>{r.website}</b><span style={{ color: "#667085", marginLeft: 8, fontSize: 12 }}>{r.pagesScanned} pages scanned</span>{r.error && <p style={{ color: "#b42318" }}>{r.error}</p>}{r.emails.length ? <div style={{ overflowX: "auto" }}><table style={{ width: "100%", textAlign: "left", borderCollapse: "collapse" }}><thead><tr>{["Email","Source","Consent"].map(x=><th key={x} style={{ padding: 8, borderBottom: "1px solid #e5e7eb" }}>{x}</th>)}</tr></thead><tbody>{r.emails.map(e=><tr key={e.email}><td style={{ padding: 8 }}>{e.email}</td><td style={{ padding: 8 }}><a href={e.sourceUrl} target="_blank" rel="noreferrer">View page</a></td><td style={{ padding: 8, color: "#b54708" }}>Not confirmed</td></tr>)}</tbody></table></div> : !r.error && <p style={{ color: "#667085" }}>কোনো প্রকাশ্য ইমেইল পাওয়া যায়নি।</p>}</div>)}
           <p style={{ color: "#b54708", fontSize: 13, marginBottom: 0 }}>গুরুত্বপূর্ণ: Finder-এ পাওয়া ঠিকানাগুলো স্বয়ংক্রিয়ভাবে Marketing Contacts বা Brevo-তে যোগ হয় না। মালিকের স্পষ্ট সম্মতি ছাড়া প্রচারমূলক ইমেইল পাঠাবেন না।</p>
         </section>}
