@@ -36,21 +36,10 @@ export async function POST(request: Request) {
       name?: string; subject?: string; htmlContent?: string;
       audience?: string; confirmed?: boolean; replyTo?: string;
     };
-    const senderResponse = await fetch("https://api.brevo.com/v3/senders", {
-      headers: { "api-key": apiKey }
-    });
-    if (!senderResponse.ok) return jsonError(new Error("Brevo Sender তালিকা পাওয়া যায়নি। API permission পরীক্ষা করুন।"), 502);
-    const senderPayload = await senderResponse.json() as { senders?: Array<{ id: number; name: string; email: string; active: boolean }> };
-    const availableSenders = senderPayload.senders || [];
-    const configuredSender = String(process.env.BREVO_SENDER_EMAIL || "").trim().toLowerCase();
-    const chosenSender = availableSenders.find((sender) =>
-      sender.active === true && (!configuredSender || sender.email.toLowerCase() === configuredSender)
-    );
-    if (!chosenSender?.email) {
-      return jsonError(new Error("Brevo-তে কোনো সক্রিয় Sender পাওয়া যায়নি। Brevo account থেকে অন্তত একটি sender verify করুন।"), 503);
-    }
-    const senderEmail = chosenSender.email;
-    const senderName = process.env.BREVO_SENDER_NAME || chosenSender.name || "NEXORA INTERNATIONAL TECHNOLOGY";
+    // Use the already-verified sender in the connected Brevo account.
+    // This avoids requiring the API key to have the optional sender-list read permission.
+    const senderEmail = String(process.env.BREVO_SENDER_EMAIL || "computer26training@gmail.com").trim().toLowerCase();
+    const senderName = process.env.BREVO_SENDER_NAME || "NEXORA INTERNATIONAL TECHNOLOGY";
     const name = String(body.name || "").trim().slice(0, 100);
     const subject = String(body.subject || "").trim().slice(0, 150);
     const htmlContent = String(body.htmlContent || "").trim();
