@@ -122,7 +122,7 @@ export default function MarketingClient() {
 
 
   async function findPublicEmails() {
-    const websites = finderInput.split(/[\\n,;]+/).map((v) => v.trim()).filter(Boolean);
+    const websites = finderInput.split(/[\n,;]+/).map((v) => v.trim()).filter(Boolean);
     if (!websites.length) { setMessage("কমপক্ষে একটি ওয়েবসাইট URL লিখুন।"); return; }
     if (websites.length > 5) { setMessage("একবারে সর্বোচ্চ ৫টি ওয়েবসাইট পরীক্ষা করা যাবে।"); return; }
     setBusy(true); setMessage(""); setFinderResults([]);
