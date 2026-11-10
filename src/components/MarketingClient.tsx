@@ -41,11 +41,11 @@ function parsePublicLeadCsv(text: string): Array<{ email: string; name: string; 
   const get = (r: string[], key: string) => { const i = index(key); return i >= 0 ? (r[i] || "").trim() : ""; };
   return rows.slice(1).map((r) => ({
     email: (r[emailIndex] || "").trim().toLowerCase(),
-    name: get(r, "organization") || get(r, "name"),
+    name: get(r, "organization") || get(r, "business") || get(r, "name"),
     category: "business",
     country: get(r, "country"),
     sourceUrl: get(r, "source_url") || get(r, "sourceurl"),
-    sourceName: get(r, "organization") || get(r, "source_name") || get(r, "sourcename") || "Public business directory"
+    sourceName: get(r, "organization") || get(r, "business") || get(r, "source_name") || get(r, "sourcename") || "Public business directory"
   })).filter((lead) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(lead.email) && lead.country && /^https?:\/\//i.test(lead.sourceUrl));
 }
 
