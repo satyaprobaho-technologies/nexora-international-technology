@@ -98,7 +98,7 @@ export default function MarketingClient() {
   }
   async function addReplyAddress() {
     const email = newReplyEmail.trim().toLowerCase();
-    if (!/^[^\\s@]+@gmail\\.com$/i.test(email)) { setMessage("সঠিক @gmail.com ঠিকানা লিখুন।"); return; }
+    if (!/^[^\s@]+@gmail\.com$/i.test(email)) { setMessage("সঠিক @gmail.com ঠিকানা লিখুন।"); return; }
     setBusy(true); setMessage("");
     try {
       await api("/api/admin/marketing/reply-to", { method: "POST", body: JSON.stringify({ email, label: newReplyLabel.trim() }) });
