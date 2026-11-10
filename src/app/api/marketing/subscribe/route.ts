@@ -22,7 +22,7 @@ export async function POST(request: Request) {
     if (String(body.companyWebsite || "").trim()) return Response.json({ message: "ধন্যবাদ! আপনার অনুরোধ গ্রহণ করা হয়েছে।" });
     const email = String(body.email || "").trim().toLowerCase();
     const name = String(body.name || "").trim().slice(0, 100);
-    if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email) || email.length > 254) {
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) {
       return jsonError("সঠিক ইমেইল ঠিকানা লিখুন।");
     }
     if (body.consent !== true) return jsonError("সাবস্ক্রাইব করতে সম্মতির ঘরটি নির্বাচন করুন।");
