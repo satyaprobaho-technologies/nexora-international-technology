@@ -7,11 +7,11 @@ export const runtime = "nodejs";
 function selectedListIds(audience: string) {
   const ids: number[] = [];
   if (audience === "both" || audience === "business") {
-    const id = Number(process.env.BREVO_BUSINESS_LIST_ID);
+    const id = Number(process.env.BREVO_BUSINESS_LIST_ID || "3");
     if (Number.isSafeInteger(id) && id > 0) ids.push(id);
   }
   if (audience === "both" || audience === "individual") {
-    const id = Number(process.env.BREVO_INDIVIDUAL_LIST_ID);
+    const id = Number(process.env.BREVO_INDIVIDUAL_LIST_ID || "4");
     if (Number.isSafeInteger(id) && id > 0) ids.push(id);
   }
   return [...new Set(ids)];
@@ -34,7 +34,7 @@ export async function POST(request: Request) {
     if (!apiKey) return jsonError(new Error("Brevo API Key কনফিগার করা নেই।"), 503);
     const body = await request.json() as {
       name?: string; subject?: string; htmlContent?: string;
-      audience?: string; confirmed?: boolean; replyTo?: string; senderId?: number;
+      audience?: string; confirmed?: boolean; replyTo?: string;
     };
     const senderResponse = await fetch("https://api.brevo.com/v3/senders", {
       headers: { "api-key": apiKey }
@@ -42,10 +42,15 @@ export async function POST(request: Request) {
     if (!senderResponse.ok) return jsonError(new Error("Brevo Sender তালিকা পাওয়া যায়নি। API permission পরীক্ষা করুন।"), 502);
     const senderPayload = await senderResponse.json() as { senders?: Array<{ id: number; name: string; email: string; active: boolean }> };
     const availableSenders = senderPayload.senders || [];
-    const chosenSender = availableSenders.find((sender) => sender.id === Number(body.senderId) && sender.active === true);
-    if (!chosenSender) return jsonError(new Error("নির্বাচিত Gmail Sender Brevo-তে যাচাইকৃত/সক্রিয় নয়। Brevo-তে verify করে আবার নির্বাচন করুন।"), 400);
+    const configuredSender = String(process.env.BREVO_SENDER_EMAIL || "").trim().toLowerCase();
+    const chosenSender = availableSenders.find((sender) =>
+      sender.active === true && (!configuredSender || sender.email.toLowerCase() === configuredSender)
+    );
+    if (!chosenSender?.email) {
+      return jsonError(new Error("Brevo-তে কোনো সক্রিয় Sender পাওয়া যায়নি। Brevo account থেকে অন্তত একটি sender verify করুন।"), 503);
+    }
     const senderEmail = chosenSender.email;
-    const senderName = chosenSender.name || process.env.BREVO_SENDER_NAME || "NEXORA INTERNATIONAL TECHNOLOGY";
+    const senderName = process.env.BREVO_SENDER_NAME || chosenSender.name || "NEXORA INTERNATIONAL TECHNOLOGY";
     const name = String(body.name || "").trim().slice(0, 100);
     const subject = String(body.subject || "").trim().slice(0, 150);
     const htmlContent = String(body.htmlContent || "").trim();
