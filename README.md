@@ -38,6 +38,25 @@ See `.env.example`. Payment processing must remain disabled until approved merch
 - `SSLCOMMERZ_STORE_ID=`
 - `SSLCOMMERZ_STORE_PASSWORD=`
 
+## Marketing module
+The verified administrator can open `/admin/marketing` from the Admin Dashboard. The module supports consent-based business and individual contact lists, CSV import, contact search, campaign composition, and immediate Brevo campaign dispatch.
+
+### Brevo setup (required before live sending)
+1. Create/verify a Brevo account and authenticate the sender domain/email.
+2. Create two contact lists in Brevo: `NEXORA - Business` and `NEXORA - Individuals`; copy each numeric list ID.
+3. Add the following server-only variables in Vercel Project Settings → Environment Variables:
+   - `BREVO_API_KEY`
+   - `BREVO_SENDER_EMAIL` (must be a verified sender in Brevo)
+   - `BREVO_SENDER_NAME` (optional)
+   - `BREVO_BUSINESS_LIST_ID`
+   - `BREVO_INDIVIDUAL_LIST_ID`
+   - `FIREBASE_SERVICE_ACCOUNT_JSON` (if not already configured for the existing server APIs)
+4. Redeploy the Vercel project after saving the variables.
+5. Import only contacts who explicitly agreed to receive promotional emails. Record the consent source accurately. Do not use scraped, purchased, or guessed personal email lists.
+6. Send a test campaign to internal addresses first and confirm the unsubscribe footer and delivery.
+
+The API key and Firebase service account remain server-side. The app stores contacts and campaign records in Firestore; Brevo handles contact-list sync, unsubscribe processing and campaign delivery. CSV import currently expects Email in column 1 and Name in column 2; save Excel sheets as CSV before importing. Sending is disabled until Brevo API key, verified sender and both list IDs are configured.
+
 ## Requirements
 - Node.js >=20.9
 - npm
