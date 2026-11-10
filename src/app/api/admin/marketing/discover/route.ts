@@ -89,7 +89,10 @@ export async function POST(request: Request) {
         if (!response.ok || !(response.headers.get("content-type") || "").includes("text/html")) throw new Error("Directory page HTML হিসেবে পাওয়া যায়নি।");
         const html = (await response.text()).slice(0, 900000);
         const before = candidates.size;
+        let inspectedLinks = 0;
         for (const match of html.matchAll(/<a\b([^>]*?)href\s*=\s*(["'])(.*?)\2([^>]*)>([\s\S]*?)<\/a>/gi)) {
+          inspectedLinks += 1;
+          if (inspectedLinks > 200) break;
           const href = match[3];
           const label = match[5].replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 140);
           try {
