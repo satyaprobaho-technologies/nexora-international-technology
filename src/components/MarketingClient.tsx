@@ -7,6 +7,7 @@ import { ADMIN_EMAIL, auth } from "@/lib/firebase";
 
 type Contact = { id: string; email: string; name?: string; segment: string; consent?: boolean; status?: string; brevoSyncStatus?: string };
 type Campaign = { id: string; name?: string; subject?: string; audience?: string; status?: string; createdAt?: { seconds?: number } };
+type Sender = { id: number; name: string; email: string; active: boolean };
 type DraftContact = { email: string; name: string; segment: "business" | "individual"; consent: boolean; consentSource: string };
 
 const panel: React.CSSProperties = { background: "#fff", border: "1px solid #e5e7eb", borderRadius: 18, padding: 22, marginBottom: 18 };
@@ -35,6 +36,10 @@ export default function MarketingClient() {
   const [ready, setReady] = useState(false);
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [senders, setSenders] = useState<Sender[]>([]);
+  const [selectedSenderId, setSelectedSenderId] = useState("");
+  const [newSenderEmail, setNewSenderEmail] = useState("");
+  const [newSenderName, setNewSenderName] = useState("NEXORA INTERNATIONAL TECHNOLOGY");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const [tab, setTab] = useState<"contacts" | "campaigns">("contacts");
@@ -62,6 +67,15 @@ export default function MarketingClient() {
     try {
       const [c, m] = await Promise.all([api("/api/admin/marketing/contacts"), api("/api/admin/marketing/campaigns")]);
       setContacts(c.contacts || []); setCampaigns(m.campaigns || []);
+      try {
+        const s = await api("/api/admin/marketing/senders");
+        setSenders(s.senders || []);
+        const active = (s.senders || []).filter((sender: Sender) => sender.active);
+        setSelectedSenderId((current) => current || String(active[0]?.id || ""));
+      } catch {
+        setSenders([]);
+        setMessage("Brevo Sender তালিকা লোড হয়নি। API Key-তে Sender read permission দিন অথবা Brevo-তে Sender verify করুন।");
+      }
     } catch (error) { setMessage(error instanceof Error ? error.message : "ডেটা লোড করা যায়নি।"); }
   }
   useEffect(() => { if (user?.email === ADMIN_EMAIL && user.emailVerified) void load(); }, [user]);
@@ -87,11 +101,29 @@ export default function MarketingClient() {
     await importContacts(items);
     e.target.value = "";
   }
+  async function addSender() {
+    if (!/^[^\s@]+@gmail\.com$/i.test(newSenderEmail.trim())) {
+      setMessage("সঠিক @gmail.com ঠিকানা লিখুন।"); return;
+    }
+    setBusy(true); setMessage("");
+    try {
+      const result = await api("/api/admin/marketing/senders", {
+        method: "POST",
+        body: JSON.stringify({ email: newSenderEmail.trim(), name: newSenderName.trim() })
+      });
+      setMessage(result.message || "Sender যোগ করার অনুরোধ পাঠানো হয়েছে।");
+      setNewSenderEmail("");
+      await load();
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Gmail Sender যোগ করা যায়নি।");
+    } finally { setBusy(false); }
+  }
+
   async function sendCampaign() {
     if (!window.confirm("আপনি কি নির্বাচিত সম্মতিপ্রাপ্ত গ্রাহকদের কাছে এই ইমেইল ক্যাম্পেইন পাঠাতে চান? পাঠানোর পর এটি ফিরিয়ে নেওয়া যাবে না।")) return;
     setBusy(true); setMessage("");
     try {
-      const result = await api("/api/admin/marketing/campaigns", { method: "POST", body: JSON.stringify({ name: campaignName, subject, htmlContent: html, audience, confirmed: true }) });
+      const result = await api("/api/admin/marketing/campaigns", { method: "POST", body: JSON.stringify({ name: campaignName, subject, htmlContent: html, audience, senderId: Number(selectedSenderId), confirmed: true }) });
       setMessage(`Brevo ক্যাম্পেইন #${result.campaignId} পাঠানোর জন্য গ্রহণ করেছে।`);
       await load();
     } catch (error) { setMessage(error instanceof Error ? error.message : "ক্যাম্পেইন পাঠানো যায়নি।"); }
@@ -137,9 +169,19 @@ export default function MarketingClient() {
           <p style={{ color: "#667085" }}>পাঠানোর আগে বিষয়, বার্তা ও প্রাপক যাচাই করুন। Brevo API-এর মাধ্যমে ক্যাম্পেইন পাঠানো হবে।</p>
           <label style={{ display: "block", fontWeight: 700, marginTop: 12 }}>Campaign name<input style={field} value={campaignName} onChange={e=>setCampaignName(e.target.value)} /></label>
           <label style={{ display: "block", fontWeight: 700, marginTop: 12 }}>Email subject<input style={field} value={subject} onChange={e=>setSubject(e.target.value)} /></label>
+          <section style={{ border: "1px solid #dbeafe", borderRadius: 12, padding: 14, marginTop: 14 }}>
+            <h3 style={{ margin: "0 0 8px" }}>Add Gmail sender (১০টির বেশি যোগ করা যাবে)</h3>
+            <label style={{ display: "block", fontWeight: 700, marginTop: 8 }}>Gmail address<input style={field} type="email" value={newSenderEmail} onChange={e=>setNewSenderEmail(e.target.value)} placeholder="yourname@gmail.com" /></label>
+            <label style={{ display: "block", fontWeight: 700, marginTop: 8 }}>Sender name<input style={field} value={newSenderName} onChange={e=>setNewSenderName(e.target.value)} /></label>
+            <button type="button" style={{ ...button, marginTop: 10 }} disabled={busy || !newSenderEmail.trim()} onClick={()=>void addSender()}>{busy ? "Please wait…" : "Add & send verification"}</button>
+            <p style={{ color: "#667085", fontSize: 12, marginBottom: 0 }}>Brevo প্রতিটি Gmail ঠিকানায় verification email পাঠাবে। Inbox/Spam থেকে verify না হওয়া পর্যন্ত সেটি campaign sender হিসেবে ব্যবহার করা যাবে না।</p>
+          </section>
+          <label style={{ display: "block", fontWeight: 700, marginTop: 12 }}>Verified Gmail sender<select style={field} value={selectedSenderId} onChange={e=>setSelectedSenderId(e.target.value)}><option value="">Sender নির্বাচন করুন</option>{senders.filter(s=>s.active).map(s=><option key={s.id} value={s.id}>{s.name} — {s.email}</option>)}</select></label>
+          <div style={{ color: "#667085", fontSize: 13, marginTop: 8 }}>যাচাইকৃত Sender: {senders.filter(s=>s.active).length}টি · মোট Sender: {senders.length}টি <button type="button" style={{ ...button, marginLeft: 8, padding: "6px 10px" }} disabled={busy} onClick={()=>void load()}>Refresh</button></div>
+          {!senders.length && <p style={{ color: "#b54708" }}>Brevo-তে এখনো Sender পাওয়া যায়নি। প্রথমে Gmail যোগ করুন ও verify করুন।</p>}
           <label style={{ display: "block", fontWeight: 700, marginTop: 12 }}>Recipients<select style={field} value={audience} onChange={e=>setAudience(e.target.value)}><option value="both">ব্যবসা + ব্যক্তিগত গ্রাহক</option><option value="business">শুধু ব্যবসাপ্রতিষ্ঠান</option><option value="individual">শুধু ব্যক্তিগত গ্রাহক</option></select></label>
           <label style={{ display: "block", fontWeight: 700, marginTop: 12 }}>Email content (HTML)<textarea style={{ ...field, minHeight: 220, fontFamily: "monospace" }} value={html} onChange={e=>setHtml(e.target.value)} /></label>
-          <button style={{ ...button, marginTop: 16 }} disabled={busy || !contacts.some(c=>c.consent && c.status==="active")} onClick={()=>void sendCampaign()}>{busy ? "Please wait…" : "Send campaign now"}</button>
+          <button style={{ ...button, marginTop: 16 }} disabled={busy || !selectedSenderId || !contacts.some(c=>c.consent && c.status==="active")} onClick={()=>void sendCampaign()}>{busy ? "Please wait…" : "Send campaign now"}</button>
           {!contacts.length && <p style={{ color: "#b54708" }}>প্রথমে সম্মতিপ্রাপ্ত কন্টাক্ট যোগ করুন এবং Brevo list configuration সম্পন্ন করুন।</p>}
         </section>
         <section style={panel}><h2 style={{ marginTop: 0 }}>Recent campaigns</h2>{campaigns.length ? campaigns.map(c=><article key={c.id} style={{ padding: 12, borderBottom: "1px solid #e5e7eb" }}><b>{c.name}</b><div style={{ color: "#667085", fontSize: 13 }}>{c.subject} · {c.audience} · {c.status}</div></article>) : <p style={{ color: "#667085" }}>এখনো কোনো ক্যাম্পেইন নেই।</p>}</section>
