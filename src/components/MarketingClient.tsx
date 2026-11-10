@@ -153,7 +153,7 @@ export default function MarketingClient() {
 
   async function saveFinderLeads() {
     const leads = finderResults.flatMap((r) => r.emails.map((e) => ({
-      email: e.email, name: "", category: "business", sourceUrl: e.sourceUrl, sourceName: r.website
+      email: e.email, name: "", category: "business", country: finderCountry, sourceUrl: e.sourceUrl, sourceName: r.website
     })));
     if (!leads.length) { setMessage("সংরক্ষণের মতো কোনো প্রকাশ্য ইমেইল নেই।"); return; }
     setBusy(true); setMessage("");
