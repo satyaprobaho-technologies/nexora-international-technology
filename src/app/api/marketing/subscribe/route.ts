@@ -85,7 +85,7 @@ export async function POST(request: Request) {
     const contactRef = adminDb.collection("marketingContacts").doc(contactId);
     const newsletterRef = adminDb.collection("newsletterSignups").doc(contactId);
     const existing = await contactRef.get();
-    if (existing.exists && existing.data()?.consent === true && existing.data()?.status === "active") {
+    if (existing.exists && existing.data()?.consentVersion === "newsletter-v2-double-opt-in" && existing.data()?.consent === true && existing.data()?.status === "active") {
       return Response.json({ message: "এই ইমেইলটি ইতিমধ্যে নিশ্চিত করা আছে।" });
     }
 
@@ -112,6 +112,7 @@ export async function POST(request: Request) {
       tx.set(newsletterRef, {
         email, name, consent: true,
         consentSource: "NEXORA website newsletter signup",
+        consentVersion: "newsletter-v2-double-opt-in",
         status: "pending_confirmation", marketingEligible: false,
         brevoSyncStatus: "pending_confirmation", expiresAt,
         createdAt: existing.exists ? existing.data()?.createdAt || FieldValue.serverTimestamp() : FieldValue.serverTimestamp(),
