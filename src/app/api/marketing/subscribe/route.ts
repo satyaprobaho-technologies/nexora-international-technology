@@ -8,7 +8,6 @@ type SubscribeInput = {
   name?: string;
   email?: string;
   consent?: boolean;
-  companyWebsite?: string;
 };
 
 function jsonError(message: string, status = 400) {
@@ -54,10 +53,6 @@ async function sendConfirmationEmail(email: string, name: string, confirmUrl: st
 export async function POST(request: Request) {
   try {
     const body = await request.json() as SubscribeInput;
-    if (String(body.companyWebsite || "").trim()) {
-      return Response.json({ message: "ধন্যবাদ! আপনার অনুরোধ গ্রহণ করা হয়েছে।" });
-    }
-
     const email = String(body.email || "").trim().toLowerCase();
     const name = String(body.name || "").trim().slice(0, 100);
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 254) {
