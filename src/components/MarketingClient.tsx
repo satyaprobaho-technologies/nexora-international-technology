@@ -6,7 +6,7 @@ import Link from "next/link";
 import { ADMIN_EMAIL, auth } from "@/lib/firebase";
 
 type Contact = { id: string; email: string; name?: string; segment: string; consent?: boolean; status?: string; brevoSyncStatus?: string };
-type PublicLead = { id: string; email: string; name?: string; sourceName?: string; sourceUrl?: string; consentStatus?: string };
+type PublicLead = { id: string; email: string; name?: string; sourceName?: string; sourceUrl?: string; country?: string; consentStatus?: string };
 type SignupStats = { total: number; confirmed: number; pending: number; today: number; last7Days: Array<{ date: string; count: number }> };
 type Campaign = { id: string; name?: string; subject?: string; audience?: string; status?: string; providerStatus?: string | null; analytics?: { sent: number; delivered: number; opens: number; openRate: number; clickers: number; clickRate: number; unsubscriptions: number; bounces: number } | null; createdAt?: { seconds?: number } };
 type ReplyAddress = { id: string; email: string; label: string; active: boolean };
@@ -50,6 +50,7 @@ export default function MarketingClient() {
   const [message, setMessage] = useState("");
   const [tab, setTab] = useState<"contacts" | "campaigns" | "finder">("contacts");
   const [finderInput, setFinderInput] = useState("");
+  const [finderCountry, setFinderCountry] = useState("United States");
   const [finderResults, setFinderResults] = useState<FinderResult[]>([]);
   const [segment, setSegment] = useState<"business" | "individual">("business");
   const [consent, setConsent] = useState(false);
@@ -133,7 +134,7 @@ export default function MarketingClient() {
       const found: FinderResult[] = result.results || [];
       setFinderResults(found);
       const leads = found.flatMap((r) => r.emails.map((e) => ({
-        email: e.email, name: "", category: "business", sourceUrl: e.sourceUrl, sourceName: r.website
+        email: e.email, name: "", category: "business", country: finderCountry, sourceUrl: e.sourceUrl, sourceName: r.website
       })));
       let totalSaved = 0, totalSkipped = 0;
       for (let i = 0; i < leads.length; i += 100) {
@@ -152,7 +153,7 @@ export default function MarketingClient() {
 
   async function saveFinderLeads() {
     const leads = finderResults.flatMap((r) => r.emails.map((e) => ({
-      email: e.email, name: "", category: "business", sourceUrl: e.sourceUrl, sourceName: r.website
+      email: e.email, name: "", category: "business", country: finderCountry, sourceUrl: e.sourceUrl, sourceName: r.website
     })));
     if (!leads.length) { setMessage("সংরক্ষণের মতো কোনো প্রকাশ্য ইমেইল নেই।"); return; }
     setBusy(true); setMessage("");
@@ -240,7 +241,7 @@ export default function MarketingClient() {
         <section style={panel}>
           <h2 style={{ marginTop: 0 }}>Public Business Leads — Consent Pending ({publicLeads.length})</h2>
           <p style={{ color: "#667085" }}>প্রকাশ্য ওয়েবসাইট থেকে পাওয়া যোগাযোগের ঠিকানা। এগুলো মার্কেটিং সম্মতিপ্রাপ্ত নয় এবং Brevo campaign-এ পাঠানো হয় না।</p>
-          <div style={{ overflowX: "auto" }}><table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}><thead><tr>{["Email","Source","Consent","Source URL"].map(x=><th key={x} style={{ padding: 10, borderBottom: "1px solid #e5e7eb", color: "#667085" }}>{x}</th>)}</tr></thead><tbody>{publicLeads.map(lead=><tr key={lead.id}><td style={{ padding: 10, borderBottom: "1px solid #f0f1f3" }}>{lead.email}</td><td style={{ padding: 10, borderBottom: "1px solid #f0f1f3" }}>{lead.sourceName || "—"}</td><td style={{ padding: 10, borderBottom: "1px solid #f0f1f3", color: "#b54708" }}>Pending</td><td style={{ padding: 10, borderBottom: "1px solid #f0f1f3" }}>{lead.sourceUrl ? <a href={lead.sourceUrl} target="_blank" rel="noreferrer">Source</a> : "—"}</td></tr>)}</tbody></table></div>
+          <div style={{ overflowX: "auto" }}><table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}><thead><tr>{["Email","Country","Source","Consent","Source URL"].map(x=><th key={x} style={{ padding: 10, borderBottom: "1px solid #e5e7eb", color: "#667085" }}>{x}</th>)}</tr></thead><tbody>{publicLeads.map(lead=><tr key={lead.id}><td style={{ padding: 10, borderBottom: "1px solid #f0f1f3" }}>{lead.email}</td><td style={{ padding: 10, borderBottom: "1px solid #f0f1f3" }}>{lead.country || "Unknown"}</td><td style={{ padding: 10, borderBottom: "1px solid #f0f1f3" }}>{lead.sourceName || "—"}</td><td style={{ padding: 10, borderBottom: "1px solid #f0f1f3", color: "#b54708" }}>Pending</td><td style={{ padding: 10, borderBottom: "1px solid #f0f1f3" }}>{lead.sourceUrl ? <a href={lead.sourceUrl} target="_blank" rel="noreferrer">Source</a> : "—"}</td></tr>)}</tbody></table></div>
         </section>
       </> : tab==="campaigns" ? <>
         <section style={panel}>
@@ -263,6 +264,7 @@ export default function MarketingClient() {
         <section style={panel}>
           <h2 style={{ marginTop: 0 }}>Public Website Email Finder</h2>
           <p style={{ color: "#667085" }}>কোম্পানির নিজস্ব ওয়েবসাইটে প্রকাশ্যে থাকা যোগাযোগের ইমেইল খুঁজুন। প্রতি বার সর্বোচ্চ ৫টি ওয়েবসাইট; Home, Contact, About ও নীতিমালা পৃষ্ঠা দেখা হবে। কোনো পেইড API প্রয়োজন নেই।</p>
+          <label style={{ display: "block", fontWeight: 700 }}>Country / দেশ (এই ব্যাচের সব ওয়েবসাইট এই দেশের অধীনে যাবে)<input style={field} value={finderCountry} onChange={e=>setFinderCountry(e.target.value)} placeholder="যেমন: Bangladesh, United States, United Kingdom" /></label>
           <label style={{ display: "block", fontWeight: 700 }}>Website URL / Domain (প্রতি লাইনে একটি)<textarea style={{ ...field, minHeight: 120 }} value={finderInput} onChange={e=>setFinderInput(e.target.value)} placeholder={"https://example.com\nexample.org"} /></label>
           <button style={{ ...button, marginTop: 12 }} disabled={busy || !finderInput.trim()} onClick={()=>void findPublicEmails()}>{busy ? "Searching public pages…" : "Find public emails"}</button>
           <p style={{ color: "#667085", fontSize: 12 }}>শুধু প্রকাশ্য ওয়েবপেজ; লগইন, CAPTCHA, ব্যক্তিগত Gmail, ডেটা ব্রোকার বা SMTP probing নয়। ওয়েবসাইটের robots.txt ও নিরাপত্তা সীমা মানা হয়। ফলাফল deliverability-verified নয়।</p>
