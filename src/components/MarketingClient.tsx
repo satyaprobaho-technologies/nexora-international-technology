@@ -41,6 +41,8 @@ export default function MarketingClient() {
   const [contacts, setContacts] = useState<Contact[]>([]);
   const [signupStats, setSignupStats] = useState<SignupStats>({ total: 0, confirmed: 0, pending: 0, today: 0, last7Days: [] });
   const [publicLeads, setPublicLeads] = useState<PublicLead[]>([]);
+  const [leadsCursor, setLeadsCursor] = useState<string | null>(null);
+  const [leadsHasMore, setLeadsHasMore] = useState(false);
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [replyAddresses, setReplyAddresses] = useState<ReplyAddress[]>([]);
   const [replyTo, setReplyTo] = useState("");
@@ -71,11 +73,27 @@ export default function MarketingClient() {
     if (!response.ok) throw new Error(data.error || data.message || "Request failed");
     return data;
   }
+  async function loadLeads(cursor?: string, append = false) {
+    const params = new URLSearchParams({ limit: "100" });
+    if (cursor) params.set("cursor", cursor);
+    const result = await api(`/api/admin/marketing/leads?${params.toString()}`);
+    setPublicLeads((current) => append ? [...current, ...(result.leads || [])] : (result.leads || []));
+    setLeadsCursor(result.nextCursor || null);
+    setLeadsHasMore(Boolean(result.hasMore));
+  }
+  async function loadMoreLeads() {
+    if (!leadsCursor || busy) return;
+    setBusy(true);
+    try { await loadLeads(leadsCursor, true); }
+    catch (error) { setMessage(error instanceof Error ? error.message : "পরের পৃষ্ঠা লোড করা যায়নি।"); }
+    finally { setBusy(false); }
+  }
   async function load() {
     if (!user || user.email !== ADMIN_EMAIL || !user.emailVerified) return;
     try {
-      const [c, m, r, l, s] = await Promise.all([api("/api/admin/marketing/contacts"), api("/api/admin/marketing/campaigns"), api("/api/admin/marketing/reply-to"), api("/api/admin/marketing/leads"), api("/api/admin/marketing/signup-stats")]);
-      setContacts(c.contacts || []); setCampaigns(m.campaigns || []); setReplyAddresses(r.addresses || []); setPublicLeads(l.leads || []); setSignupStats(s);
+      const [c, m, r, s] = await Promise.all([api("/api/admin/marketing/contacts"), api("/api/admin/marketing/campaigns"), api("/api/admin/marketing/reply-to"), api("/api/admin/marketing/signup-stats")]);
+      setContacts(c.contacts || []); setCampaigns(m.campaigns || []); setReplyAddresses(r.addresses || []); setSignupStats(s);
+      await loadLeads();
     } catch (error) { setMessage(error instanceof Error ? error.message : "ডেটা লোড করা যায়নি।"); }
   }
   useEffect(() => { if (user?.email === ADMIN_EMAIL && user.emailVerified) void load(); }, [user]);
@@ -242,6 +260,8 @@ export default function MarketingClient() {
           <h2 style={{ marginTop: 0 }}>Public Business Leads — Consent Pending ({publicLeads.length})</h2>
           <p style={{ color: "#667085" }}>প্রকাশ্য ওয়েবসাইট থেকে পাওয়া যোগাযোগের ঠিকানা। এগুলো মার্কেটিং সম্মতিপ্রাপ্ত নয় এবং Brevo campaign-এ পাঠানো হয় না।</p>
           <div style={{ overflowX: "auto" }}><table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}><thead><tr>{["Email","Country","Source","Consent","Source URL"].map(x=><th key={x} style={{ padding: 10, borderBottom: "1px solid #e5e7eb", color: "#667085" }}>{x}</th>)}</tr></thead><tbody>{publicLeads.map(lead=><tr key={lead.id}><td style={{ padding: 10, borderBottom: "1px solid #f0f1f3" }}>{lead.email}</td><td style={{ padding: 10, borderBottom: "1px solid #f0f1f3" }}>{lead.country || "Unknown"}</td><td style={{ padding: 10, borderBottom: "1px solid #f0f1f3" }}>{lead.sourceName || "—"}</td><td style={{ padding: 10, borderBottom: "1px solid #f0f1f3", color: "#b54708" }}>Pending</td><td style={{ padding: 10, borderBottom: "1px solid #f0f1f3" }}>{lead.sourceUrl ? <a href={lead.sourceUrl} target="_blank" rel="noreferrer">Source</a> : "—"}</td></tr>)}</tbody></table></div>
+          <p style={{ color: "#667085", fontSize: 12 }}>এই পৃষ্ঠায় {publicLeads.length}টি লিড দেখানো হচ্ছে।</p>
+          {leadsHasMore && <button style={button} disabled={busy} onClick={()=>void loadMoreLeads()}>{busy ? "Loading…" : "আরও ১০০টি লিড দেখুন"}</button>}
         </section>
       </> : tab==="campaigns" ? <>
         <section style={panel}>
