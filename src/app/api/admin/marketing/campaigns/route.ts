@@ -21,7 +21,48 @@ export async function GET(request: Request) {
   try {
     await requireMarketingAdmin(request);
     const snapshot = await adminDb.collection("marketingCampaigns").orderBy("createdAt", "desc").limit(50).get();
-    return Response.json({ campaigns: snapshot.docs.map((item) => ({ id: item.id, ...item.data() })) });
+    const apiKey = process.env.BREVO_API_KEY;
+    const campaigns = await Promise.all(snapshot.docs.map(async (item) => {
+      const data = item.data();
+      const campaignId = Number(data.brevoCampaignId);
+      if (!apiKey || !Number.isSafeInteger(campaignId) || campaignId <= 0) {
+        return { id: item.id, ...data, analytics: null };
+      }
+      try {
+        const response = await fetch(`https://api.brevo.com/v3/emailCampaigns/${campaignId}?statistics=globalStats`, {
+          headers: { "api-key": apiKey }, cache: "no-store"
+        });
+        if (!response.ok) return { id: item.id, ...data, analytics: null };
+        const report = await response.json() as {
+          status?: string;
+          statistics?: { globalStats?: {
+            sent?: number; delivered?: number; viewed?: number; opensRate?: number;
+            clickers?: number; uniqueClicks?: number; unsubscriptions?: number;
+            hardBounces?: number; softBounces?: number;
+          } }
+        };
+        const stats = report.statistics?.globalStats;
+        const delivered = Number(stats?.delivered || 0);
+        const clickers = Number(stats?.clickers || 0);
+        return {
+          id: item.id, ...data,
+          providerStatus: report.status || null,
+          analytics: stats ? {
+            sent: Number(stats.sent || 0),
+            delivered,
+            opens: Number(stats.viewed || 0),
+            openRate: Number(stats.opensRate || 0),
+            clickers,
+            clickRate: delivered > 0 ? Number((clickers / delivered * 100).toFixed(2)) : 0,
+            unsubscriptions: Number(stats.unsubscriptions || 0),
+            bounces: Number(stats.hardBounces || 0) + Number(stats.softBounces || 0)
+          } : null
+        };
+      } catch {
+        return { id: item.id, ...data, analytics: null };
+      }
+    }));
+    return Response.json({ campaigns });
   } catch (error) {
     return jsonError(error, error instanceof Error && error.message.includes("Authentication") ? 401 : 403);
   }
