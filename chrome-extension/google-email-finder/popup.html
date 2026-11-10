@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NEXORA Email Finder</title><style>
+body{font:14px Arial,sans-serif;width:330px;margin:0;padding:16px;color:#172033}h2{font-size:17px;margin:0 0 12px}label{display:block;font-weight:600;margin:12px 0 5px}select,input,button{width:100%;box-sizing:border-box;padding:10px;border:1px solid #cbd5e1;border-radius:8px;font:inherit}button{background:#155eef;color:white;border:0;font-weight:700;margin-top:12px;cursor:pointer}button.secondary{background:#e8eefc;color:#153e8a}#status{margin-top:12px;line-height:1.5;white-space:pre-wrap}.note{font-size:12px;color:#596579;line-height:1.4;margin-top:10px}
+</style></head><body>
+<h2>NEXORA Google Business Email Finder</h2>
+<label for="country">Country</label><input id="country" placeholder="e.g. Bangladesh">
+<label for="category">Business category</label><input id="category" placeholder="e.g. Hotel, Agriculture, Construction">
+<button id="collect">Collect visible emails from this Google page</button>
+<button id="export" class="secondary" disabled>Export CSV</button>
+<div id="status">Open a Google Search results page, then click Collect.</div>
+<p class="note">Only emails visibly displayed on the current Google results page are collected. Review each source before use. No background scraping, login bypass, or automatic marketing subscription.</p>
+<script src="popup.js"></script></body></html>
