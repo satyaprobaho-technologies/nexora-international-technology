@@ -82,7 +82,7 @@ export async function POST(request: Request) {
     const senderName = process.env.BREVO_SENDER_NAME || "NEXORA INTERNATIONAL TECHNOLOGY";
     const replyTo = String(body.replyTo || "").trim().toLowerCase();
     if (replyTo) {
-      if (!/^[^\\s@]+@gmail\\.com$/i.test(replyTo)) return jsonError(new Error("শুধু বৈধ Gmail Reply-To ঠিকানা ব্যবহার করুন।"));
+      if (!/^[^\s@]+@gmail\.com$/i.test(replyTo)) return jsonError(new Error("শুধু বৈধ Gmail Reply-To ঠিকানা ব্যবহার করুন।"));
       const mailbox = await adminDb.collection("marketingReplyToAddresses").doc(replyTo).get();
       if (!mailbox.exists || mailbox.data()?.active !== true) {
         return jsonError(new Error("নির্বাচিত Reply-To Gmail ঠিকানাটি Admin Panel-এ সংরক্ষিত/সক্রিয় নয়।"));
