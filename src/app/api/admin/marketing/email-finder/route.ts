@@ -90,7 +90,7 @@ export async function POST(request: Request) {
     if (!websites.length) return jsonError(new Error("কমপক্ষে একটি ওয়েবসাইট URL দিন।"));
     const results = await Promise.all(websites.map(async (website) => {
       try {
-        const start = await safeUrl(/^https?:\\/\\//i.test(website) ? website : "https://" + website);
+        const start = await safeUrl(/^https?:\/\//i.test(website) ? website : "https://" + website);
         const origin = start.origin;
         let robots = "";
         try {
