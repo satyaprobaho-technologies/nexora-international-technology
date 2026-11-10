@@ -1,4 +1,4 @@
-import { FieldValue } from "firebase-admin/firestore";
+import { FieldValue, Timestamp } from "firebase-admin/firestore";
 import { adminDb } from "@/lib/firebase-admin";
 import { jsonError, requireMarketingAdmin } from "@/lib/marketing-auth";
 
@@ -23,11 +23,42 @@ export async function GET(request: Request) {
     const snapshot = await query.get();
     const hasMore = snapshot.docs.length > pageSize;
     const docs = snapshot.docs.slice(0, pageSize);
+
+    // Daily lead metrics use Bangladesh local calendar days (UTC+6).
+    // Metrics are best-effort so a stats query failure never blocks the lead list.
+    let stats: { total: number; today: number; averagePerDay: number; last7Days: Array<{ date: string; count: number }> } | null = null;
+    try {
+      const dhakaNow = new Date(Date.now() + 6 * 60 * 60 * 1000);
+      const todayStartUtc = Date.UTC(dhakaNow.getUTCFullYear(), dhakaNow.getUTCMonth(), dhakaNow.getUTCDate()) - 6 * 60 * 60 * 1000;
+      const dailyQueries = Array.from({ length: 7 }, (_, index) => {
+        const startMs = todayStartUtc - (6 - index) * 24 * 60 * 60 * 1000;
+        const endMs = startMs + 24 * 60 * 60 * 1000;
+        const date = new Date(startMs + 6 * 60 * 60 * 1000).toISOString().slice(0, 10);
+        return collection
+          .where("createdAt", ">=", Timestamp.fromDate(new Date(startMs)))
+          .where("createdAt", "<", Timestamp.fromDate(new Date(endMs)))
+          .count()
+          .get()
+          .then((result) => ({ date, count: result.data().count }));
+      });
+      const [totalResult, last7Days] = await Promise.all([collection.count().get(), Promise.all(dailyQueries)]);
+      const totalAddedLast7Days = last7Days.reduce((sum, day) => sum + day.count, 0);
+      stats = {
+        total: totalResult.data().count,
+        today: last7Days[last7Days.length - 1]?.count || 0,
+        averagePerDay: Math.round((totalAddedLast7Days / 7) * 100) / 100,
+        last7Days
+      };
+    } catch {
+      stats = null;
+    }
+
     return Response.json({
       leads: docs.map((doc) => ({ id: doc.id, ...doc.data() })),
       hasMore,
       nextCursor: hasMore && docs.length ? docs[docs.length - 1].id : null,
-      pageSize
+      pageSize,
+      stats
     });
   } catch (error) {
     return jsonError(error, error instanceof Error && error.message.includes("Authentication") ? 401 : 403);
