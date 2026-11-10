@@ -171,6 +171,24 @@ export default function MarketingClient() {
     } finally { setBusy(false); e.target.value = ""; }
   }
 
+  async function handlePublicLeadFile(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]; if (!file) return;
+    if (!file.name.toLowerCase().endsWith(".csv")) { setMessage("শুধু CSV ফাইল আপলোড করুন।"); return; }
+    setBusy(true); setMessage("");
+    try {
+      const leads = parsePublicLeadCsv(await file.text());
+      if (!leads.length) throw new Error("CSV-তে বৈধ email, country ও source_url সহ কোনো lead পাওয়া যায়নি।");
+      let saved = 0, skipped = 0;
+      for (let i = 0; i < leads.length; i += 400) {
+        const result = await api("/api/admin/marketing/leads", { method: "POST", body: JSON.stringify({ leads: leads.slice(i, i + 400) }) });
+        saved += result.saved?.length || 0; skipped += result.skipped?.length || 0;
+      }
+      await loadLeads();
+      setMessage(`${saved}টি public lead Consent Pending হিসেবে ওয়েবসাইটের ডেটাবেজে যোগ হয়েছে; ${skipped}টি duplicate/invalid বাদ গেছে। এগুলো Brevo-তে পাঠানো হয়নি।`);
+    } catch (error) { setMessage(error instanceof Error ? error.message : "CSV import ব্যর্থ হয়েছে।"); }
+    finally { setBusy(false); e.target.value = ""; }
+  }
+
   async function addReplyAddress() {
     const email = newReplyEmail.trim().toLowerCase();
     if (!/^[^\s@]+@gmail\.com$/i.test(email)) { setMessage("সঠিক @gmail.com ঠিকানা লিখুন।"); return; }
@@ -320,6 +338,11 @@ export default function MarketingClient() {
         <section style={panel}>
           <h2 style={{ marginTop: 0 }}>Contact database ({filtered.length})</h2><input style={field} value={search} onChange={e=>setSearch(e.target.value)} placeholder="ইমেইল বা নাম দিয়ে খুঁজুন"/>
           <div style={{ overflowX: "auto", marginTop: 12 }}><table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}><thead><tr>{["Email","Name","Category","Consent","Brevo sync"].map(x=><th key={x} style={{ padding: 10, borderBottom: "1px solid #e5e7eb", color: "#667085" }}>{x}</th>)}</tr></thead><tbody>{filtered.map(c=><tr key={c.id}>{[c.email,c.name||"—",c.segment==="business"?"Business":"Individual",c.consent?"Yes":"No",c.brevoSyncStatus||"—"].map((v,i)=><td key={i} style={{ padding: 10, borderBottom: "1px solid #f0f1f3" }}>{v}</td>)}</tr>)}</tbody></table></div>
+        </section>
+        <section style={panel}>
+          <h2 style={{ marginTop: 0 }}>Import public business leads (Consent Pending)</h2>
+          <p style={{ color: "#667085" }}>Email, organization, country ও source_url কলামসহ CSV আপলোড করুন। এগুলো public lead database-এ consent-pending হিসেবে যোগ হবে; Brevo-তে যাবে না।</p>
+          <label style={{ display: "block", fontWeight: 700 }}>Public leads CSV<input style={field} type="file" accept=".csv,text/csv" onChange={handlePublicLeadFile} disabled={busy} /></label>
         </section>
         <section style={panel}>
           <h2 style={{ marginTop: 0 }}>Public Business Leads — Consent Pending ({publicLeads.length})</h2>
