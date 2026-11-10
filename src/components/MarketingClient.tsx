@@ -122,18 +122,32 @@ export default function MarketingClient() {
 
 
   async function findPublicEmails() {
-    const websites = finderInput.split(/[\n,;]+/).map((v) => v.trim()).filter(Boolean);
+    const websites = finderInput.split(/[\\n,;]+/).map((v) => v.trim()).filter(Boolean);
     if (!websites.length) { setMessage("কমপক্ষে একটি ওয়েবসাইট URL লিখুন।"); return; }
     if (websites.length > 5) { setMessage("একবারে সর্বোচ্চ ৫টি ওয়েবসাইট পরীক্ষা করা যাবে।"); return; }
     setBusy(true); setMessage(""); setFinderResults([]);
     try {
       const result = await api("/api/admin/marketing/email-finder", { method: "POST", body: JSON.stringify({ websites }) });
-      setFinderResults(result.results || []);
-      const count = (result.results || []).reduce((n: number, item: FinderResult) => n + item.emails.length, 0);
-      setMessage(count + "টি প্রকাশ্য ইমেইল পাওয়া গেছে। এগুলোর মার্কেটিং সম্মতি নিশ্চিত নয়।");
-    } catch (error) { setMessage(error instanceof Error ? error.message : "Email Finder চালানো যায়নি।"); }
+      const found: FinderResult[] = result.results || [];
+      setFinderResults(found);
+      const leads = found.flatMap((r) => r.emails.map((e) => ({
+        email: e.email, name: "", category: "business", sourceUrl: e.sourceUrl, sourceName: r.website
+      })));
+      let totalSaved = 0, totalSkipped = 0;
+      for (let i = 0; i < leads.length; i += 100) {
+        const saved = await api("/api/admin/marketing/leads", {
+          method: "POST",
+          body: JSON.stringify({ leads: leads.slice(i, i + 100) })
+        });
+        totalSaved += saved.saved?.length || 0;
+        totalSkipped += saved.skipped?.length || 0;
+      }
+      await load();
+      setMessage(`${leads.length}টি প্রকাশ্য ইমেইল পাওয়া গেছে; ${totalSaved}টি নতুন Lead স্বয়ংক্রিয়ভাবে ডেটাবেজে যোগ হয়েছে এবং ${totalSkipped}টি ডুপ্লিকেট/অবৈধ ঠিকানা বাদ গেছে। সব Lead Consent Pending; Brevo-তে পাঠানো হয়নি।`);
+    } catch (error) { setMessage(error instanceof Error ? error.message : "Email Finder বা স্বয়ংক্রিয় সংরক্ষণ ব্যর্থ হয়েছে।"); }
     finally { setBusy(false); }
   }
+
   async function saveFinderLeads() {
     const leads = finderResults.flatMap((r) => r.emails.map((e) => ({
       email: e.email, name: "", category: "business", sourceUrl: e.sourceUrl, sourceName: r.website
