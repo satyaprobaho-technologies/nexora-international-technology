@@ -95,8 +95,12 @@ export async function POST(request: Request) {
         const origin = start.origin;
         let robots = "";
         try {
-          const robot = await fetchPublic(new URL("/robots.txt", origin).toString());
-          robots = robot?.html || "";
+          const robotUrl = await safeUrl(new URL("/robots.txt", origin).toString());
+          const robotResponse = await fetch(robotUrl, {
+            redirect: "manual", signal: AbortSignal.timeout(3500),
+            headers: { "User-Agent": "NEXORA-Public-Contact-Finder/1.0" }
+          });
+          if (robotResponse.ok) robots = (await robotResponse.text()).slice(0, 100_000);
         } catch { /* robots unavailable: still only inspect standard public pages */ }
         const pages = [];
         const paths = [start.pathname === "/" ? "/" : start.pathname, ...PATHS.slice(1)];
