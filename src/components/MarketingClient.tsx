@@ -125,7 +125,7 @@ export default function MarketingClient() {
 
 
   async function findPublicEmails() {
-    const websites = [...new Set(finderInput.split(/[\\n,;]+/).map((v) => v.trim()).filter(Boolean))];
+    const websites = [...new Set(finderInput.split(/[\n,;]+/).map((v) => v.trim()).filter(Boolean))];
     if (!websites.length) { setMessage("কমপক্ষে একটি ওয়েবসাইট URL লিখুন।"); return; }
     if (websites.length > 100) { setMessage("একবারে সর্বোচ্চ ১০০টি ওয়েবসাইট দেওয়া যাবে; পরের ব্যাচ আলাদাভাবে চালান।"); return; }
     if (!finderCountry.trim()) { setMessage("Lead সংরক্ষণের আগে দেশ নির্বাচন/লিখুন।"); return; }
