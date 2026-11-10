@@ -125,7 +125,7 @@ export default function MarketingClient() {
 
 
   async function findPublicEmails() {
-    const websites = finderInput.split(/[\\n,;]+/).map((v) => v.trim()).filter(Boolean);
+    const websites = finderInput.split(/[\n,;]+/).map((v) => v.trim()).filter(Boolean);
     if (!websites.length) { setMessage("কমপক্ষে একটি ওয়েবসাইট URL লিখুন।"); return; }
     if (websites.length > 5) { setMessage("একবারে সর্বোচ্চ ৫টি ওয়েবসাইট পরীক্ষা করা যাবে।"); return; }
     setBusy(true); setMessage(""); setFinderResults([]);
@@ -139,8 +139,8 @@ export default function MarketingClient() {
   }
   function exportFinderCsv() {
     const rows = [["Email", "Website", "Source URL", "Consent status"], ...finderResults.flatMap((r) => r.emails.map((e) => [e.email, r.website, e.sourceUrl, "Not confirmed"]))];
-    const csv = rows.map((row) => row.map((v) => '"' + String(v).replaceAll('"', '""') + '"').join(",")).join("\\r\\n");
-    const url = URL.createObjectURL(new Blob(["\\uFEFF" + csv], { type: "text/csv;charset=utf-8" }));
+    const csv = rows.map((row) => row.map((v) => '"' + String(v).replaceAll('"', '""') + '"').join(",")).join("\r\n");
+    const url = URL.createObjectURL(new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8" }));
     const a = document.createElement("a"); a.href = url; a.download = "nexora-public-emails.csv"; a.click(); URL.revokeObjectURL(url);
   }
 
