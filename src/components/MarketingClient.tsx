@@ -21,20 +21,20 @@ const button: React.CSSProperties = { border: 0, borderRadius: 10, padding: "11p
 function parsePublicLeadCsv(text: string): Array<{ email: string; name: string; category: string; country: string; sourceUrl: string; sourceName: string }> {
   const rows: string[][] = [];
   let row: string[] = [], cell = "", quoted = false;
-  const input = text.replace(/^\\uFEFF/, "");
+  const input = text.replace(/^\uFEFF/, "");
   for (let i = 0; i < input.length; i++) {
     const ch = input[i];
     if (ch === '"' && quoted && input[i + 1] === '"') { cell += '"'; i++; }
     else if (ch === '"') quoted = !quoted;
     else if (ch === "," && !quoted) { row.push(cell.trim()); cell = ""; }
-    else if ((ch === "\\n" || ch === "\\r") && !quoted) {
+    else if ((ch === "\n" || ch === "\r") && !quoted) {
       if (cell || row.length) { row.push(cell.trim()); rows.push(row); }
       row = []; cell = "";
     } else cell += ch;
   }
   if (cell || row.length) { row.push(cell.trim()); rows.push(row); }
   if (rows.length < 2) return [];
-  const headers = rows[0].map((v) => v.trim().toLowerCase().replace(/[\\s-]+/g, "_"));
+  const headers = rows[0].map((v) => v.trim().toLowerCase().replace(/[\s-]+/g, "_"));
   const index = (key: string) => headers.indexOf(key);
   const emailIndex = index("email");
   if (emailIndex < 0) return [];
@@ -46,7 +46,7 @@ function parsePublicLeadCsv(text: string): Array<{ email: string; name: string; 
     country: get(r, "country"),
     sourceUrl: get(r, "source_url") || get(r, "sourceurl"),
     sourceName: get(r, "organization") || get(r, "source_name") || get(r, "sourcename") || "Public business directory"
-  })).filter((lead) => /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(lead.email) && lead.country && /^https?:\\/\\//i.test(lead.sourceUrl));
+  })).filter((lead) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(lead.email) && lead.country && /^https?:\/\//i.test(lead.sourceUrl));
 }
 
 function parseCsv(text: string, source: string, segment: "business" | "individual", consent: boolean): DraftContact[] {
