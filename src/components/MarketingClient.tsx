@@ -18,6 +18,37 @@ const panel: React.CSSProperties = { background: "#fff", border: "1px solid #e5e
 const field: React.CSSProperties = { width: "100%", padding: "12px 14px", border: "1px solid #d1d5db", borderRadius: 10, font: "inherit", marginTop: 6, color: "#111827", background: "#fff" };
 const button: React.CSSProperties = { border: 0, borderRadius: 10, padding: "11px 16px", background: "#155eef", color: "#fff", fontWeight: 700, cursor: "pointer" };
 
+function parsePublicLeadCsv(text: string): Array<{ email: string; name: string; category: string; country: string; sourceUrl: string; sourceName: string }> {
+  const rows: string[][] = [];
+  let row: string[] = [], cell = "", quoted = false;
+  const input = text.replace(/^\\uFEFF/, "");
+  for (let i = 0; i < input.length; i++) {
+    const ch = input[i];
+    if (ch === '"' && quoted && input[i + 1] === '"') { cell += '"'; i++; }
+    else if (ch === '"') quoted = !quoted;
+    else if (ch === "," && !quoted) { row.push(cell.trim()); cell = ""; }
+    else if ((ch === "\\n" || ch === "\\r") && !quoted) {
+      if (cell || row.length) { row.push(cell.trim()); rows.push(row); }
+      row = []; cell = "";
+    } else cell += ch;
+  }
+  if (cell || row.length) { row.push(cell.trim()); rows.push(row); }
+  if (rows.length < 2) return [];
+  const headers = rows[0].map((v) => v.trim().toLowerCase().replace(/[\\s-]+/g, "_"));
+  const index = (key: string) => headers.indexOf(key);
+  const emailIndex = index("email");
+  if (emailIndex < 0) return [];
+  const get = (r: string[], key: string) => { const i = index(key); return i >= 0 ? (r[i] || "").trim() : ""; };
+  return rows.slice(1).map((r) => ({
+    email: (r[emailIndex] || "").trim().toLowerCase(),
+    name: get(r, "organization") || get(r, "name"),
+    category: "business",
+    country: get(r, "country"),
+    sourceUrl: get(r, "source_url") || get(r, "sourceurl"),
+    sourceName: get(r, "organization") || get(r, "source_name") || get(r, "sourcename") || "Public business directory"
+  })).filter((lead) => /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(lead.email) && lead.country && /^https?:\\/\\//i.test(lead.sourceUrl));
+}
+
 function parseCsv(text: string, source: string, segment: "business" | "individual", consent: boolean): DraftContact[] {
   const rows: string[][] = [];
   let row: string[] = [], cell = "", quoted = false;
@@ -119,6 +150,27 @@ export default function MarketingClient() {
     await importContacts(items);
     e.target.value = "";
   }
+  async function importPublicLeadsFile(e: ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.name.toLowerCase().endsWith(".csv")) { setMessage("Public leads-এর জন্য CSV ফাইল দিন।"); e.target.value = ""; return; }
+    setBusy(true); setMessage("");
+    try {
+      const leads = parsePublicLeadCsv(await file.text());
+      if (!leads.length) throw new Error("CSV-তে Email, Country এবং বৈধ Source URL কলামসহ কোনো গ্রহণযোগ্য রেকর্ড পাওয়া যায়নি।");
+      let saved = 0, skipped = 0;
+      for (let i = 0; i < leads.length; i += 100) {
+        const result = await api("/api/admin/marketing/leads", { method: "POST", body: JSON.stringify({ leads: leads.slice(i, i + 100) }) });
+        saved += result.saved?.length || 0;
+        skipped += result.skipped?.length || 0;
+      }
+      await load();
+      setMessage(`${leads.length}টি বৈধ প্রকাশ্য লিড প্রসেস হয়েছে; ${saved}টি নতুন Consent Pending Lead যোগ হয়েছে; ${skipped}টি ডুপ্লিকেট/বাদ গেছে। Brevo-তে কোনো সাবস্ক্রিপশন বা ক্যাম্পেইন পাঠানো হয়নি।`);
+    } catch (error) {
+      setMessage(error instanceof Error ? error.message : "Public leads CSV ইমপোর্ট ব্যর্থ হয়েছে।");
+    } finally { setBusy(false); e.target.value = ""; }
+  }
+
   async function addReplyAddress() {
     const email = newReplyEmail.trim().toLowerCase();
     if (!/^[^\s@]+@gmail\.com$/i.test(email)) { setMessage("সঠিক @gmail.com ঠিকানা লিখুন।"); return; }
@@ -272,6 +324,11 @@ export default function MarketingClient() {
         <section style={panel}>
           <h2 style={{ marginTop: 0 }}>Public Business Leads — Consent Pending ({publicLeads.length})</h2>
           <p style={{ color: "#667085" }}>প্রকাশ্য ওয়েবসাইট থেকে পাওয়া যোগাযোগের ঠিকানা। এগুলো মার্কেটিং সম্মতিপ্রাপ্ত নয় এবং Brevo campaign-এ পাঠানো হয় না।</p>
+          <div style={{ background: "#f8fafc", border: "1px solid #d0d5dd", borderRadius: 12, padding: 14, margin: "12px 0 16px" }}>
+            <b>Import public leads CSV (Consent Pending)</b>
+            <p style={{ color: "#667085", fontSize: 13, margin: "6px 0" }}>Email, Country এবং Source URL থাকা CSV এখানে আপলোড করুন। Organization / Source URL / Country কলাম থাকলে সেগুলোও সংরক্ষিত হবে। এই আপলোড Brevo marketing contacts-এ যোগ করবে না।</p>
+            <input style={field} type="file" accept=".csv,text/csv" onChange={importPublicLeadsFile} disabled={busy} />
+          </div>
           <div style={{ overflowX: "auto" }}><table style={{ width: "100%", borderCollapse: "collapse", textAlign: "left" }}><thead><tr>{["Email","Country","Source","Consent","Source URL"].map(x=><th key={x} style={{ padding: 10, borderBottom: "1px solid #e5e7eb", color: "#667085" }}>{x}</th>)}</tr></thead><tbody>{publicLeads.map(lead=><tr key={lead.id}><td style={{ padding: 10, borderBottom: "1px solid #f0f1f3" }}>{lead.email}</td><td style={{ padding: 10, borderBottom: "1px solid #f0f1f3" }}>{lead.country || "Unknown"}</td><td style={{ padding: 10, borderBottom: "1px solid #f0f1f3" }}>{lead.sourceName || "—"}</td><td style={{ padding: 10, borderBottom: "1px solid #f0f1f3", color: "#b54708" }}>Pending</td><td style={{ padding: 10, borderBottom: "1px solid #f0f1f3" }}>{lead.sourceUrl ? <a href={lead.sourceUrl} target="_blank" rel="noreferrer">Source</a> : "—"}</td></tr>)}</tbody></table></div>
           <p style={{ color: "#667085", fontSize: 12 }}>এই পৃষ্ঠায় {publicLeads.length}টি লিড দেখানো হচ্ছে।</p>
           {leadsHasMore && <button style={button} disabled={busy} onClick={()=>void loadMoreLeads()}>{busy ? "Loading…" : "আরও ১০০টি লিড দেখুন"}</button>}
