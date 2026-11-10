@@ -102,7 +102,7 @@ export default function MarketingClient() {
     e.target.value = "";
   }
   async function addSender() {
-    if (!/^[^\\s@]+@gmail\\.com$/i.test(newSenderEmail.trim())) {
+    if (!/^[^\s@]+@gmail\.com$/i.test(newSenderEmail.trim())) {
       setMessage("সঠিক @gmail.com ঠিকানা লিখুন।"); return;
     }
     setBusy(true); setMessage("");
