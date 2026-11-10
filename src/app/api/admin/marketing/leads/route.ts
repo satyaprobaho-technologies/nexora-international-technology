@@ -4,7 +4,7 @@ import { jsonError, requireMarketingAdmin } from "@/lib/marketing-auth";
 
 export const runtime = "nodejs";
 
-type LeadInput = { email?: string; name?: string; category?: string; sourceUrl?: string; sourceName?: string };
+type LeadInput = { email?: string; name?: string; category?: string; sourceUrl?: string; sourceName?: string; country?: string };
 
 export async function GET(request: Request) {
   try {
@@ -29,6 +29,7 @@ export async function POST(request: Request) {
       const email = String(item.email || "").trim().toLowerCase();
       const sourceUrl = String(item.sourceUrl || "").trim();
       const sourceName = String(item.sourceName || "").trim().slice(0, 160);
+      const country = String(item.country || "Unknown").trim().slice(0, 80) || "Unknown";
       const name = String(item.name || "").trim().slice(0, 120);
       let parsed: URL;
       try { parsed = new URL(sourceUrl); } catch { skipped.push(email); continue; }
@@ -38,7 +39,7 @@ export async function POST(request: Request) {
       const existing = await ref.get();
       if (existing.exists) { skipped.push(email); continue; }
       await ref.set({
-        email, name, category: String(item.category || "business").slice(0, 30),
+        email, name, category: String(item.category || "business").slice(0, 30), country,
         sourceUrl: parsed.toString(), sourceName,
         consent: false, consentStatus: "pending",
         marketingEligible: false, createdAt: FieldValue.serverTimestamp(),
