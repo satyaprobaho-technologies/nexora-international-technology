@@ -3,7 +3,7 @@
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
 import { onAuthStateChanged, User } from "firebase/auth";
 import Link from "next/link";
-import { ADMIN_EMAIL, auth } from "@/lib/firebase";
+import { ADMIN_EMAIL, isAdminEmail, auth } from "@/lib/firebase";
 
 type Contact = { id: string; email: string; name?: string; segment: string; consent?: boolean; status?: string; brevoSyncStatus?: string };
 type PublicLead = { id: string; email: string; name?: string; sourceName?: string; sourceUrl?: string; country?: string; consentStatus?: string };
@@ -121,14 +121,14 @@ export default function MarketingClient() {
     finally { setBusy(false); }
   }
   async function load() {
-    if (!user || user.email !== ADMIN_EMAIL || !user.emailVerified) return;
+    if (!user || !isAdminEmail(user.email) || !user.emailVerified) return;
     try {
       const [c, m, r, s] = await Promise.all([api("/api/admin/marketing/contacts"), api("/api/admin/marketing/campaigns"), api("/api/admin/marketing/reply-to"), api("/api/admin/marketing/signup-stats")]);
       setContacts(c.contacts || []); setTotalContactCount(Number(c.total || c.contacts?.length || 0)); setCampaigns(m.campaigns || []); setReplyAddresses(r.addresses || []); setSignupStats(s);
       await loadLeads();
     } catch (error) { setMessage(error instanceof Error ? error.message : "ডেটা লোড করা যায়নি।"); }
   }
-  useEffect(() => { if (user?.email === ADMIN_EMAIL && user.emailVerified) void load(); }, [user]);
+  useEffect(() => { if (isAdminEmail(user?.email) && user.emailVerified) void load(); }, [user]);
 
   async function importContacts(items: DraftContact[]) {
     if (!consent || !consentSource.trim()) { setMessage("ইমেইলগুলোতে মার্কেটিং পাঠানোর স্পষ্ট সম্মতি এবং সম্মতির উৎস লিখুন।"); return; }
@@ -310,7 +310,7 @@ export default function MarketingClient() {
 
   const filtered = useMemo(() => contacts.filter((c) => c.email.toLowerCase().includes(search.toLowerCase()) || (c.name || "").toLowerCase().includes(search.toLowerCase())), [contacts, search]);
   if (!ready) return <main style={{ padding: 40 }}>Loading…</main>;
-  if (!user || user.email !== ADMIN_EMAIL || !user.emailVerified) return <main style={{ maxWidth: 620, margin: "70px auto", padding: 24 }}><section style={panel}><h1>Marketing Center</h1><p>এই পৃষ্ঠা দেখতে ভেরিফাইড Nexora Admin হিসেবে লগইন করুন।</p><Link href="/admin">Admin login-এ যান</Link></section></main>;
+  if (!user || !isAdminEmail(user.email) || !user.emailVerified) return <main style={{ maxWidth: 620, margin: "70px auto", padding: 24 }}><section style={panel}><h1>Marketing Center</h1><p>এই পৃষ্ঠা দেখতে ভেরিফাইড Nexora Admin হিসেবে লগইন করুন।</p><Link href="/admin">Admin login-এ যান</Link></section></main>;
 
   return <main style={{ minHeight: "100vh", background: "#f5f7fb", padding: "24px clamp(16px,4vw,48px)", color: "#111827" }}>
     <div style={{ maxWidth: 1180, margin: "0 auto" }}>
