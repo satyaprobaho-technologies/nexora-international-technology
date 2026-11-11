@@ -138,6 +138,7 @@ export default function MarketingClient() {
       if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && email.length <= 254 && !unique.has(email)) unique.set(email, { ...item, email });
     }
     const valid = [...unique.values()];
+    if (valid.length > 1_000_000) { setMessage("একটি CSV-তে সর্বোচ্চ ১০ লাখ (১,০০০,০০০) বৈধ ইমেইল ইমপোর্ট করা যাবে।"); return; }
     if (!valid.length) { setMessage("CSV-তে বৈধ ইমেইল পাওয়া যায়নি। প্রথম কলাম Email এবং দ্বিতীয় কলাম Name রাখুন।"); return; }
     setBusy(true); setMessage("");
     let saved = 0, skipped = items.length - valid.length;
