@@ -4,7 +4,7 @@ import { FormEvent, useEffect, useState } from "react";
 import { onAuthStateChanged, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, User } from "firebase/auth";
 import { collection, doc, getDoc, getDocs, orderBy, query, serverTimestamp, setDoc, updateDoc } from "firebase/firestore";
 import Link from "next/link";
-import { ADMIN_EMAIL, auth, db } from "@/lib/firebase";
+import { ADMIN_EMAIL, isAdminEmail, auth, db } from "@/lib/firebase";
 
 type Customer = { id: string; name?: string; email?: string; status?: string };
 type Project = { id: string; ownerUid?: string; ownerEmail?: string; title?: string; service?: string; brief?: string; budget?: string; timeline?: string; quoteAmount?: number; quoteCurrency?: string; status?: string; paymentStatus?: string; dueDate?: string };
@@ -33,7 +33,7 @@ export default function AdminClient() {
 
   useEffect(() => onAuthStateChanged(auth, (next) => { setUser(next); setReady(true); }), []);
   useEffect(() => {
-    if (!user || user.email !== ADMIN_EMAIL || !user.emailVerified) { setCustomers([]); setProjects([]); return; }
+    if (!user || !isAdminEmail(user.email) || !user.emailVerified) { setCustomers([]); setProjects([]); return; }
     (async () => {
       try {
         setMessage("");
@@ -62,7 +62,7 @@ export default function AdminClient() {
   }, [user]);
 
   useEffect(() => {
-    if (!user || user.email !== ADMIN_EMAIL || !user.emailVerified) return;
+    if (!user || !isAdminEmail(user.email) || !user.emailVerified) return;
     (async () => {
       try {
         const snapshot = await getDoc(doc(db, "settings", "paymentMethods"));
@@ -99,7 +99,7 @@ export default function AdminClient() {
     e.preventDefault(); setMessage("");
     try {
       const credential = await signInWithEmailAndPassword(auth, email.trim(), password);
-      if (credential.user.email !== ADMIN_EMAIL || !credential.user.emailVerified) {
+      if (credential.!isAdminEmail(user.email) || !credential.user.emailVerified) {
         await signOut(auth); setMessage("এই অ্যাকাউন্টের Admin access নেই অথবা ইমেইল ভেরিফাই করা হয়নি।"); return;
       }
     } catch (err) { setMessage(err instanceof Error ? err.message : "Admin sign-in failed."); }
@@ -151,7 +151,7 @@ export default function AdminClient() {
   }
 
   if (!ready) return <main className="portal-shell"><p>Loading admin access…</p></main>;
-  if (!user || user.email !== ADMIN_EMAIL || !user.emailVerified) return <main className="portal-shell">
+  if (!user || !isAdminEmail(user.email) || !user.emailVerified) return <main className="portal-shell">
     <div className="portal-top"><Link className="portal-brand" href="/">NEXORA <small>INTERNATIONAL TECHNOLOGY</small></Link><Link href="/">Back to website ↗</Link></div>
     <section className="portal-panel"><p className="portal-kicker">STAFF ACCESS</p><h1>Administrator sign in</h1><p className="portal-muted">Restricted access for authorized NEXORA staff.</p>
       <form className="portal-form" onSubmit={login}><label>Admin email<input type="email" required value={email} onChange={e=>setEmail(e.target.value)} /></label><label>Password<input type="password" required value={password} onChange={e=>setPassword(e.target.value)} /></label><button className="portal-button">Sign in securely</button></form><button type="button" className="portal-switch" onClick={resetAdminPassword}>Forgot password?</button>{message && <p className="portal-message">{message}</p>}
