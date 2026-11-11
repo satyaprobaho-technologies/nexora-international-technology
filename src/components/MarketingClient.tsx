@@ -70,6 +70,7 @@ export default function MarketingClient() {
   const [user, setUser] = useState<User | null>(null);
   const [ready, setReady] = useState(false);
   const [contacts, setContacts] = useState<Contact[]>([]);
+  const [totalContactCount, setTotalContactCount] = useState(0);
   const [signupStats, setSignupStats] = useState<SignupStats>({ total: 0, confirmed: 0, pending: 0, today: 0, last7Days: [] });
   const [publicLeads, setPublicLeads] = useState<PublicLead[]>([]);
   const [leadsCursor, setLeadsCursor] = useState<string | null>(null);
@@ -123,7 +124,7 @@ export default function MarketingClient() {
     if (!user || user.email !== ADMIN_EMAIL || !user.emailVerified) return;
     try {
       const [c, m, r, s] = await Promise.all([api("/api/admin/marketing/contacts"), api("/api/admin/marketing/campaigns"), api("/api/admin/marketing/reply-to"), api("/api/admin/marketing/signup-stats")]);
-      setContacts(c.contacts || []); setCampaigns(m.campaigns || []); setReplyAddresses(r.addresses || []); setSignupStats(s);
+      setContacts(c.contacts || []); setTotalContactCount(Number(c.total || c.contacts?.length || 0)); setCampaigns(m.campaigns || []); setReplyAddresses(r.addresses || []); setSignupStats(s);
       await loadLeads();
     } catch (error) { setMessage(error instanceof Error ? error.message : "ডেটা লোড করা যায়নি।"); }
   }
@@ -131,15 +132,33 @@ export default function MarketingClient() {
 
   async function importContacts(items: DraftContact[]) {
     if (!consent || !consentSource.trim()) { setMessage("ইমেইলগুলোতে মার্কেটিং পাঠানোর স্পষ্ট সম্মতি এবং সম্মতির উৎস লিখুন।"); return; }
-    const valid = items.filter((item) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(item.email));
+    const unique = new Map<string, DraftContact>();
+    for (const item of items) {
+      const email = item.email.trim().toLowerCase();
+      if (/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(email) && email.length <= 254 && !unique.has(email)) unique.set(email, { ...item, email });
+    }
+    const valid = [...unique.values()];
     if (!valid.length) { setMessage("CSV-তে বৈধ ইমেইল পাওয়া যায়নি। প্রথম কলাম Email এবং দ্বিতীয় কলাম Name রাখুন।"); return; }
     setBusy(true); setMessage("");
+    let saved = 0, skipped = items.length - valid.length;
     try {
-      const result = await api("/api/admin/marketing/contacts", { method: "POST", body: JSON.stringify({ contacts: valid.map((item) => ({ ...item, consent: true, consentSource })) }) });
-      setMessage(`${result.saved?.length || 0}টি ইমেইল সংরক্ষিত হয়েছে; ${result.skipped || 0}টি বাদ গেছে।`);
-      setCsvText(""); await load();
-    } catch (error) { setMessage(error instanceof Error ? error.message : "ইমেইল ইমপোর্ট ব্যর্থ হয়েছে।"); }
-    finally { setBusy(false); }
+      const batchSize = 400;
+      for (let i = 0; i < valid.length; i += batchSize) {
+        const result = await api("/api/admin/marketing/contacts/bulk-import", {
+          method: "POST",
+          body: JSON.stringify({ contacts: valid.slice(i, i + batchSize).map((item) => ({ ...item, consent: true, consentSource })) })
+        });
+        saved += Number(result.saved || 0);
+        skipped += Number(result.skipped || 0);
+        setMessage(`ইমপোর্ট চলছে: ${Math.min(i + batchSize, valid.length).toLocaleString("en-US")} / ${valid.length.toLocaleString("en-US")} · নতুন ${saved.toLocaleString("en-US")} · বাদ ${skipped.toLocaleString("en-US")}`);
+      }
+      setCsvText("");
+      await load();
+      setMessage(`ইমপোর্ট সম্পন্ন: ${saved.toLocaleString("en-US")}টি নতুন ইমেইল সংরক্ষিত; ${skipped.toLocaleString("en-US")}টি ডুপ্লিকেট/অবৈধ বাদ। Brevo sync আলাদা ধাপে হবে।`);
+    } catch (error) {
+      setMessage((error instanceof Error ? error.message : "ইমেইল ইমপোর্ট ব্যর্থ হয়েছে।") + ` ইতোমধ্যে ${saved.toLocaleString("en-US")}টি নতুন ইমেইল সংরক্ষিত হয়েছে; একই CSV আবার দিলে ডুপ্লিকেট বাদ যাবে।`);
+      await load();
+    } finally { setBusy(false); }
   }
   async function handleFile(e: ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -299,7 +318,7 @@ export default function MarketingClient() {
         <span style={{ background: "#eaf2ff", color: "#155eef", padding: "9px 13px", borderRadius: 999, fontWeight: 700 }}>Brevo integration</span>
       </header>
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(180px,1fr))", gap: 14, marginBottom: 20 }}>
-        {[[ "Total signups", signupStats.total ],[ "Confirmed", signupStats.confirmed ],[ "Awaiting confirmation", signupStats.pending ],[ "Today", signupStats.today ],[ "Business (loaded)", contacts.filter(c=>c.segment==="business").length ],[ "Individual (loaded)", contacts.filter(c=>c.segment==="individual").length ],[ "Campaigns", campaigns.length ]].map(([label,value])=><div key={String(label)} style={{ ...panel, margin: 0 }}><div style={{ color: "#667085", fontSize: 13 }}>{label}</div><div style={{ fontSize: 30, fontWeight: 800 }}>{Number(value).toLocaleString("en-US")}</div></div>)}
+        {[[ "Total signups", signupStats.total ],[ "Confirmed", signupStats.confirmed ],[ "Awaiting confirmation", signupStats.pending ],[ "Today", signupStats.today ],[ "Total email contacts", totalContactCount ],[ "Business (latest 500)", contacts.filter(c=>c.segment==="business").length ],[ "Individual (latest 500)", contacts.filter(c=>c.segment==="individual").length ],[ "Campaigns", campaigns.length ]].map(([label,value])=><div key={String(label)} style={{ ...panel, margin: 0 }}><div style={{ color: "#667085", fontSize: 13 }}>{label}</div><div style={{ fontSize: 30, fontWeight: 800 }}>{Number(value).toLocaleString("en-US")}</div></div>)}
       </div>
       <section style={panel}>
         <div style={{ display: "flex", justifyContent: "space-between", gap: 12, flexWrap: "wrap" }}><div><h2 style={{ margin: 0 }}>Newsletter signups — last 7 days</h2><p style={{ color: "#667085", margin: "6px 0 0" }}>Bangladesh time · confirmed and pending signups · daily voluntary target: 100,000</p></div><strong style={{ color: "#155eef" }}>{signupStats.today.toLocaleString("en-US")} / 100,000 today</strong></div>
@@ -326,7 +345,7 @@ export default function MarketingClient() {
         </section>
         <section style={panel}>
           <h2 style={{ marginTop: 0 }}>Import permission-based contacts</h2>
-          <p style={{ color: "#667085" }}>CSV-এর প্রথম কলাম Email, দ্বিতীয় কলাম Name। Excel ফাইল আগে CSV হিসেবে সংরক্ষণ করুন। ব্যক্তিগত বা ব্যবসায়িক তালিকা আলাদা করে ইমপোর্ট করুন।</p>
+          <p style={{ color: "#667085" }}>CSV-এর প্রথম কলাম Email, দ্বিতীয় কলাম Name। Excel ফাইল আগে CSV হিসেবে সংরক্ষণ করুন। একবারে সর্বোচ্চ ১০ লাখ রেকর্ডের CSV নেওয়া যাবে; সার্ভারে ৪০০টি করে ব্যাচে ডুপ্লিকেট যাচাইসহ সংরক্ষণ হবে। ব্যক্তিগত বা ব্যবসায়িক তালিকা আলাদা করে ইমপোর্ট করুন।</p>
           <label style={{ display: "block", fontWeight: 700, marginTop: 14 }}>Contact category<select style={field} value={segment} onChange={e=>setSegment(e.target.value as "business"|"individual")}><option value="business">বাংলাদেশের ব্যবসাপ্রতিষ্ঠান</option><option value="individual">ব্যক্তিগত গ্রাহক</option></select></label>
           <label style={{ display: "block", fontWeight: 700, marginTop: 14 }}>Consent source<input style={field} value={consentSource} onChange={e=>setConsentSource(e.target.value)} placeholder="যেমন: Website signup form, 2026-11-10" /></label>
           <label style={{ display: "flex", gap: 10, alignItems: "center", margin: "16px 0" }}><input type="checkbox" checked={consent} onChange={e=>setConsent(e.target.checked)} /> আমি নিশ্চিত করছি, এই তালিকার প্রত্যেক ব্যক্তি/প্রতিষ্ঠান মার্কেটিং ইমেইল পেতে সম্মতি দিয়েছে।</label>
