@@ -23,8 +23,9 @@ function listIdFor(segment: "business" | "individual") {
 export async function GET(request: Request) {
   try {
     await requireMarketingAdmin(request);
-    const snapshot = await adminDb.collection("marketingContacts").orderBy("createdAt", "desc").limit(500).get();
-    return Response.json({ contacts: snapshot.docs.map((item) => ({ id: item.id, ...item.data() })) });
+    const collection = adminDb.collection("marketingContacts");
+    const [snapshot, total] = await Promise.all([collection.orderBy("createdAt", "desc").limit(500).get(), collection.count().get()]);
+    return Response.json({ contacts: snapshot.docs.map((item) => ({ id: item.id, ...item.data() })), total: total.data().count, pageSize: 500 });
   } catch (error) {
     return jsonError(error, error instanceof Error && error.message.includes("Authentication") ? 401 : 403);
   }
