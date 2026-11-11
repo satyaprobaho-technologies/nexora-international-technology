@@ -99,7 +99,7 @@ export default function AdminClient() {
     e.preventDefault(); setMessage("");
     try {
       const credential = await signInWithEmailAndPassword(auth, email.trim(), password);
-      if (credential.!isAdminEmail(user.email) || !credential.user.emailVerified) {
+      if (!isAdminEmail(credential.user.email) || !credential.user.emailVerified) {
         await signOut(auth); setMessage("এই অ্যাকাউন্টের Admin access নেই অথবা ইমেইল ভেরিফাই করা হয়নি।"); return;
       }
     } catch (err) { setMessage(err instanceof Error ? err.message : "Admin sign-in failed."); }
