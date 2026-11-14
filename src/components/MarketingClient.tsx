@@ -128,7 +128,7 @@ export default function MarketingClient() {
       await loadLeads();
     } catch (error) { setMessage(error instanceof Error ? error.message : "ডেটা লোড করা যায়নি।"); }
   }
-  useEffect(() => { if (isAdminEmail(user?.email) && user.emailVerified) void load(); }, [user]);
+  useEffect(() => { if (user && isAdminEmail(user.email) && user.emailVerified) void load(); }, [user]);
 
   async function importContacts(items: DraftContact[]) {
     if (!consent || !consentSource.trim()) { setMessage("ইমেইলগুলোতে মার্কেটিং পাঠানোর স্পষ্ট সম্মতি এবং সম্মতির উৎস লিখুন।"); return; }
