@@ -5,7 +5,7 @@ export async function requireMarketingAdmin(request: Request) {
   const token = header.startsWith("Bearer ") ? header.slice(7) : "";
   if (!token) throw new Error("Authentication required");
   const decoded = await adminAuth.verifyIdToken(token);
-  if (decoded.email !== "computer26training@gmail.com" || decoded.email_verified !== true) {
+  if (!["satyaprobaho.official@gmail.com", "computer26training@gmail.com"].includes(String(decoded.email || "").toLowerCase()) || decoded.email_verified !== true) {
     throw new Error("Administrator access required");
   }
   return decoded;
