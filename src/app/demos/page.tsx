@@ -30,7 +30,7 @@ export default function DemosPage() {
           <a href="#all-demos">All 50 demos</a>
         </nav>
       </header>
-      <section id="all-demos" className="section templates-section">
+      <section className="section" style={{background:"#103c2d",color:"#fff"}}><div className="section-head"><div><p className="eyebrow">SPECIAL MOSQUE PROJECT</p><h2>শায়লা আকরাম কেন্দ্রীয় জামে মসজিদ</h2></div><p className="section-intro">চারটি প্যাকেজের আলাদা বাংলা লাইভ ডেমো দেখুন—৳৭০,০০০ থেকে ৳২,২০,০০০ পর্যন্ত।</p></div><Link className="button" href="/demos/shayla-akram">চারটি মসজিদ ডেমো দেখুন ↗</Link></section>\n      <section id="all-demos" className="section templates-section">
         <DemoCatalog showHeading />
         <div className="hosting-note">
           <div><p className="eyebrow">READY TO BUILD?</p><h2>Make this design yours.</h2><p>Sign in to the customer portal and submit a project request for your selected demo.</p></div>
