@@ -35,7 +35,7 @@ export default function Home() {
       <header className="nav">
         <Link className="brand" href="/" aria-label="NEXORA home">NEXORA <small>INTERNATIONAL TECHNOLOGY</small></Link>
         <nav aria-label="Main navigation">
-          <Link href="/solutions">Solutions</Link><Link href="/pricing">Pricing</Link><a href="#services">Services</a><Link href="/software">Software Demos</Link><Link href="/demos">50 Website Demos</Link><a href="#free-starter">Free starter</a><a href="#process">How it works</a><a href="#payments">Payment</a><a href="#contact">Contact</a>
+          <Link href="/solutions">Solutions</Link><Link href="/pricing">Pricing</Link><a href="#services">Services</a><Link href="/software">Software Demos</Link><Link href="/demos/shayla-akram">শায়লা আকরাম মসজিদ ডেমো</Link><Link href="/demos">50 Website Demos</Link><a href="#free-starter">Free starter</a><a href="#process">How it works</a><a href="#payments">Payment</a><a href="#contact">Contact</a>
         </nav>
       </header>
 
@@ -51,6 +51,27 @@ export default function Home() {
           <div className="hero-proof"><span>01 / PLAN</span><span>02 / BUILD</span><span>03 / GROW</span></div>
         </div>
         <div className="hero-art" aria-hidden="true"><div className="orbit orbit-one" /><div className="orbit orbit-two" /><div className="globe"><span>N</span></div><div className="float-card">YOUR IDEAS<br /><b>GO GLOBAL</b></div></div>
+      </section>
+
+      <section id="shayla-akram-feature" className="shayla-home-feature">
+        <div className="shayla-home-inner">
+          <div className="shayla-home-copy">
+            <p className="eyebrow">বিশেষ ওয়েবসাইট প্রকল্প · চারটি বিকল্প</p>
+            <h2>শায়লা আকরাম কেন্দ্রীয় জামে মসজিদ</h2>
+            <p>মসজিদ ও শায়লা আকরাম ফাউন্ডেশনের জন্য চারটি পৃথক বাংলা ওয়েবসাইট ডেমো দেখুন। প্রতিটি প্যাকেজে কী কী সুবিধা, মডিউল ও প্রশাসনিক নিয়ন্ত্রণ থাকবে—মিটিংয়ে দেখানোর জন্য সহজভাবে সাজানো হয়েছে।</p>
+            <div className="shayla-home-price-row">
+              <span>৳৭০,০০০</span><span>৳১,২০,০০০</span><span>৳১,৭০,০০০</span><span className="featured">৳২,২০,০০০</span>
+            </div>
+            <div className="shayla-home-actions">
+              <Link className="button" href="/demos/shayla-akram">চারটি প্যাকেজ ও ডেমো দেখুন ↗</Link>
+              <Link className="button secondary" href="/demos/shayla-akram-4">৪ নম্বর এন্টারপ্রাইজ ডেমো ↗</Link>
+            </div>
+          </div>
+          <Link href="/demos/shayla-akram" className="shayla-home-image-link" aria-label="শায়লা আকরাম মসজিদের চারটি ডেমো দেখুন">
+            <img src="/images/shayla-akram-mosque.jpg" alt="শায়লা আকরাম কেন্দ্রীয় জামে মসজিদের প্রস্তাবিত স্থাপত্য নকশা" />
+            <span>প্রস্তাবিত স্থাপত্য নকশা · ডেমো দেখতে প্রবেশ করুন ↗</span>
+          </Link>
+        </div>
       </section>
 
       <section id="templates" className="section templates-section">
