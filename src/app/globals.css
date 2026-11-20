@@ -576,3 +576,18 @@ body{top:0!important}
 .mosque-module-link b{font-size:11px;color:#176447;white-space:nowrap}
 @media(max-width:800px){.mosque-admin-layout{grid-template-columns:1fr}.mosque-admin-layout aside{position:static}.mosque-admin-cards{grid-template-columns:repeat(2,1fr)}.mosque-module-directory>div{grid-template-columns:repeat(2,1fr)}.mosque-module-actions{grid-template-columns:1fr}.mosque-module-demo{margin:20px}}
 @media(max-width:480px){.mosque-module-directory>div{grid-template-columns:1fr}.mosque-subnav{font-size:11px}}
+
+/* Featured Shaila Akram mosque project on NEXORA homepage */
+.shayla-home-feature{padding:76px max(7vw,24px);background:linear-gradient(135deg,#f0f7f1,#e5f0e8);border-top:1px solid #dce9df;border-bottom:1px solid #dce9df}
+.shayla-home-inner{max-width:1320px;margin:0 auto;display:grid;grid-template-columns:1.05fr .95fr;align-items:center;gap:42px}
+.shayla-home-copy .eyebrow{color:#26734f;font-weight:800}
+.shayla-home-copy h2{font-size:clamp(30px,4vw,48px);line-height:1.25;color:#123d2c;margin:12px 0 18px}
+.shayla-home-copy>p:not(.eyebrow){max-width:650px;color:#526b5b;line-height:1.9;font-size:15px}
+.shayla-home-price-row{display:flex;gap:9px;flex-wrap:wrap;margin:24px 0}
+.shayla-home-price-row span{padding:9px 12px;background:#fff;border:1px solid #d6e4d9;border-radius:8px;color:#28543b;font-size:13px;font-weight:800}
+.shayla-home-price-row span.featured{background:#176447;border-color:#176447;color:#fff}
+.shayla-home-actions{display:flex;gap:10px;flex-wrap:wrap}
+.shayla-home-image-link{display:block;padding:10px;background:#fff;border:1px solid #dce8df;border-radius:16px;box-shadow:0 18px 50px #153b2518;text-decoration:none;color:#315640}
+.shayla-home-image-link img{display:block;width:100%;height:auto;aspect-ratio:16/10;object-fit:contain;border-radius:10px;background:#f7faf7}
+.shayla-home-image-link span{display:block;padding:12px 5px 3px;font-size:12px;font-weight:700}
+@media(max-width:760px){.shayla-home-feature{padding:52px 20px}.shayla-home-inner{grid-template-columns:1fr;gap:25px}.shayla-home-copy h2{font-size:32px}.shayla-home-actions .button{width:100%;text-align:center}}
