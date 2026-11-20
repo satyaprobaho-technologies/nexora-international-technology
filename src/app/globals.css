@@ -541,3 +541,15 @@ body{top:0!important}
 .newsletter-message{color:#ffb4b4;font-size:12px;line-height:1.6}.newsletter-message.success{color:#79ddb2}
 .newsletter-trap{position:absolute;left:-10000px;width:1px;height:1px;overflow:hidden}
 @media(max-width:700px){.newsletter-section{grid-template-columns:1fr;padding:58px 22px;gap:25px}.newsletter-form{padding:18px}}
+
+/* Shaila Akram mosque package showcase */
+.shayla-showcase{min-height:100vh;background:#f4f8f4;color:#183b2d;font-family:"Noto Sans Bengali",Arial,sans-serif}
+.shayla-showcase-nav{padding:18px 6%;display:flex;justify-content:space-between;align-items:center;gap:18px;background:#0c2c22;color:#fff}
+.shayla-showcase-nav nav{display:flex;gap:20px;flex-wrap:wrap}.shayla-showcase-nav nav a{color:#e5f2e9;text-decoration:none;font-size:13px}
+.shayla-showcase-hero{padding:70px 8%;background:linear-gradient(120deg,#103c2d,#176447);color:#fff}
+.shayla-showcase-hero>span{font-size:12px;letter-spacing:2px;color:#c8e6d3}.shayla-showcase-hero h1{font-size:clamp(32px,5vw,56px);line-height:1.25;margin:18px 0}.shayla-showcase-hero p{max-width:760px;line-height:1.9;color:#e2efe6}.shayla-showcase-meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:25px}.shayla-showcase-meta span{border:1px solid #ffffff55;border-radius:30px;padding:8px 13px;font-size:12px}
+.shayla-showcase-grid{padding:48px 6%;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;max-width:1250px;margin:auto}
+.shayla-option{background:#fff;border:1px solid #e0e9e2;border-top:5px solid;border-radius:14px;padding:26px;box-shadow:0 12px 35px #153b2510}
+.shayla-option-top{display:flex;justify-content:space-between;color:#6a7e71;font-size:12px}.shayla-option h2{font-size:28px;color:#173d2c;margin:20px 0 8px}.shayla-price{font-size:30px;font-weight:800;color:#176447}.shayla-option p{color:#62776a;line-height:1.8;min-height:58px}.shayla-option ul{padding-left:20px;line-height:2;color:#365344;font-size:14px;min-height:120px}.shayla-open{display:inline-block;color:#fff!important;text-decoration:none;padding:13px 18px;border-radius:8px;font-weight:700;margin-top:10px}
+.shayla-showcase-note{margin:0 6% 45px;background:#e6f0e8;padding:28px;border-radius:14px;line-height:1.9}.shayla-showcase-note h2{font-size:25px;color:#103c2d}.shayla-showcase-footer{background:#0c2c22;color:#d9e9df;padding:25px 6%;font-size:12px}
+@media(max-width:700px){.shayla-showcase-grid{grid-template-columns:1fr;padding:30px 5%}.shayla-showcase-hero{padding:48px 6%}.shayla-option ul{min-height:0}.shayla-showcase-nav{align-items:flex-start;flex-direction:column}}
