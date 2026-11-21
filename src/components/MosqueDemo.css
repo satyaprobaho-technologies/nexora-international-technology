@@ -500,3 +500,19 @@
  .mosque-demo .mosque-hero-copy>p{font-size:14px}
  .mosque-demo .mosque-hero-proof{gap:9px 13px}
 }
+
+
+/* Expanded mega dropdowns: display every included submenu clearly */
+.mosque-nav-menu{position:relative}
+.mosque-nav-dropdown{width:min(560px,calc(100vw - 32px));max-height:min(72vh,680px);overflow-y:auto;grid-template-columns:repeat(2,minmax(0,1fr));gap:3px;padding:12px}
+.mosque-nav-dropdown-head{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 10px 11px;margin-bottom:4px;border-bottom:1px solid #e4ece5;color:#174832}
+.mosque-nav-dropdown-head b{font-size:13px}
+.mosque-nav-dropdown-head span{flex:0 0 auto;padding:4px 8px;border-radius:20px;background:#edf5ef;color:#176447;font-size:10px;font-weight:800}
+.mosque-nav-dropdown a{display:flex;align-items:center;gap:8px;min-width:0;padding:9px 8px;line-height:1.45}
+.mosque-nav-dropdown a span{flex:0 0 25px;display:inline-grid;place-items:center;height:22px;border-radius:6px;background:#edf4ee;color:#176447;font-size:9px;font-weight:800}
+.mosque-nav-dropdown a:hover span{background:#176447;color:#fff}
+.mosque-design-3 .mosque-nav-dropdown a span{background:#edf2f8;color:#315c83}
+@media(max-width:760px){
+ .mosque-nav-dropdown{position:fixed;top:auto;left:12px;right:12px;width:auto;max-height:65vh;grid-template-columns:1fr;z-index:1000}
+ .mosque-nav-dropdown-head{position:sticky;top:-12px;background:#fff;z-index:2}
+}
