@@ -55,3 +55,17 @@
 .mosque-memory-leader b{font-size:14px;color:#fff}
 .mosque-memory-leader small{font-size:11px;color:#c5d9cc;margin-top:4px}
 @media(max-width:700px){.mosque-memory{margin:24px auto 30px;padding:0 13px}.mosque-memory-grid{grid-template-columns:1fr}.mosque-memory-story,.mosque-memory-leader{padding:18px}.mosque-memory-story h3{font-size:17px}}
+
+.mosque-admin-add-role{margin:18px 0;padding:15px;background:#f4f8f5;border:1px solid #e1ebe3;border-radius:10px}
+.mosque-admin-add-role label,.mosque-profile-fields label{display:block;font-weight:700;margin:8px 0 5px}
+.mosque-admin-add-role input,.mosque-profile-fields input,.mosque-admin-panel input:not([type=checkbox]){width:100%;max-width:520px;padding:11px;border:1px solid #cbd9ce;border-radius:8px;font:inherit;background:#fff}
+.mosque-admin-add-role button,.mosque-admin-panel>button{background:#176447;color:#fff;border:0;border-radius:8px;padding:10px 16px;margin-top:10px;cursor:pointer;font:inherit}
+.mosque-profile-editor{display:grid;grid-template-columns:150px minmax(0,1fr);gap:18px;align-items:center;margin:14px 0 20px}
+.mosque-profile-preview{width:145px;height:165px;border-radius:12px;background:#edf4ef;border:1px solid #d7e4da;display:flex;align-items:center;justify-content:center;overflow:hidden;color:#64786a;font-size:12px}
+.mosque-profile-preview img{width:100%;height:100%;object-fit:cover}
+.mosque-profile-fields small{display:block;color:#77847b;font-size:11px}
+.mosque-permission-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:18px 0}
+.mosque-permission-grid button{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;padding:13px;background:#f1f7f2;border:1px solid #dce9df;border-radius:9px;color:#1e5037;cursor:pointer;font:inherit;font-weight:700}
+.mosque-permission-grid button span{font-size:11px;font-weight:400;color:#63806d}
+.mosque-admin-panel input[type=checkbox]{width:17px;height:17px;accent-color:#176447}
+@media(max-width:560px){.mosque-profile-editor{grid-template-columns:1fr}.mosque-permission-grid{grid-template-columns:1fr}}
