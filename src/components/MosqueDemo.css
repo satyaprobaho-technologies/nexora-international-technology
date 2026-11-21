@@ -606,3 +606,116 @@
 .mosque-subhero p{font-size:15px;line-height:1.9}
 @media(max-width:900px){.mosque-nav-premium>.mosque-nav-name{display:block;flex:1 1 220px;min-width:0;text-align:right}.mosque-nav-premium>.mosque-main-nav{justify-content:flex-start;gap:5px 14px}.mosque-nav-dropdown{position:fixed;top:145px;left:14px;right:14px;width:auto;max-height:calc(100vh - 165px)}}
 @media(max-width:620px){.mosque-nav-premium{padding:12px 15px 0;gap:8px 12px}.mosque-nav-premium>.mosque-brand b{font-size:20px}.mosque-nav-premium>.mosque-brand small{font-size:7px}.mosque-nav-premium>.mosque-nav-name{flex:1 1 140px}.mosque-nav-premium>.mosque-nav-name b{font-size:11px;line-height:1.5}.mosque-nav-premium>.mosque-nav-name small{font-size:9px}.mosque-nav-premium>.mosque-main-nav{flex-wrap:nowrap;overflow-x:auto;overflow-y:visible;white-space:nowrap;justify-content:flex-start;gap:0 15px;margin:0 -15px;padding:8px 15px 10px;width:calc(100% + 30px);scrollbar-width:thin}.mosque-nav-premium .mosque-main-nav>a,.mosque-nav-premium .mosque-nav-menu>summary{font-size:12px;min-height:36px}.mosque-nav-dropdown{top:128px;left:10px;right:10px;grid-template-columns:1fr;max-height:calc(100vh - 148px);padding:10px}.mosque-nav-dropdown-head{position:sticky;top:-10px;background:#fff;z-index:2}.mosque-nav-dropdown a{font-size:13px;padding:10px 12px}.mosque-demo .mosque-hero-copy h1{font-size:clamp(30px,8vw,40px)}.mosque-home-heading h2{font-size:26px}.mosque-home-heading p{font-size:13px}}
+
+
+/* Four distinct national-newspaper-inspired editorial identities */
+.mosque-design-1{--paper:#fffdf9;--ink:#202020;--press:#a71920;--rule:#b7b0a7;background:var(--paper);color:var(--ink)}
+.mosque-design-1 .mosque-top{background:#211f1d;color:#fff}
+.mosque-design-1 .mosque-nav-premium{background:#fffdf9;border-bottom:4px double #24211f}
+.mosque-design-1 .mosque-nav-premium>.mosque-nav-name b{font-family:Georgia,"Noto Serif Bengali",serif;font-size:clamp(20px,2.2vw,30px);font-weight:900;color:#171717;letter-spacing:-.04em}
+.mosque-design-1 .mosque-nav-premium>.mosque-nav-name small{color:var(--press);font-weight:800;letter-spacing:.1em}
+.mosque-design-1 .mosque-nav-premium .mosque-main-nav{border-top:2px solid #25211e;border-bottom:1px solid #aaa39b}
+.mosque-design-1 .mosque-nav-premium .mosque-main-nav>a,.mosque-design-1 .mosque-nav-premium .mosque-nav-menu>summary{font-family:Georgia,"Noto Serif Bengali",serif;color:#24211f}
+.mosque-design-1 .mosque-nav-premium .mosque-main-nav>a.mosque-main-nav-home{background:var(--press)}
+.mosque-design-1 .mosque-hero-premium{background:#f2eee8;border-bottom:1px solid #bdb5aa}
+.mosque-design-1 .mosque-hero-copy h1,.mosque-design-1 .mosque-home-heading h2{font-family:Georgia,"Noto Serif Bengali",serif;color:#1d1b19}
+.mosque-design-1 .mosque-hero-copy h1 em{color:var(--press)}
+.mosque-design-1 .mosque-eyebrow,.mosque-design-1 .mosque-home-heading>span{color:var(--press);font-weight:900;letter-spacing:.13em}
+.mosque-design-1 .mosque-home-block{background:#fffdf9;border-bottom:1px solid #d5cec5}
+.mosque-design-1 .mosque-notice-grid article,.mosque-design-1 .mosque-about-grid article,.mosque-design-1 .mosque-activity-grid article,.mosque-design-1 .mosque-donation-grid article,.mosque-design-1 .mosque-news-grid article{border:0;border-top:3px solid #24211f;border-radius:0;background:transparent;box-shadow:none;padding:17px 4px}
+.mosque-design-1 .mosque-news-grid article b,.mosque-design-1 .mosque-notice-grid article b{font-family:Georgia,"Noto Serif Bengali",serif;font-size:19px;color:#191919}
+.mosque-design-1 .mosque-stats-premium{background:#eee8df;border-top:1px solid #c9c0b5;border-bottom:1px solid #c9c0b5}
+.mosque-design-1 .mosque-prayer-block{background:#262321;color:#fff}
+.mosque-design-1 .mosque-prayer-block .mosque-home-heading h2,.mosque-design-1 .mosque-prayer-grid article b{color:#fff}
+.mosque-design-1 .mosque-prayer-grid article{border:1px solid #665e56;border-radius:0;background:#34302c}
+.mosque-design-1 .mosque-cta{background:var(--press)}
+.mosque-design-1 .mosque-subhero{border-top:5px solid var(--press);background:#f2eee8}
+.mosque-design-1 .module-workspace-head h2,.mosque-design-1 .module-card-heading h3{font-family:Georgia,"Noto Serif Bengali",serif}
+
+.mosque-design-2{--paper:#fbf8ee;--ink:#173d3a;--press:#176c62;background:var(--paper);color:var(--ink)}
+.mosque-design-2 .mosque-top{background:#0f4742;color:#e8f5ef}
+.mosque-design-2 .mosque-nav-premium{background:#fbf8ee;border-bottom:1px solid #9ebdb3}
+.mosque-design-2 .mosque-nav-premium>.mosque-nav-name b{font-family:"Noto Serif Bengali",Georgia,serif;color:#104d47;font-size:clamp(20px,2vw,28px)}
+.mosque-design-2 .mosque-nav-premium>.mosque-nav-name small{color:#9a7138;font-weight:800}
+.mosque-design-2 .mosque-nav-premium .mosque-main-nav{background:#e8f1e9;border-top:1px solid #c4d9cc;border-bottom:3px solid #176c62}
+.mosque-design-2 .mosque-nav-premium .mosque-main-nav>a,.mosque-design-2 .mosque-nav-premium .mosque-nav-menu>summary{color:#164e48}
+.mosque-design-2 .mosque-nav-premium .mosque-main-nav>a.mosque-main-nav-home{background:#176c62}
+.mosque-design-2 .mosque-hero-premium{background:linear-gradient(120deg,#e4f0e8,#f8f2df);border-bottom:1px solid #c4d8c9}
+.mosque-design-2 .mosque-hero-copy h1,.mosque-design-2 .mosque-home-heading h2{font-family:"Noto Serif Bengali",Georgia,serif;color:#124b45}
+.mosque-design-2 .mosque-hero-copy h1 em{color:#a47735}
+.mosque-design-2 .mosque-eyebrow,.mosque-design-2 .mosque-home-heading>span{color:#a47735;font-weight:900}
+.mosque-design-2 .mosque-home-block{background:#fbf8ee;border-bottom:1px solid #d9e3d6}
+.mosque-design-2 .mosque-notice-grid article,.mosque-design-2 .mosque-about-grid article,.mosque-design-2 .mosque-activity-grid article,.mosque-design-2 .mosque-donation-grid article,.mosque-design-2 .mosque-news-grid article{background:#fff;border:1px solid #d4e2d7;border-radius:15px;box-shadow:0 8px 24px #164e4810}
+.mosque-design-2 .mosque-news-grid article b,.mosque-design-2 .mosque-notice-grid article b{font-family:"Noto Serif Bengali",Georgia,serif;font-size:18px;color:#124b45}
+.mosque-design-2 .mosque-stats-premium{background:#e8f1e9;border-block:1px solid #c7d9cd}
+.mosque-design-2 .mosque-prayer-block{background:#124f49;color:#fff}
+.mosque-design-2 .mosque-prayer-block .mosque-home-heading h2,.mosque-design-2 .mosque-prayer-grid article b{color:#fff}
+.mosque-design-2 .mosque-prayer-grid article{background:#1b6259;border:1px solid #548b7e;border-radius:14px}
+.mosque-design-2 .mosque-cta{background:#176c62}
+.mosque-design-2 .mosque-subhero{border-top:5px solid #176c62;background:#eaf2e9}
+
+.mosque-design-3{--paper:#f4f7fb;--ink:#172b42;--press:#245b91;background:var(--paper);color:var(--ink)}
+.mosque-design-3 .mosque-top{background:#142b43;color:#eaf2fa}
+.mosque-design-3 .mosque-nav-premium{background:#fff;border-bottom:1px solid #c5d2df}
+.mosque-design-3 .mosque-nav-premium>.mosque-nav-name b{font-family:"Noto Sans Bengali",Arial,sans-serif;color:#183c5e;font-size:clamp(19px,2vw,27px);font-weight:900}
+.mosque-design-3 .mosque-nav-premium>.mosque-nav-name small{color:#54789a;font-weight:800}
+.mosque-design-3 .mosque-nav-premium .mosque-main-nav{background:#e9eff6;border-top:1px solid #c8d5e3;border-bottom:3px solid #245b91}
+.mosque-design-3 .mosque-nav-premium .mosque-main-nav>a,.mosque-design-3 .mosque-nav-premium .mosque-nav-menu>summary{color:#193d60}
+.mosque-design-3 .mosque-nav-premium .mosque-main-nav>a.mosque-main-nav-home{background:#245b91}
+.mosque-design-3 .mosque-hero-premium{background:linear-gradient(120deg,#e8eef6,#d6e2ef);border-bottom:1px solid #b7c9dc}
+.mosque-design-3 .mosque-hero-copy h1,.mosque-design-3 .mosque-home-heading h2{font-family:"Noto Sans Bengali",Arial,sans-serif;color:#142e49}
+.mosque-design-3 .mosque-hero-copy h1 em{color:#2d679d}
+.mosque-design-3 .mosque-eyebrow,.mosque-design-3 .mosque-home-heading>span{color:#245b91;font-weight:900;letter-spacing:.1em}
+.mosque-design-3 .mosque-home-block{background:#f4f7fb;border-bottom:1px solid #d6e0eb}
+.mosque-design-3 .mosque-notice-grid article,.mosque-design-3 .mosque-about-grid article,.mosque-design-3 .mosque-activity-grid article,.mosque-design-3 .mosque-donation-grid article,.mosque-design-3 .mosque-news-grid article{background:#fff;border:1px solid #d1dce8;border-radius:5px;box-shadow:0 6px 18px #163b5e0c}
+.mosque-design-3 .mosque-news-grid article b,.mosque-design-3 .mosque-notice-grid article b{font-family:"Noto Sans Bengali",Arial,sans-serif;font-size:18px;color:#183c5e}
+.mosque-design-3 .mosque-stats-premium{background:#e7edf5;border-block:1px solid #c9d5e3}
+.mosque-design-3 .mosque-prayer-block{background:#183a5b;color:#fff}
+.mosque-design-3 .mosque-prayer-block .mosque-home-heading h2,.mosque-design-3 .mosque-prayer-grid article b{color:#fff}
+.mosque-design-3 .mosque-prayer-grid article{background:#234d74;border:1px solid #567b9e;border-radius:5px}
+.mosque-design-3 .mosque-cta{background:#245b91}
+.mosque-design-3 .mosque-subhero{border-top:5px solid #245b91;background:#e7edf5}
+
+.mosque-design-4{--paper:#f5f0e5;--ink:#25231f;--press:#a77c37;background:var(--paper);color:var(--ink)}
+.mosque-design-4 .mosque-top{background:#1e211d;color:#ead8b3}
+.mosque-design-4 .mosque-nav-premium{background:#f5f0e5;border-bottom:1px solid #bba77f}
+.mosque-design-4 .mosque-nav-premium>.mosque-nav-name b{font-family:"Noto Serif Bengali",Georgia,serif;color:#28261f;font-size:clamp(21px,2.2vw,30px);font-weight:900}
+.mosque-design-4 .mosque-nav-premium>.mosque-nav-name small{color:#92703b;font-weight:800;letter-spacing:.1em}
+.mosque-design-4 .mosque-nav-premium .mosque-main-nav{background:#292c26;border-top:1px solid #8d754a;border-bottom:3px solid #b28b49}
+.mosque-design-4 .mosque-nav-premium .mosque-main-nav>a,.mosque-design-4 .mosque-nav-premium .mosque-nav-menu>summary{color:#f3e7cb}
+.mosque-design-4 .mosque-nav-premium .mosque-main-nav>a.mosque-main-nav-home{background:#a77c37;color:#171914}
+.mosque-design-4 .mosque-hero-premium{background:linear-gradient(125deg,#222820,#344336);color:#f8f0df;border-bottom:4px solid #a77c37}
+.mosque-design-4 .mosque-hero-copy h1,.mosque-design-4 .mosque-hero-copy>p{color:#f8f0df}
+.mosque-design-4 .mosque-hero-copy h1,.mosque-design-4 .mosque-home-heading h2{font-family:"Noto Serif Bengali",Georgia,serif}
+.mosque-design-4 .mosque-hero-copy h1 em{color:#d8b36e}
+.mosque-design-4 .mosque-eyebrow,.mosque-design-4 .mosque-home-heading>span{color:#a77c37;font-weight:900;letter-spacing:.13em}
+.mosque-design-4 .mosque-home-block{background:#f5f0e5;border-bottom:1px solid #d7c8a8}
+.mosque-design-4 .mosque-notice-grid article,.mosque-design-4 .mosque-about-grid article,.mosque-design-4 .mosque-activity-grid article,.mosque-design-4 .mosque-donation-grid article,.mosque-design-4 .mosque-news-grid article{background:#fffaf0;border:1px solid #ddcfb1;border-radius:2px;box-shadow:0 8px 25px #352a1710}
+.mosque-design-4 .mosque-news-grid article b,.mosque-design-4 .mosque-notice-grid article b{font-family:"Noto Serif Bengali",Georgia,serif;font-size:19px;color:#29261e}
+.mosque-design-4 .mosque-stats-premium{background:#e9dfc9;border-block:1px solid #c9b58d}
+.mosque-design-4 .mosque-prayer-block{background:#1e2921;color:#fff4df}
+.mosque-design-4 .mosque-prayer-block .mosque-home-heading h2,.mosque-design-4 .mosque-prayer-grid article b{color:#fff4df}
+.mosque-design-4 .mosque-prayer-grid article{background:#2c3a2d;border:1px solid #8f7548;border-radius:2px}
+.mosque-design-4 .mosque-cta{background:#b28b49;color:#171914}
+.mosque-design-4 .mosque-subhero{border-top:5px solid #a77c37;background:#e9dfc9}
+
+/* Apply each newspaper's identity consistently to module and account/admin pages too */
+.mosque-subpage.mosque-design-1{background:#fffdf9;color:#202020}
+.mosque-subpage.mosque-design-2{background:#fbf8ee;color:#173d3a}
+.mosque-subpage.mosque-design-3{background:#f4f7fb;color:#172b42}
+.mosque-subpage.mosque-design-4{background:#f5f0e5;color:#25231f}
+.mosque-subpage .mosque-subnav{border-bottom:1px solid currentColor}
+.mosque-subpage.mosque-design-1 .mosque-subhero,.mosque-subpage.mosque-design-1 .module-workspace{background:#fffdf9}
+.mosque-subpage.mosque-design-2 .mosque-subhero,.mosque-subpage.mosque-design-2 .module-workspace{background:#fbf8ee}
+.mosque-subpage.mosque-design-3 .mosque-subhero,.mosque-subpage.mosque-design-3 .module-workspace{background:#f4f7fb}
+.mosque-subpage.mosque-design-4 .mosque-subhero,.mosque-subpage.mosque-design-4 .module-workspace{background:#f5f0e5}
+.mosque-subpage.mosque-design-1 .module-entry-card,.mosque-subpage.mosque-design-1 .module-record-card{border-radius:0;border-top:4px solid #a71920}
+.mosque-subpage.mosque-design-2 .module-entry-card,.mosque-subpage.mosque-design-2 .module-record-card{border-radius:14px;border-top:4px solid #176c62}
+.mosque-subpage.mosque-design-3 .module-entry-card,.mosque-subpage.mosque-design-3 .module-record-card{border-radius:5px;border-top:4px solid #245b91}
+.mosque-subpage.mosque-design-4 .module-entry-card,.mosque-subpage.mosque-design-4 .module-record-card{border-radius:2px;border-top:4px solid #a77c37}
+.mosque-subpage.mosque-design-1 .module-workspace-head h2,.mosque-subpage.mosque-design-1 .module-card-heading h3{font-family:Georgia,"Noto Serif Bengali",serif}
+.mosque-subpage.mosque-design-2 .module-workspace-head h2,.mosque-subpage.mosque-design-2 .module-card-heading h3,.mosque-subpage.mosque-design-4 .module-workspace-head h2,.mosque-subpage.mosque-design-4 .module-card-heading h3{font-family:"Noto Serif Bengali",Georgia,serif}
+.mosque-subpage.mosque-design-1 .module-entry-card>button[type=submit]{background:#a71920}
+.mosque-subpage.mosque-design-2 .module-entry-card>button[type=submit]{background:#176c62}
+.mosque-subpage.mosque-design-3 .module-entry-card>button[type=submit]{background:#245b91}
+.mosque-subpage.mosque-design-4 .module-entry-card>button[type=submit]{background:#a77c37;color:#171914}
