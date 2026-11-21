@@ -517,9 +517,10 @@
  .mosque-nav-dropdown-head{position:sticky;top:-12px;background:#fff;z-index:2}
 }
 
-/* Compact right-side Motawalli message with portrait inside the message panel */
-.mosque-memory-grid{grid-template-columns:minmax(0,1.08fr) minmax(300px,.92fr);gap:16px;align-items:start}
-.mosque-memory-leader{padding:20px 21px}
+/* Motawalli message moved to the opposite (left) column; portrait stays at the top-right inside the message */
+.mosque-memory-grid{grid-template-columns:minmax(300px,.92fr) minmax(0,1.08fr);gap:16px;align-items:start}
+.mosque-memory-story{grid-column:2}
+.mosque-memory-leader{grid-column:1;padding:20px 21px}
 .mosque-leader-photo-inline{float:right;margin:0 0 10px 14px}
 .mosque-leader-photo-inline .mosque-portrait-frame{width:66px;height:82px;border-width:1px;font-size:9px}
 .mosque-leader-title{max-width:100%;font-size:18px;line-height:1.5}
@@ -527,8 +528,8 @@
 .mosque-leader-message p{font-size:12px;line-height:1.85;margin-bottom:9px}
 .mosque-memory-leader>b{margin-top:11px}
 .mosque-leader-review-note{margin-top:8px}
-@media(max-width:900px){.mosque-memory-grid{grid-template-columns:minmax(0,1fr) minmax(260px,.9fr)}.mosque-memory-story{grid-column:auto}.mosque-memory-leader{grid-column:auto}}
-@media(max-width:620px){.mosque-memory-grid{grid-template-columns:1fr}.mosque-memory-story,.mosque-memory-leader{grid-column:1}.mosque-memory-leader{padding:17px 15px}.mosque-leader-message{padding:12px}.mosque-leader-message p{text-align:left}.mosque-leader-photo-inline .mosque-portrait-frame{width:58px;height:72px}}
+@media(max-width:900px){.mosque-memory-grid{grid-template-columns:1fr}.mosque-memory-story,.mosque-memory-leader{grid-column:1}.mosque-memory-story{grid-row:1}.mosque-memory-leader{grid-row:2}}
+@media(max-width:620px){.mosque-memory-leader{padding:17px 15px}.mosque-leader-message{padding:12px}.mosque-leader-message p{text-align:left}.mosque-leader-photo-inline .mosque-portrait-frame{width:58px;height:72px}}
 
 
 /* Only Mosque submenu labels hide visible module numbers; Foundation numbering remains unchanged */
