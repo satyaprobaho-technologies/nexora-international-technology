@@ -188,14 +188,11 @@
 @media(max-width:680px){.mosque-nav-premium{position:relative;padding:14px 16px}.mosque-nav-premium nav{width:100%;justify-content:space-between;gap:9px;font-size:11px}.mosque-nav-admin{padding:7px 9px}.mosque-hero-premium{grid-template-columns:1fr;padding:43px 20px 52px}.mosque-hero-premium h1{font-size:37px}.mosque-hero-visual{min-height:280px}.mosque-visual-frame img{height:220px}.mosque-visual-float{right:0}.mosque-stats-premium{margin:0 12px;padding:0;grid-template-columns:repeat(2,1fr)}.mosque-stats-premium article{padding:14px;border-bottom:1px solid #edf0ec}.mosque-stats-premium article:nth-child(2){border-right:0}.mosque-stats-premium article:nth-child(3){border-bottom:0}.mosque-stats-premium article:last-child{border-bottom:0}.mosque-stats-premium b{font-size:15px}.mosque-feature-showcase{padding:48px 15px}.mosque-feature-grid{grid-template-columns:1fr}.mosque-feature-card{min-height:0}.mosque-order-section{grid-template-columns:1fr;padding:48px 16px}.mosque-order-form{padding:20px}}
 
 /* Category-based public navigation and module directory */
-.mosque-main-nav{display:flex;align-items:center;gap:15px;flex-wrap:wrap}
-.mosque-main-nav>a,.mosque-nav-menu>summary{font-size:13px;font-weight:700;text-decoration:none;color:#234b38;cursor:pointer;list-style:none}
-.mosque-nav-menu{position:relative}
-.mosque-nav-menu>summary::-webkit-details-marker{display:none}
-.mosque-nav-menu>summary span{color:#b28a36;margin-left:4px}
-.mosque-nav-dropdown{position:absolute;z-index:50;top:calc(100% + 12px);left:0;width:270px;max-height:65vh;overflow:auto;padding:9px;background:#fff;border:1px solid #dce8df;border-radius:12px;box-shadow:0 18px 45px #102f201f;display:grid;grid-template-columns:1fr}
-.mosque-nav-dropdown a{padding:9px 11px;border-radius:7px;font-size:12px;text-decoration:none;color:#234b38}
-.mosque-nav-dropdown a:hover{background:#edf5ef;color:#176447}
+.mosque-main-nav{display:flex;align-items:center;gap:7px;flex:1 1 100%;order:4;min-width:0;max-width:100%;overflow-x:auto;overflow-y:hidden;flex-wrap:nowrap;white-space:nowrap;padding:10px 0 7px;scrollbar-width:thin;scrollbar-color:#a9c5b2 #edf3ee}
+.mosque-main-nav>a{display:inline-flex;align-items:center;gap:5px;flex:0 0 auto;padding:8px 11px;border:1px solid #dce8df;border-radius:7px;background:#fbfdfb;font-size:12px;font-weight:700;text-decoration:none;color:#234b38;cursor:pointer}
+.mosque-main-nav>a:hover,.mosque-main-nav>a:focus-visible{background:#eaf4ec;border-color:#9bbca4;color:#176447;outline:none}
+.mosque-main-nav>a.mosque-main-nav-home{background:#176447;border-color:#176447;color:#fff}
+.mosque-nav-number{font-size:10px;font-weight:800;color:#b28a36}
 .mosque-directory-heading{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-bottom:16px}
 .mosque-directory-heading span,.mosque-directory-card-head>span{white-space:nowrap;border-radius:20px;background:#e9f2eb;color:#176447;padding:5px 10px;font-size:12px;font-weight:700}
 .mosque-directory-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
@@ -210,7 +207,7 @@
 .mosque-directory-card.private{background:#f6f7f6;border-style:dashed}
 .mosque-private-note{font-size:12px;color:#775c25;background:#fff8e8;border:1px solid #f0e0b7;border-radius:8px;padding:12px;line-height:1.8}
 .mosque-directory-admin-link{display:inline-block;margin-top:12px;padding:9px 12px;background:#176447;color:white!important;text-decoration:none;border-radius:8px;font-size:12px;font-weight:700}
-@media(max-width:760px){.mosque-main-nav{gap:10px}.mosque-nav-dropdown{position:static;width:min(85vw,320px);max-height:45vh;margin-top:8px;box-shadow:none}.mosque-directory-grid{grid-template-columns:1fr}}
+@media(max-width:760px){.mosque-main-nav{gap:6px;padding:8px 0}.mosque-main-nav>a{font-size:11px;padding:8px 9px}.mosque-directory-grid{grid-template-columns:1fr}}
 
 
 /* Color-rich real-world module page system */
