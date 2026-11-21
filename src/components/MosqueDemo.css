@@ -531,8 +531,8 @@
 @media(max-width:620px){.mosque-memory-grid{grid-template-columns:1fr}.mosque-memory-story,.mosque-memory-leader{grid-column:1}.mosque-memory-leader{padding:17px 15px}.mosque-leader-message{padding:12px}.mosque-leader-message p{text-align:left}.mosque-leader-photo-inline .mosque-portrait-frame{width:58px;height:72px}}
 
 
-/* Public submenu labels stay clean: no visible module numbers */
-.mosque-nav-dropdown a{gap:0;padding:10px 12px;border-radius:7px}
-.mosque-nav-dropdown a>span{display:none!important}
-.mosque-nav-dropdown a:hover{background:#edf5ef}
-.mosque-design-3 .mosque-nav-dropdown a:hover{background:#edf2f8}
+/* Only Mosque submenu labels hide visible module numbers; Foundation numbering remains unchanged */
+.mosque-nav-dropdown-mosque a{gap:0;padding:10px 12px;border-radius:7px}
+.mosque-nav-dropdown-mosque a>span{display:none!important}
+.mosque-nav-dropdown-mosque a:hover{background:#edf5ef}
+.mosque-design-3 .mosque-nav-dropdown-mosque a:hover{background:#edf2f8}
