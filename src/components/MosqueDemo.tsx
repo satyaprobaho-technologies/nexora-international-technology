@@ -33,7 +33,7 @@ export default function MosqueDemo({variant}:{variant:"1"|"2"|"3"|"4"}) {
  const showHomepageSections=true;
  const selectedModules=packageModuleIndices[variant].map(sourceIndex=>({name:moduleNames[sourceIndex],number:sourceIndex+1,sourceIndex,section:sourceIndex<25||(sourceIndex>=48&&sourceIndex<=53)?"mosque":sourceIndex<43?"foundation":sourceIndex<48?"accounts":"admin"}));
  const items=selectedModules;
- const navMenus=[
+ const navMenus: Array<{key:string;label:string;section?:string;sourceIndices?:number[];quick:Array<{label:string;href:string}>}>=[
   {key:"home",label:"হোম",quick:[{label:"হোমপেজ",href:"#intro"},{label:"মসজিদের পরিচিতি",href:"#mosque-about"},{label:"প্রতিষ্ঠানের বার্তা",href:"#memory-and-message"}]},
   {key:"mosque",label:"মসজিদ",section:"mosque",quick:[{label:"মসজিদের পরিচিতি",href:"#mosque-about"}]},
   {key:"foundation",label:"ফাউন্ডেশন",section:"foundation",quick:[{label:"ফাউন্ডেশন পরিচিতি",href:"#activities"}]},
