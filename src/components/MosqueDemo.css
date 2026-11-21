@@ -312,3 +312,22 @@
 .module-workflow span{padding:8px 11px;border-radius:7px;background:#fff;color:#42614d;font-size:10px;font-weight:800}
 .module-workflow i{color:#b18a43;font-style:normal}
 @media(max-width:760px){.module-workspace-head{display:block}.module-package-pill{display:inline-block;margin-top:14px}.module-workspace-grid{grid-template-columns:1fr}.module-metrics{gap:7px}.module-metrics article{padding:13px}.module-metrics b{font-size:21px}.module-entry-card,.module-record-card{padding:15px}}
+
+
+.module-finance-summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 18px}
+.module-finance-summary>div{padding:15px 17px;border:1px solid #dfe9e1;border-radius:11px;background:#fff}
+.module-finance-summary small{display:block;color:#77857a;font-size:10px}
+.module-finance-summary b{display:block;margin-top:5px;color:#176447;font-size:20px}
+.module-schedule-note,.module-selected-detail{margin:0 0 17px;padding:17px 19px;border:1px solid #dce8df;border-radius:11px;background:#f1f7f1;color:#31533d}
+.module-schedule-note>b,.module-selected-detail>b{display:block;color:#174832;font-size:13px}
+.module-schedule-note p,.module-selected-detail p{margin:7px 0;color:#627468;font-size:11px;line-height:1.8}
+.module-schedule-note button,.module-selected-detail button{padding:8px 12px;border:0;border-radius:7px;background:#176447;color:#fff;font-size:10px;font-weight:800;cursor:pointer}
+.module-schedule-note strong{margin-left:12px;color:#176447;font-size:10px}
+.module-filter-row{display:flex;gap:6px;flex-wrap:wrap;margin:0 0 12px}
+.module-filter-row button{padding:6px 10px;border:1px solid #dce8df;border-radius:20px;background:#fff;color:#66786b;font-size:10px;cursor:pointer}
+.module-filter-row button.active{border-color:#176447;background:#176447;color:#fff}
+.module-row-actions{display:flex;flex-direction:column;gap:5px;flex-shrink:0}
+.module-record-list article>div.module-row-actions button{padding:6px 8px;border:1px solid #dce8df;border-radius:6px;background:#fff;color:#176447;font-size:9px;cursor:pointer}
+.module-record-list article>div.module-row-actions button:hover{background:#edf6ef}
+.module-workflow>div{display:flex;gap:8px;flex-wrap:wrap}
+@media(max-width:760px){.module-finance-summary{gap:6px}.module-finance-summary>div{padding:11px}.module-finance-summary b{font-size:16px}.module-row-actions{max-width:78px}.module-record-list article{align-items:flex-start}.module-record-content{overflow-wrap:anywhere}}
