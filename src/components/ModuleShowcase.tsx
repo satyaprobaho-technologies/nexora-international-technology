@@ -28,7 +28,7 @@ function categoryFor(i:number):string {
  if([3,4,5].includes(i)) return "schedule";
  if(i===8) return "notice";
  if([9,17,23].includes(i)) return "event";
- if([6,7,20,21,32,41].includes(i)) return "people";
+ if([6,7,20,21,41].includes(i)) return "people";
  if([10,11,12,49,50,51,52,53].includes(i)) return "gallery";
  if([13,15,16].includes(i)) return "article";
  if([18,19,34].includes(i)) return "registration";
