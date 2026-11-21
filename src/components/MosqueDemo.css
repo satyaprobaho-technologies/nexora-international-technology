@@ -25,3 +25,33 @@
 .mosque-mutawalli-copy b,.mosque-mutawalli-copy small{display:block;margin-top:8px}
 .mosque-mutawalli-copy small{color:#65796c}
 @media(max-width:700px){.mosque-history{margin:25px 12px;padding:26px 18px}.mosque-history p{text-align:left}.mosque-quote{grid-template-columns:1fr}.mosque-mutawalli-photo{width:170px;height:200px}}
+
+/* Compact international-style memory and leadership feature */
+.mosque-memory{max-width:1120px;margin:34px auto 42px;padding:0 22px;color:#20372c}
+.mosque-memory-head{text-align:center;margin:0 auto 18px;max-width:650px}
+.mosque-memory-head>span,.mosque-memory-eyebrow{font-size:10px;letter-spacing:1.5px;font-weight:800;color:#a17b35}
+.mosque-memory-head h2{font-size:clamp(22px,3vw,30px);line-height:1.3;color:#103c2d;margin:7px 0}
+.mosque-memory-head p{font-size:13px;color:#738077;margin:0}
+.mosque-memory-grid{display:grid;grid-template-columns:1.12fr .88fr;gap:14px;align-items:stretch}
+.mosque-memory-story,.mosque-memory-leader{position:relative;overflow:hidden;border:1px solid #e2e9e3;border-radius:15px;background:#fff;padding:21px 23px;box-shadow:0 8px 26px #193b2e08}
+.mosque-memory-story{border-top:3px solid #b58b43}
+.mosque-memory-story h3{font-size:19px;line-height:1.5;color:#153f30;margin:8px 0}
+.mosque-memory-story>p{font-size:13px;line-height:1.8;color:#68766d;margin:0 0 12px}
+.mosque-memory-details{border-top:1px solid #edf0ed;padding-top:10px}
+.mosque-memory-details summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center;color:#176447;font-weight:800;font-size:13px}
+.mosque-memory-details summary::-webkit-details-marker{display:none}
+.mosque-memory-details summary span{font-size:18px}
+.mosque-memory-full{padding-top:12px;line-height:1.85;color:#34463b}
+.mosque-memory-full p{font-size:13px;margin:10px 0}
+.mosque-memory-full h3{font-size:16px;margin:18px 0 8px}
+.mosque-memory-full blockquote{margin:16px 0;padding:12px 16px;border-left:3px solid #b58b43;background:#faf7ef;color:#69542a;font-size:14px}
+.mosque-memory-full .mosque-history-name{margin:15px 0;padding:12px;font-size:18px}
+.mosque-memory-full .mosque-history-amin{text-align:center;font-weight:800;color:#176447}
+.mosque-memory-full .mosque-history-closing{font-weight:700;color:#176447}
+.mosque-memory-leader{background:linear-gradient(145deg,#103c2d,#1d5a43);color:#fff;border:0;padding:23px 25px;display:flex;flex-direction:column;justify-content:center}
+.mosque-memory-leader .mosque-memory-eyebrow{color:#e2c37e}
+.mosque-leader-mark{font-family:Georgia,serif;font-size:52px;line-height:.7;color:#d8b66d;height:27px}
+.mosque-memory-leader p{font-size:13px;line-height:1.9;margin:10px 0 15px;color:#f2f6f2}
+.mosque-memory-leader b{font-size:14px;color:#fff}
+.mosque-memory-leader small{font-size:11px;color:#c5d9cc;margin-top:4px}
+@media(max-width:700px){.mosque-memory{margin:24px auto 30px;padding:0 13px}.mosque-memory-grid{grid-template-columns:1fr}.mosque-memory-story,.mosque-memory-leader{padding:18px}.mosque-memory-story h3{font-size:17px}}
