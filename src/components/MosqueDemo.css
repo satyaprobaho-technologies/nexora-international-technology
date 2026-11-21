@@ -331,3 +331,25 @@
 .module-record-list article>div.module-row-actions button:hover{background:#edf6ef}
 .module-workflow>div{display:flex;gap:8px;flex-wrap:wrap}
 @media(max-width:760px){.module-finance-summary{gap:6px}.module-finance-summary>div{padding:11px}.module-finance-summary b{font-size:16px}.module-row-actions{max-width:78px}.module-record-list article{align-items:flex-start}.module-record-content{overflow-wrap:anywhere}}
+
+/* Final navigation, compact Motawalli portrait slot and foundation/media sections */
+.mosque-leader-heading{display:flex;align-items:center;gap:14px;margin-bottom:4px}
+.mosque-leader-photo{width:80px;height:80px;flex:0 0 80px;border-radius:50%;display:grid;place-items:center;overflow:hidden;border:2px solid #d9b66e;background:linear-gradient(145deg,#f4ead0,#d7c18d);color:#214a35;font-size:13px;font-weight:800;box-shadow:0 5px 18px #071d1640}
+.mosque-leader-photo img{width:100%;height:100%;object-fit:cover}
+.mosque-memory-leader .mosque-leader-mark{height:auto;font-size:48px;line-height:.8}
+.mosque-memory-leader p{margin-top:7px}
+.mosque-foundation{max-width:1120px;margin:0 auto;padding:62px 24px;background:linear-gradient(180deg,#fbfcf9,#edf4ee);border-top:1px solid #e3ebe3;border-bottom:1px solid #e3ebe3}
+.mosque-foundation h2{margin-top:0}
+.mosque-foundation p{max-width:760px;margin-left:auto;margin-right:auto;line-height:1.9;color:#68796d}
+.mosque-foundation-actions{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin:22px 0}
+.mosque-foundation-actions a{padding:10px 14px;border:1px solid #d9e5da;border-radius:8px;background:#fff;color:#176447;text-decoration:none;font-size:12px;font-weight:800}
+.mosque-foundation-actions a:hover{background:#176447;color:#fff}
+.mosque-media-preview{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:28px;max-width:1120px;margin:0 auto;padding:58px 24px}
+.mosque-media-preview>div:first-child>span{font:700 10px Arial,sans-serif;letter-spacing:.16em;color:#a17b35}
+.mosque-media-preview h2{font-size:clamp(24px,3vw,34px);line-height:1.4;color:#153e2e;margin:10px 0}
+.mosque-media-preview p{color:#718077;line-height:1.9;font-size:13px}
+.mosque-media-links{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.mosque-media-links a{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px;border:1px solid #e1e9e2;border-radius:10px;background:#fff;text-decoration:none;color:#214b36;font-size:13px;font-weight:700;box-shadow:0 7px 20px #193b2e07}
+.mosque-media-links a b{display:grid;place-items:center;width:29px;height:29px;border-radius:8px;background:#edf4ee;color:#176447}
+@media(max-width:760px){.mosque-media-preview{grid-template-columns:1fr;padding:38px 16px}.mosque-media-links{grid-template-columns:1fr 1fr}.mosque-leader-photo{width:76px;height:76px;flex-basis:76px}}
+@media(max-width:430px){.mosque-media-links{grid-template-columns:1fr}.mosque-leader-heading{gap:10px}.mosque-leader-photo{width:68px;height:68px;flex-basis:68px}}
