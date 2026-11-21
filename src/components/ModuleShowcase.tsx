@@ -130,10 +130,17 @@ export default function ModuleShowcase({moduleName,moduleNumber,sourceIndex,pack
  const save=(e:React.FormEvent<HTMLFormElement>)=>{
   e.preventDefault();
   if(values.some(v=>!v.trim())){setNotice("সবগুলো প্রয়োজনীয় ঘর পূরণ করুন।");return;}
-  const status=sourceIndex>=43&&sourceIndex<=47?(sourceIndex===43?"আয়":"ব্যয়"):([8,15,16,49,50,51,52,53].includes(sourceIndex)?"খসড়া":"যাচাইাধীন");
-  setRows(old=>[{id:Date.now(),values:values.map(v=>v.trim()),status},...old]);
+  const cleanValues=values.map(v=>v.trim());
+  if(selected!==null){
+   setRows(old=>old.map(row=>row.id===selected?{...row,values:cleanValues}:row));
+   setNotice("নমুনা রেকর্ডের পরিবর্তন সংরক্ষিত হয়েছে।");
+   setSelected(null);
+  }else{
+   const status=sourceIndex>=43&&sourceIndex<=47?(sourceIndex===43?"আয়":"ব্যয়"):([8,15,16,49,50,51,52,53].includes(sourceIndex)?"খসড়া":"যাচাইাধীন");
+   setRows(old=>[{id:Date.now(),values:cleanValues,status},...old]);
+   setNotice("নতুন নমুনা রেকর্ড তৈরি হয়েছে। এটি শুধু এই ডেমো সেশনে থাকবে।");
+  }
   setValues(config.fields.map(()=> ""));
-  setNotice("নতুন নমুনা রেকর্ড তৈরি হয়েছে। এটি শুধু এই ডেমো সেশনে থাকবে।");
  };
  const updateStatus=(id:number,status:string)=>{setRows(old=>old.map(row=>row.id===id?{...row,status}:row));setNotice("নমুনা রেকর্ডের অবস্থা পরিবর্তন হয়েছে: "+status);};
  return <section className="module-workspace">
@@ -148,12 +155,12 @@ export default function ModuleShowcase({moduleName,moduleNumber,sourceIndex,pack
   <div className="module-workspace-grid">
    <form className="module-entry-card" onSubmit={save}><div className="module-card-heading"><div><span>MODULE WORKFLOW</span><h3>{config.action}</h3></div><b>＋</b></div>
     {config.fields.map((field,i)=><label key={field}>{field}{field.includes("বিস্তারিত")||field.includes("বিবরণ")||field.includes("বিষয়বস্তু")||field.includes("আবেদনের")||field.includes("অভিযোগ")?<textarea required value={values[i]} onChange={e=>setValues(old=>old.map((v,j)=>j===i?e.target.value:v))} placeholder={field+" লিখুন"}/>:<input required value={values[i]} onChange={e=>setValues(old=>old.map((v,j)=>j===i?e.target.value:v))} placeholder={field+" লিখুন"}/>}</label>)}
-    <button type="submit">{config.action} ↗</button>{notice&&<p className="module-feedback" role="status">{notice}</p>}<small>নমুনা ডেটা: যোগ/পরিবর্তন শুধু এই পেজের অস্থায়ী ডেমো সেশনে থাকে; Firebase-এ সংরক্ষিত নয়।</small>
+    <button type="submit">{selected!==null?"পরিবর্তন সংরক্ষণ করুন":config.action} ↗</button>{selected!==null&&<button type="button" className="module-cancel-edit" onClick={()=>{setSelected(null);setValues(config.fields.map(()=> ""));setNotice("সম্পাদনা বাতিল করা হয়েছে।");}}>সম্পাদনা বাতিল</button>}{notice&&<p className="module-feedback" role="status">{notice}</p>}<small>নমুনা ডেটা: যোগ/পরিবর্তন শুধু এই পেজের অস্থায়ী ডেমো সেশনে থাকে; Firebase-এ সংরক্ষিত নয়।</small>
    </form>
    <div className="module-record-card"><div className="module-card-heading"><div><span>RECORD MANAGEMENT</span><h3>রেকর্ড ও কার্যক্রম</h3></div><b>▤</b></div>
     <div className="module-search"><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="নাম, তারিখ বা অবস্থা খুঁজুন..."/><span>⌕</span></div>
     <div className="module-filter-row">{["সব",...Array.from(new Set(rows.map(r=>r.status)))].map(s=><button type="button" className={filter===s?"active":""} key={s} onClick={()=>setFilter(s)}>{s}</button>)}</div>
-    <div className="module-record-list">{filtered.map((row,index)=><article key={row.id}><div className="module-record-number">{String(index+1).padStart(2,"0")}</div><div className="module-record-content"><b>{row.values[0]}</b><p>{row.values.slice(1).join(" · ")}</p><span>{row.status}</span></div><div className="module-row-actions"><button type="button" onClick={()=>{setSelected(row.id);setNotice("বিস্তারিত: "+row.values.join(" | ")+" · অবস্থা: "+row.status);}}>বিস্তারিত</button>{["যাচাইাধীন","খসড়া","পরিকল্পিত"].includes(row.status)&&<button type="button" onClick={()=>updateStatus(row.id,"অনুমোদিত")}>অনুমোদন</button>}{row.status==="খসড়া"&&<button type="button" onClick={()=>updateStatus(row.id,"প্রকাশিত")}>প্রকাশ</button>}</div></article>)}
+    <div className="module-record-list">{filtered.map((row,index)=><article key={row.id}><div className="module-record-number">{String(index+1).padStart(2,"0")}</div><div className="module-record-content"><b>{row.values[0]}</b><p>{row.values.slice(1).join(" · ")}</p><span>{row.status}</span></div><div className="module-row-actions"><button type="button" onClick={()=>{setSelected(row.id);setValues(row.values);setNotice("রেকর্ড সম্পাদনা করুন এবং পরিবর্তন সংরক্ষণ করুন।");}}>সম্পাদনা</button><button type="button" onClick={()=>{setSelected(row.id);setNotice("বিস্তারিত: "+row.values.join(" | ")+" · অবস্থা: "+row.status);}}>বিস্তারিত</button>{["যাচাইাধীন","খসড়া","পরিকল্পিত"].includes(row.status)&&<button type="button" onClick={()=>updateStatus(row.id,"অনুমোদিত")}>অনুমোদন</button>}{row.status==="খসড়া"&&<button type="button" onClick={()=>updateStatus(row.id,"প্রকাশিত")}>প্রকাশ</button>}<button type="button" onClick={()=>{setRows(old=>old.filter(item=>item.id!==row.id));if(selected===row.id){setSelected(null);setValues(config.fields.map(()=> ""));}setNotice("নমুনা রেকর্ড মুছে ফেলা হয়েছে।");}}>মুছুন</button></div></article>)}
     {!filtered.length&&<p className="module-empty">এই অনুসন্ধানে কোনো রেকর্ড পাওয়া যায়নি।</p>}</div>
     <div className="module-record-footer">দেখানো হয়েছে {filtered.length}টি রেকর্ড <span>ডেমো পরিবেশ</span></div>
    </div>
