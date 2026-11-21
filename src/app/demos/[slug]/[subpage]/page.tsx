@@ -30,7 +30,7 @@ export default async function MosqueDemoSubpage({params}:{params:Promise<{slug:s
  if(moduleMatch&&(number<1||number>pack.count)) notFound();
  const selectedModules=packageModuleIndices[variant].map(index=>moduleNames[index]);
  const moduleName=moduleMatch?selectedModules[number-1]:"";
- const moduleOwner=enterprise?"শায়লা আকরাম মসজিদ ও ফাউন্ডেশনের":moduleMatch&&packageModuleIndices[variant][number-1]>=25&&packageModuleIndices[variant][number-1]<=42?"শায়লা আকরাম ফাউন্ডেশনের":"সাকছিপাড়া শায়লা আকরাম কেন্দ্রিয় জামে মসজিদের";
+ const moduleOwner=enterprise?"শায়লা আকরাম মসজিদ ও ফাউন্ডেশনের":moduleMatch&&packageModuleIndices[variant][number-1]>=25&&packageModuleIndices[variant][number-1]<=42?"শায়লা আকরাম ফাউন্ডেশনের":"সাকছিপাড়া সাকছিপাড়া শায়লা আকরাম কেন্দ্রীয় জামে মসজিদের";
  return <main className="mosque-subpage">
   <div className="mosque-subnav"><Link href={base}>← মূল ডেমোতে ফিরুন</Link><span>NEXORA · {pack.name} প্যাকেজ</span><span>প্রদর্শনী মোড</span></div>
   {admin?<><section className="mosque-subhero"><span>{enterprise?"ডেমো পেজ ৫৫–৬০ / ৬০ · নিয়ন্ত্রণ কেন্দ্র":`অ্যাডমিন ডেমো · প্যাকেজ ০${variant} · ${pack.count}টি মডিউল`}</span><h1>অ্যাডমিন প্যানেল</h1><p>{enterprise?"মসজিদ ও ফাউন্ডেশনের পৃথক বিভাগ এবং দায়িত্ব অনুযায়ী নিয়ন্ত্রণের নমুনা ব্যবস্থা।":"মসজিদ ও ফাউন্ডেশনের পৃথক বিভাগ এবং নির্ধারিত মডিউল পরিচালনার সাধারণ অ্যাডমিন প্যানেল।"} এখানে কোনো বাস্তব গ্রাহক তথ্য বা আর্থিক লেনদেন নেই।</p><b>{pack.price} · {pack.count}টি মডিউল</b></section>
