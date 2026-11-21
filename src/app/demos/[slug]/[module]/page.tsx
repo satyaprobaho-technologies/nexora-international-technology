@@ -88,10 +88,25 @@ function AdminDemo({variant}:{variant:string}) {
  const [adminEmail,setAdminEmail]=useState("");
  const [admins,setAdmins]=useState(["computer26training@gmail.com"]);
  const [entry,setEntry]=useState("");
+ const [monthlyDueDay]=useState(5);
+ const [redAlertDays]=useState(10);
+ const [members,setMembers]=useState([
+  {id:1,name:"মোঃ করিম",address:"পশ্চিম সাকছিপাড়া, হাজীগঞ্জ",phone:"01XXXXXXXXX",monthly:500,paidMonths:3,paidThrough:"সেপ্টেম্বর ২০২৬",collector:"আব্দুল্লাহ"},
+  {id:2,name:"মোঃ হাবিব",address:"হাজীগঞ্জ, চাঁদপুর",phone:"01XXXXXXXXX",monthly:200,paidMonths:1,paidThrough:"জুলাই ২০২৬",collector:"রহিম"},
+  {id:3,name:"মোঃ জামাল",address:"সাকছিপাড়া, হাজীগঞ্জ",phone:"01XXXXXXXXX",monthly:400,paidMonths:0,paidThrough:"—",collector:"আব্দুল্লাহ"}
+ ]);
+ const [alertMonth,setAlertMonth]=useState("নভেম্বর ২০২৬");
+ const [alertFilter,setAlertFilter]=useState("সব");
+ const [visitLog,setVisitLog]=useState<Record<number,string>>({});
+ const [memberName,setMemberName]=useState("");
+ const [memberAddress,setMemberAddress]=useState("");
+ const [memberPhone,setMemberPhone]=useState("");
+ const [memberMonthly,setMemberMonthly]=useState("");
+ const [memberCollector,setMemberCollector]=useState("");
  const isSuper=role==="সুপার অ্যাডমিন";
  const canAccounts=isSuper||!!accountAccess[role];
  const websiteNav=["সারসংক্ষেপ","মডিউল নিয়ন্ত্রণ","পেজ ও কনটেন্ট","নোটিশ প্রকাশ","মসজিদ ও ফাউন্ডেশন","মিডিয়া ব্যবস্থাপনা","ব্যবহারকারী ও দায়িত্ব","দায়িত্ব ও অনুমতি","সাধারণ সেটিংস","কার্যক্রমের ইতিহাস"];
- const accountNav=["হিসাব সারসংক্ষেপ","আয়-ব্যয়","অনুদান ও দান","বাজেট ও বিল","আর্থিক রিপোর্ট","হিসাব অ্যাডমিন","হিসাব নিরাপত্তা"];
+ const accountNav=["হিসাব সারসংক্ষেপ","আয়-ব্যয়","অনুদান ও দান","মাসিক চাঁদা ও Red Alert","বাজেট ও বিল","আর্থিক রিপোর্ট","হিসাব অ্যাডমিন","হিসাব নিরাপত্তা"];
  const nav=area==="website"?websiteNav:accountNav;
  const save=()=>setSaved(true);
  if(!enterprise) return <div className="mosque-admin-demo"><div className="mosque-admin-top"><div><b>NEXORA · DEMO CONTROL CENTER</b><small>শায়লা আকরাম কেন্দ্রীয় জামে মসজিদ</small></div><span>শুধু প্রদর্শনীর জন্য · বাস্তব অ্যাডমিন নয়</span></div><main style={{padding:24}}><h1>প্যাকেজ {variant} অ্যাডমিন ডেমো</h1><p>এই প্যাকেজে সীমিত ওয়েবসাইট পরিচালনা সুবিধা রয়েছে।</p><Link href={"/demos/shayla-akram-"+variant}>ওয়েবসাইটে ফিরে যান ↗</Link></main></div>;
@@ -123,7 +138,39 @@ function AdminDemo({variant}:{variant:string}) {
     {area==="website"&&section!=="সারসংক্ষেপ"&&section!=="মডিউল নিয়ন্ত্রণ"&&section!=="পেজ ও কনটেন্ট"&&section!=="ব্যবহারকারী ও দায়িত্ব"&&section!=="দায়িত্ব ও অনুমতি"&&section!=="নোটিশ প্রকাশ"?<div className="mosque-admin-panel"><h3>{section} পরিচালনা</h3><p>এই বিভাগে নতুন তথ্য তৈরি, বিদ্যমান তথ্য সম্পাদনা/ডিলেট, প্রকাশনা নিয়ন্ত্রণ এবং প্রয়োজনীয় রিপোর্টের ব্যবস্থা থাকবে।</p><button onClick={save}>পরিবর্তন সংরক্ষণের নমুনা</button></div>:null}
     {area==="accounts"&&!canAccounts?<div className="mosque-admin-panel"><h3>প্রবেশাধিকার নেই</h3><p>এই দায়িত্বের জন্য একাউন্টস প্যানেলের অনুমতি দেওয়া হয়নি। সুপার অ্যাডমিনের অনুমোদন প্রয়োজন।</p></div>:null}
     {area==="accounts"&&canAccounts&&section==="হিসাব সারসংক্ষেপ"?<><div className="mosque-admin-cards"><article><small>মোট আয়</small><b>৳০</b></article><article><small>মোট ব্যয়</small><b>৳০</b></article><article><small>অনুদান</small><b>৳০</b></article><article><small>বর্তমান স্থিতি</small><b>৳০</b></article></div><div className="mosque-admin-panel"><h3>ব্যক্তিগত আর্থিক ব্যবস্থাপনা</h3><p>এই প্যানেল সাধারণ ওয়েবসাইট থেকে সম্পূর্ণ আলাদা এবং অনুমতিপ্রাপ্ত অ্যাডমিনদের জন্য।</p></div></>:null}
-    {area==="accounts"&&canAccounts&&section!=="হিসাব সারসংক্ষেপ"?<div className="mosque-admin-panel"><h3>{section}</h3><label>নতুন এন্ট্রির বিবরণ</label><input value={entry} onChange={e=>setEntry(e.target.value)} placeholder="বিবরণ লিখুন"/><button disabled={!isSuper&&!canAccounts||!entry.trim()} onClick={()=>{setEntry("");setSaved(true)}}>＋ নতুন এন্ট্রি যোগ করুন</button><p>হিসাব এন্ট্রি সম্পাদনা, ডিলেট, রসিদ, ভাউচার ও রিপোর্টের পূর্ণ নিয়ন্ত্রণ অনুমতি অনুযায়ী থাকবে।</p></div>:null}
+    {area==="accounts"&&canAccounts&&section==="মাসিক চাঁদা ও Red Alert"?<div className="mosque-admin-panel">
+      <h3>মাসিক চাঁদা আদায় ও বকেয়া সতর্কতা</h3>
+      <p>প্রতি মাসের ৫ তারিখ চাঁদা জমার শেষ দিন। ১০ দিন আগে, অর্থাৎ আগের মাসের ২৬ তারিখ থেকে আগাম Red Alert শুরু হবে।</p>
+      <div className="mosque-admin-cards">
+       <article><small>চাঁদা জমার শেষ তারিখ</small><b>প্রতি মাসের ৫</b></article>
+       <article><small>আগাম Red Alert</small><b>১০ দিন আগে</b></article>
+       <article><small>নমুনা বকেয়া সদস্য</small><b>{members.length} জন</b></article>
+       <article><small>মোট নমুনা পাওনা</small><b>৳{members.reduce((s,m)=>s+m.monthly*Math.max(0,1),0).toLocaleString("en-US")}</b></article>
+      </div>
+      <div className="mosque-admin-add-role">
+       <label>হিসাবের মাস</label><select value={alertMonth} onChange={e=>setAlertMonth(e.target.value)}><option>নভেম্বর ২০২৬</option><option>ডিসেম্বর ২০২৬</option><option>জানুয়ারি ২০২৭</option></select>
+       <label>তালিকা ফিল্টার</label><select value={alertFilter} onChange={e=>setAlertFilter(e.target.value)}><option>সব</option><option>এই মাসে পাওনা</option><option>আগের মাসসহ বকেয়া</option></select>
+      </div>
+      <div className="mosque-admin-table"><div><b>Red Alert আদায় তালিকা · {alertMonth}</b><span>আগাম সতর্কতা: আগের মাসের ২৬ তারিখ</span></div></div>
+      {members.filter(m=>alertFilter==="সব"||alertFilter==="এই মাসে পাওনা"||m.paidMonths<12).map(m=><div className="mosque-admin-table" key={m.id}><div style={{display:"grid",gridTemplateColumns:"1fr auto",gap:8,alignItems:"center"}}>
+       <span><b>{m.name}</b><br/><small>{m.address} · {m.phone}</small><br/><small>মাসিক চাঁদা ৳{m.monthly.toLocaleString("en-US")} · আদায়কারী: {m.collector}</small></span>
+       <span style={{color:"#b42318",fontWeight:700}}>৳{m.monthly.toLocaleString("en-US")}+</span>
+       <span style={{gridColumn:"1 / -1",fontSize:12,color:"#b42318"}}>বকেয়া · সর্বশেষ পরিশোধ: {m.paidThrough}</span>
+       <button style={{gridColumn:"1 / -1"}} onClick={()=>setVisitLog({...visitLog,[m.id]:visitLog[m.id]?"":"সদস্যের সঙ্গে যোগাযোগ/সাক্ষাতের ফলাফল লিখুন"})}>আদায় কার্যক্রম আপডেট</button>
+       {visitLog[m.id]!==undefined&&visitLog[m.id]!==""?<input style={{gridColumn:"1 / -1"}} placeholder={visitLog[m.id]} onChange={e=>setVisitLog({...visitLog,[m.id]:e.target.value})}/>:null}
+      </div></div>)}
+      <h3>নতুন সদস্য নিবন্ধন</h3>
+      <div className="mosque-admin-add-role">
+       <label>সদস্যের নাম</label><input value={memberName} onChange={e=>setMemberName(e.target.value)} placeholder="পূর্ণ নাম"/>
+       <label>ঠিকানা</label><input value={memberAddress} onChange={e=>setMemberAddress(e.target.value)} placeholder="গ্রাম, ওয়ার্ড, উপজেলা, জেলা"/>
+       <label>মোবাইল</label><input value={memberPhone} onChange={e=>setMemberPhone(e.target.value)} placeholder="মোবাইল নম্বর"/>
+       <label>নির্ধারিত মাসিক চাঁদা (৳)</label><input type="number" min="1" value={memberMonthly} onChange={e=>setMemberMonthly(e.target.value)} placeholder="যেকোনো পরিমাণ"/>
+       <label>দায়িত্বপ্রাপ্ত আদায়কারী</label><input value={memberCollector} onChange={e=>setMemberCollector(e.target.value)} placeholder="আদায়কারীর নাম"/>
+       <button disabled={!memberName.trim()||!memberAddress.trim()||Number(memberMonthly)<=0} onClick={()=>{setMembers([...members,{id:Date.now(),name:memberName,address:memberAddress,phone:memberPhone,monthly:Number(memberMonthly),paidMonths:0,paidThrough:"—",collector:memberCollector||"নির্ধারিত নয়"}]);setMemberName("");setMemberAddress("");setMemberPhone("");setMemberMonthly("");setMemberCollector("");setSaved(true)}}>＋ সদস্য যোগ করুন</button>
+      </div>
+      <p>প্রতিটি সদস্যের জন্য মাসভিত্তিক পরিশোধ ইতিহাস, একসঙ্গে একাধিক মাস জমা, আংশিক জমা, রসিদ এবং বকেয়া ব্যালেন্স যুক্ত হবে। কোনো মাসের টাকা জমা হলে সেই মাসের Red Alert বন্ধ হবে।</p>
+     </div>:null}
+    {area==="accounts"&&canAccounts&&section!=="হিসাব সারসংক্ষেপ"&&section!=="মাসিক চাঁদা ও Red Alert"?<div className="mosque-admin-panel"><h3>{section}</h3><label>নতুন এন্ট্রির বিবরণ</label><input value={entry} onChange={e=>setEntry(e.target.value)} placeholder="বিবরণ লিখুন"/><button disabled={!isSuper&&!canAccounts||!entry.trim()} onClick={()=>{setEntry("");setSaved(true)}}>＋ নতুন এন্ট্রি যোগ করুন</button><p>হিসাব এন্ট্রি সম্পাদনা, ডিলেট, রসিদ, ভাউচার ও রিপোর্টের পূর্ণ নিয়ন্ত্রণ অনুমতি অনুযায়ী থাকবে।</p></div>:null}
     {saved?<p role="status" className="mosque-admin-disclaimer">ডেমোতে পরিবর্তন দেখানো হয়েছে; বাস্তব সার্ভার বা ডেটাবেসে সংরক্ষিত হয়নি।</p>:null}
     <p className="mosque-admin-disclaimer">সুপার অ্যাডমিনের জন্য সবকিছু তৈরি, দেখা, সম্পাদনা, ডিলেট, প্রকাশ/অনুমোদন, অ্যাডমিন ও অনুমতি নিয়ন্ত্রণ এবং নতুন মডিউল তৈরি/ডিলেটের ক্ষমতা নির্ধারিত। বাস্তব সংস্করণে প্রতিটি কাজ সার্ভার-সাইড অনুমতি যাচাই, Firebase Security Rules, অডিট লগ ও ব্যাকআপের মাধ্যমে সুরক্ষিত করতে হবে।</p>
    </main>
