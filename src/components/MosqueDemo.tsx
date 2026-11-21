@@ -32,7 +32,7 @@ export default function MosqueDemo({variant}:{variant:"1"|"2"|"3"|"4"}) {
  const enterprise=variant==="4";
  const selectedModules=packageModuleIndices[variant].map((sourceIndex,position)=>({name:moduleNames[sourceIndex],number:position+1,sourceIndex,section:sourceIndex<25||sourceIndex>=48?"mosque":sourceIndex<43?"foundation":sourceIndex<48?"accounts":"admin"}));
  const items=selectedModules;
- const directoryGroups=enterprise?moduleSections.map(group=>({...group,items:group.ranges.flatMap(([start,end])=>moduleNames.slice(start-1,end).map((name,i)=>({name,number:start+i,sourceIndex:start+i-1})))})):[
+ const directoryGroups: Array<{key:string;title:string;description:string;private?:boolean;admin?:boolean;items:Array<{name:string;number:number;sourceIndex:number}>}> = enterprise?moduleSections.map(group=>({...group,items:group.ranges.flatMap(([start,end])=>moduleNames.slice(start-1,end).map((name,i)=>({name,number:start+i,sourceIndex:start+i-1})))})):[
   {key:"mosque",title:"মসজিদ বিভাগ",description:"মসজিদের পরিচিতি, নামাজের সময়, নোটিশ, অনুষ্ঠান ও ওয়েবসাইট পরিচালনা।",items:selectedModules.filter(item=>item.section==="mosque")},
   {key:"foundation",title:"ফাউন্ডেশন বিভাগ",description:"শিক্ষা, চিকিৎসা, এতিম ও দরিদ্র পরিবার সহায়তা এবং মানবসেবামূলক কার্যক্রম।",items:selectedModules.filter(item=>item.section==="foundation")}
  ];
