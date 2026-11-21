@@ -529,3 +529,10 @@
 .mosque-leader-review-note{margin-top:8px}
 @media(max-width:900px){.mosque-memory-grid{grid-template-columns:minmax(0,1fr) minmax(260px,.9fr)}.mosque-memory-story{grid-column:auto}.mosque-memory-leader{grid-column:auto}}
 @media(max-width:620px){.mosque-memory-grid{grid-template-columns:1fr}.mosque-memory-story,.mosque-memory-leader{grid-column:1}.mosque-memory-leader{padding:17px 15px}.mosque-leader-message{padding:12px}.mosque-leader-message p{text-align:left}.mosque-leader-photo-inline .mosque-portrait-frame{width:58px;height:72px}}
+
+
+/* Public submenu labels stay clean: no visible module numbers */
+.mosque-nav-dropdown a{gap:0;padding:10px 12px;border-radius:7px}
+.mosque-nav-dropdown a>span{display:none!important}
+.mosque-nav-dropdown a:hover{background:#edf5ef}
+.mosque-design-3 .mosque-nav-dropdown a:hover{background:#edf2f8}
