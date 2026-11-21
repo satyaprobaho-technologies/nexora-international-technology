@@ -165,7 +165,7 @@
 .mosque-feature-card-large a{color:#e7c985}
 .mosque-feature-bottom{margin-top:20px;padding:17px 20px;background:#edf4ee;border:1px solid #dce8df;border-radius:10px;display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap}
 .mosque-feature-bottom b{font-size:13px;color:#214b36}
-.mosque-feature-bottom button{border:0;border-radius:7px;background:#176447;color:#fff;padding:10px 14px;font:700 12px inherit;cursor:pointer}
+.mosque-feature-bottom button{border:0;border-radius:7px;background:#176447;color:#fff;padding:10px 14px;font-family:inherit;font-size:12px;font-weight:700;cursor:pointer}
 .mosque-order-section{display:grid;grid-template-columns:1fr minmax(330px,.85fr);gap:45px;align-items:start;padding:75px max(7%,calc((100vw - 1120px)/2));background:#103c2d;color:#fff}
 .mosque-order-copy h2{font-size:clamp(29px,4vw,43px);line-height:1.35;margin:13px 0;color:#fff}
 .mosque-order-copy>p{font-size:14px;line-height:2;color:#d2e0d6;max-width:530px}
@@ -178,9 +178,9 @@
 .mosque-order-form-head h3{font-size:23px;margin:8px 0 3px;color:#153e2e}
 .mosque-order-form-head p{font-size:12px;color:#78857c;margin:0 0 16px}
 .mosque-order-form label{display:block;margin:13px 0;font-size:12px;font-weight:700;color:#31513d}
-.mosque-order-form input,.mosque-order-form textarea{display:block;width:100%;margin-top:6px;padding:12px;border:1px solid #d9e2da;border-radius:7px;background:#fbfcfa;color:#173b2c;font:13px inherit;outline-color:#176447}
+.mosque-order-form input,.mosque-order-form textarea{display:block;width:100%;margin-top:6px;padding:12px;border:1px solid #d9e2da;border-radius:7px;background:#fbfcfa;color:#173b2c;font-family:inherit;font-size:13px;outline-color:#176447}
 .mosque-order-form textarea{min-height:85px;resize:vertical}
-.mosque-order-form>button{width:100%;padding:13px;border:0;border-radius:7px;background:#176447;color:#fff;font:700 13px inherit;cursor:pointer}
+.mosque-order-form>button{width:100%;padding:13px;border:0;border-radius:7px;background:#176447;color:#fff;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer}
 .mosque-order-form>button:disabled{opacity:.65;cursor:wait}
 .mosque-order-form>small{display:block;margin-top:12px;font-size:10px;line-height:1.7;color:#78857c}
 .mosque-order-result{padding:11px;border-radius:7px;background:#eaf4ec;color:#176447;font-size:12px;line-height:1.7}
