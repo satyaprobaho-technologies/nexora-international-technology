@@ -353,3 +353,38 @@
 .mosque-media-links a b{display:grid;place-items:center;width:29px;height:29px;border-radius:8px;background:#edf4ee;color:#176447}
 @media(max-width:760px){.mosque-media-preview{grid-template-columns:1fr;padding:38px 16px}.mosque-media-links{grid-template-columns:1fr 1fr}.mosque-leader-photo{width:76px;height:76px;flex-basis:76px}}
 @media(max-width:430px){.mosque-media-links{grid-template-columns:1fr}.mosque-leader-heading{gap:10px}.mosque-leader-photo{width:68px;height:68px;flex-basis:68px}}
+
+
+/* Four visual identities for the same complete mosque website */
+.mosque-demo{--mosque-ink:#173c30;--mosque-paper:#f7f8f3;--mosque-gold:#c29b50;background:var(--mosque-paper)}
+.mosque-demo .mosque-top{background:#102f26;color:#e7eee8}
+.mosque-demo .mosque-nav{box-shadow:0 12px 34px #173c3010}
+.mosque-demo .mosque-hero{min-height:540px}
+.mosque-demo .mosque-hero-copy h1{letter-spacing:-.035em}
+.mosque-demo .mosque-hero-copy p{max-width:560px}
+.mosque-demo .mosque-stats article{border-radius:14px}
+.mosque-demo .mosque-section{padding-top:76px;padding-bottom:76px}
+.mosque-design-1{--mosque-accent:#176447;--mosque-paper:#fbfaf5}
+.mosque-design-1 .mosque-nav{border-bottom:3px solid #d8c18a}
+.mosque-design-1 .mosque-hero{background:linear-gradient(115deg,#f8f5e9 0%,#e8efe5 100%)}
+.mosque-design-1 .mosque-hero-visual{filter:saturate(.82)}
+.mosque-design-1 .mosque-cta{border-radius:5px}
+.mosque-design-2{--mosque-accent:#26766c;--mosque-paper:#f3f8f7}
+.mosque-design-2 .mosque-nav{background:#fff;border-bottom:1px solid #dce9e5}
+.mosque-design-2 .mosque-hero{background:linear-gradient(120deg,#e9f4f1,#f8fbf8)}
+.mosque-design-2 .mosque-hero-visual{transform:translateY(5px)}
+.mosque-design-2 .mosque-cta{border-radius:999px}
+.mosque-design-3{--mosque-accent:#335c7a;--mosque-paper:#f4f6fa}
+.mosque-design-3 .mosque-top{background:#10283d}
+.mosque-design-3 .mosque-nav{background:#fff;border-bottom:1px solid #d8e0e9}
+.mosque-design-3 .mosque-hero{background:radial-gradient(circle at 85% 20%,#dbe7f2 0,transparent 35%),linear-gradient(115deg,#f2f5fa,#e8eef5)}
+.mosque-design-3 .mosque-cta{border-radius:3px;letter-spacing:.02em}
+.mosque-design-4{--mosque-accent:#176447;--mosque-paper:#f5f7f2}
+.mosque-design-4 .mosque-top{background:#092d24}
+.mosque-design-4 .mosque-nav{background:#fff;border-bottom:1px solid #d6e2d8}
+.mosque-design-4 .mosque-hero{background:linear-gradient(125deg,#092f25 0%,#164c39 48%,#d8c18c 150%);color:#fff}
+.mosque-design-4 .mosque-hero-copy h1,.mosque-design-4 .mosque-hero-copy p{color:#fff}
+.mosque-design-4 .mosque-hero-proof span{color:#e8eee8}
+.mosque-design-4 .mosque-cta.ghost{border-color:#d5c28d;color:#fff}
+.mosque-design-4 .mosque-stats article{border-top:3px solid #c7a55f}
+@media(max-width:760px){.mosque-demo .mosque-hero{min-height:unset}.mosque-demo .mosque-section{padding-top:44px;padding-bottom:44px}}
