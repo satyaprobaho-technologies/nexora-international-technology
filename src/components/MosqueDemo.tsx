@@ -30,7 +30,7 @@ export default function MosqueDemo({variant}:{variant:"1"|"2"|"3"|"4"}) {
  const p=data[variant], [tab,setTab]=useState("পরিচিতি"), [role,setRole]=useState(variant==="4"?"মোতাওয়াল্লী":"প্রধান অ্যাডমিন"), [amount,setAmount]=useState("১০০০"), [msg,setMsg]=useState("");
  const [orderName,setOrderName]=useState(""), [orderPhone,setOrderPhone]=useState(""), [orderEmail,setOrderEmail]=useState(""), [orderNote,setOrderNote]=useState(""), [orderBusy,setOrderBusy]=useState(false), [orderResult,setOrderResult]=useState("");
  const enterprise=variant==="4";
- const showHomepageSections=variant==="1"||variant==="4";
+ const showHomepageSections=true;
  const selectedModules=packageModuleIndices[variant].map(sourceIndex=>({name:moduleNames[sourceIndex],number:sourceIndex+1,sourceIndex,section:sourceIndex<25||(sourceIndex>=48&&sourceIndex<=53)?"mosque":sourceIndex<43?"foundation":sourceIndex<48?"accounts":"admin"}));
  const items=selectedModules;
  const directoryGroups: Array<{key:string;title:string;description:string;private?:boolean;admin?:boolean;items:Array<{name:string;number:number;sourceIndex:number}>}> = enterprise?moduleSections.map(group=>({...group,items:group.ranges.flatMap(([start,end])=>moduleNames.slice(start-1,end).map((name,i)=>({name,number:start+i,sourceIndex:start+i-1})))})):[
