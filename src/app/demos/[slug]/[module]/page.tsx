@@ -190,11 +190,54 @@ function AdminDemo({variant}:{variant:string}) {
   </div>}
  </div>;
 }
+
+function InteractiveModuleDemo({title,index}:{title:string;index:number}) {
+ const [person,setPerson]=useState("");
+ const [details,setDetails]=useState("");
+ const [amount,setAmount]=useState("");
+ const [date,setDate]=useState("2026-11-21");
+ const [method,setMethod]=useState("নগদ");
+ const [category,setCategory]=useState(index===37?"যাকাত":index===38?"সদকা":"সাধারণ");
+ const [records,setRecords]=useState<Array<{id:number;person:string;details:string;amount:number;date:string;method:string;category:string}>>([]);
+ const [month,setMonth]=useState("নভেম্বর ২০২৬");
+ const [role,setRole]=useState("হিসাব অ্যাডমিন");
+ const [allowed,setAllowed]=useState<Record<string,boolean>>({দেখা:true,তৈরি:true,সম্পাদনা:false,অনুমোদন:false,রপ্তানি:false});
+ const [notice,setNotice]=useState("");
+ const total=records.reduce((n,x)=>n+x.amount,0);
+ const money=(n:number)=>"৳"+n.toLocaleString("en-BD");
+ const finance=index>=36&&index<=47;
+ const security=index>=55&&index<=59;
+ const add=()=>{if(!person.trim()||!details.trim()||Number(amount)<=0)return;setRecords([{id:Date.now(),person:person.trim(),details:details.trim(),amount:Number(amount),date,method,category},...records]);setNotice("ডেমো রেকর্ড যোগ হয়েছে। বাস্তব ডেটাবেসে সংরক্ষিত হয়নি।");setPerson("");setDetails("");setAmount("");};
+ return <div className="mosque-module-workspace">
+  <div className="mosque-admin-cards"><article><small>নমুনা রেকর্ড</small><b>{records.length}</b></article><article><small>মোট নমুনা অর্থ</small><b>{money(total)}</b></article><article><small>মডিউল</small><b>{title}</b></article></div>
+  {finance?<><h2>{title} · ইন্টার‌্যাক্টিভ হিসাব ডেমো</h2><p>মসজিদ ও ফাউন্ডেশনের তথ্য আলাদা লেজারে নমুনা হিসেবে যোগ করুন।</p>
+   <label>প্রতিষ্ঠান / লেজার</label><select value={category} onChange={e=>setCategory(e.target.value)}><option>সাধারণ</option><option>মসজিদ</option><option>শায়লা আকরাম ফাউন্ডেশন</option><option>যাকাত</option><option>সদকা</option><option>স্পনসরশিপ</option></select>
+   <label>{index===41?"দাতার নাম":index===45?"সরবরাহকারী / বিক্রেতার নাম":"প্রদানকারী / সংশ্লিষ্ট ব্যক্তির নাম"}</label><input value={person} onChange={e=>setPerson(e.target.value)} placeholder="পূর্ণ নাম লিখুন"/>
+   <label>{index===44?"বাজেট / খরচের খাত":index===45?"ক্রয় বা বিলের বিবরণ":"লেনদেনের বিবরণ / উদ্দেশ্য"}</label><input value={details} onChange={e=>setDetails(e.target.value)} placeholder="বিস্তারিত লিখুন"/>
+   <label>টাকার পরিমাণ (৳)</label><input type="number" min="1" value={amount} onChange={e=>setAmount(e.target.value)} placeholder="যেকোনো পরিমাণ"/>
+   <label>পেমেন্ট মাধ্যম</label><select value={method} onChange={e=>setMethod(e.target.value)}><option>নগদ</option><option>bKash</option><option>Nagad</option><option>ব্যাংক</option><option>চেক</option></select>
+   <label>তারিখ</label><input type="date" value={date} onChange={e=>setDate(e.target.value)}/>
+   <button disabled={!person.trim()||!details.trim()||Number(amount)<=0} onClick={add}>＋ ডেমো রেকর্ড যোগ করুন</button>
+   {index===40?<p>রসিদ নম্বর নমুনা: NX-DEMO-{String(records.length+1).padStart(4,"0")}</p>:null}
+   {index===46?<><label>প্রতিবেদনের মাস</label><select value={month} onChange={e=>setMonth(e.target.value)}><option>নভেম্বর ২০২৬</option><option>অক্টোবর ২০২৬</option><option>সেপ্টেম্বর ২০২৬</option></select><p>নির্বাচিত সময়: {month} · নমুনা লেনদেন: {records.length}</p></>:null}
+   <h3>সাম্প্রতিক রেকর্ড</h3>{records.length?records.map(x=><div className="mosque-admin-table" key={x.id}><div><span><b>{x.details}</b><br/><small>{x.person} · {x.category} · {x.date} · {x.method}</small></span><b>{money(x.amount)}</b></div></div>):<p>এখনো কোনো নমুনা রেকর্ড নেই।</p>}
+  </>:null}
+  {security?<><h2>{title} · প্রশাসনিক নিয়ন্ত্রণ ডেমো</h2><p>প্রতিটি দায়িত্বের প্রবেশাধিকার ও কার্যক্রমের নমুনা নিয়ন্ত্রণ।</p><label>অ্যাডমিন দায়িত্ব</label><select value={role} onChange={e=>setRole(e.target.value)}><option>হিসাব অ্যাডমিন</option><option>মসজিদ অ্যাডমিন</option><option>ফাউন্ডেশন অ্যাডমিন</option><option>মিডিয়া অ্যাডমিন</option><option>সুপার অ্যাডমিন</option></select>
+   {Object.keys(allowed).map(k=><label className="mosque-admin-check" key={k}><input type="checkbox" checked={!!allowed[k]} onChange={e=>setAllowed({...allowed,[k]:e.target.checked})}/><span>{k} করার অনুমতি</span></label>)}
+   <button onClick={()=>setNotice(role+" এর ডেমো অনুমতি আপডেট হয়েছে; সার্ভারে সংরক্ষিত হয়নি।")}>অনুমতি সংরক্ষণ দেখুন</button>
+   {index===58?<div className="mosque-admin-table"><b>নমুনা অডিট লগ</b><p>সুপার অ্যাডমিন · অনুমতি পরিবর্তন · আজ · ডেমো</p><p>হিসাব অ্যাডমিন · রিপোর্ট দেখা · আজ · ডেমো</p></div>:null}
+   {index===59?<div className="mosque-admin-table"><b>ব্যাকআপ ও পুনরুদ্ধার</b><p>সর্বশেষ নমুনা ব্যাকআপ: ২১ নভেম্বর ২০২৬</p><button onClick={()=>setNotice("ডেমো ব্যাকআপ অনুরোধ তৈরি হয়েছে; বাস্তব ব্যাকআপ চালানো হয়নি।")}>ব্যাকআপ অনুরোধের ডেমো</button></div>:null}
+  </>:null}
+  {notice?<p role="status" className="mosque-admin-disclaimer">{notice}</p>:null}
+  <p className="mosque-admin-disclaimer">এটি প্রদর্শনীর জন্য ইন্টার‌্যাক্টিভ ডেমো। রেকর্ড, রসিদ, অনুমতি বা ব্যাকআপ বাস্তব Firebase-এ সংরক্ষিত/কার্যকর হয় না।</p>
+ </div>;
+}
+
 export default function MosqueModuleOrAdmin() {
  const params=useParams<{slug:string;module:string}>(), slug=params.slug, module=params.module;
  const variant=slug?.match(/^shayla-akram-([1-4])$/)?.[1]||"4", pkg=packages[variant];
  const moduleIndex=Number(module?.replace("module-",""))-1, isAdmin=module==="admin", title=moduleGroups[moduleIndex], allowed=Number.isInteger(moduleIndex)&&moduleIndex>=0&&moduleIndex<pkg.count;
  if(isAdmin)return <AdminDemo variant={variant}/>;
  if(!allowed)return <main className="mosque-module-page"><h1>এই মডিউলটি এই প্যাকেজে নেই</h1><Link href={"/demos/"+slug}>ডেমোতে ফিরে যান</Link></main>;
- return <main className="mosque-module-page"><div className="mosque-module-head"><Link href={"/demos/"+slug}>← ডেমো হোমে ফিরুন</Link><span>প্যাকেজ {variant} · মডিউল {String(moduleIndex+1).padStart(2,"0")}</span></div><section><small>শায়লা আকরাম {variant==="4"?"মসজিদ ও ফাউন্ডেশন":"কেন্দ্রীয় জামে মসজিদ"}</small><h1>{title}</h1><p>{title} সংক্রান্ত তথ্য, ব্যবস্থাপনা ও প্রয়োজনীয় কার্যক্রম এখানে দেখা যাবে।</p><div className="mosque-module-workspace"><h2>{title} · নমুনা ব্যবস্থাপনা</h2><p>এই পৃষ্ঠাটি মিটিংয়ে মডিউলটির সম্ভাব্য কাজ দেখানোর জন্য তৈরি।</p><label>নমুনা তথ্য</label><input placeholder={title+" লিখুন"}/><label>বিবরণ</label><textarea placeholder="বিস্তারিত লিখুন"/><button onClick={()=>alert("এটি শুধু ডেমো। কোনো তথ্য সংরক্ষণ করা হয়নি।")}>নমুনা সংরক্ষণ দেখুন</button></div><Link href={"/demos/"+slug+"/admin"} className="mosque-module-admin">অ্যাডমিন প্যানেল দেখুন ↗</Link></section></main>;
+ return <main className="mosque-module-page"><div className="mosque-module-head"><Link href={"/demos/"+slug}>← ডেমো হোমে ফিরুন</Link><span>প্যাকেজ {variant} · মডিউল {String(moduleIndex+1).padStart(2,"0")}</span></div><section><small>শায়লা আকরাম {variant==="4"?"মসজিদ ও ফাউন্ডেশন":"কেন্দ্রীয় জামে মসজিদ"}</small><h1>{title}</h1><p>{title} সংক্রান্ত তথ্য, ব্যবস্থাপনা ও প্রয়োজনীয় কার্যক্রম এখানে দেখা যাবে।</p>{moduleIndex>=36&&moduleIndex<=47||moduleIndex>=55&&moduleIndex<=59?<InteractiveModuleDemo title={title} index={moduleIndex}/>:<div className="mosque-module-workspace"><h2>{title} · নমুনা ব্যবস্থাপনা</h2><p>এই পৃষ্ঠাটি মিটিংয়ে মডিউলটির সম্ভাব্য কাজ দেখানোর জন্য তৈরি।</p><label>নমুনা তথ্য</label><input placeholder={title+" লিখুন"}/><label>বিবরণ</label><textarea placeholder="বিস্তারিত লিখুন"/><button onClick={()=>alert("এটি শুধু ডেমো। কোনো তথ্য সংরক্ষণ করা হয়নি।")}>নমুনা সংরক্ষণ দেখুন</button></div>}<Link href={"/demos/"+slug+"/admin"} className="mosque-module-admin">অ্যাডমিন প্যানেল দেখুন ↗</Link></section></main>;
 }
