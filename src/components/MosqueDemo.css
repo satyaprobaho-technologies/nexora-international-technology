@@ -334,8 +334,8 @@
 
 /* Final navigation, compact Motawalli portrait slot and foundation/media sections */
 .mosque-leader-heading{display:flex;align-items:center;gap:14px;margin-bottom:4px}
-.mosque-leader-photo{width:80px;height:80px;flex:0 0 80px;border-radius:50%;display:grid;place-items:center;overflow:hidden;border:2px solid #d9b66e;background:linear-gradient(145deg,#f4ead0,#d7c18d);color:#214a35;font-size:13px;font-weight:800;box-shadow:0 5px 18px #071d1640}
-.mosque-leader-photo img{width:100%;height:100%;object-fit:cover}
+.mosque-leader-photo{width:80px;height:96px;flex:0 0 80px;border-radius:0;display:grid;place-items:center;overflow:hidden;border:2px solid #d9b66e;background:linear-gradient(145deg,#f4ead0,#d7c18d);color:#214a35;font-size:13px;font-weight:800;box-shadow:0 5px 18px #071d1640}
+.mosque-leader-photo img{width:100%;height:100%;object-fit:cover;border-radius:0;display:block}
 .mosque-memory-leader .mosque-leader-mark{height:auto;font-size:48px;line-height:.8}
 .mosque-memory-leader p{margin-top:7px}
 .mosque-foundation{max-width:1120px;margin:0 auto;padding:62px 24px;background:linear-gradient(180deg,#fbfcf9,#edf4ee);border-top:1px solid #e3ebe3;border-bottom:1px solid #e3ebe3}
@@ -352,7 +352,7 @@
 .mosque-media-links a{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:16px;border:1px solid #e1e9e2;border-radius:10px;background:#fff;text-decoration:none;color:#214b36;font-size:13px;font-weight:700;box-shadow:0 7px 20px #193b2e07}
 .mosque-media-links a b{display:grid;place-items:center;width:29px;height:29px;border-radius:8px;background:#edf4ee;color:#176447}
 @media(max-width:760px){.mosque-media-preview{grid-template-columns:1fr;padding:38px 16px}.mosque-media-links{grid-template-columns:1fr 1fr}.mosque-leader-photo{width:76px;height:76px;flex-basis:76px}}
-@media(max-width:430px){.mosque-media-links{grid-template-columns:1fr}.mosque-leader-heading{gap:10px}.mosque-leader-photo{width:68px;height:68px;flex-basis:68px}}
+@media(max-width:430px){.mosque-media-links{grid-template-columns:1fr}.mosque-leader-heading{gap:10px}.mosque-leader-photo{width:68px;height:82px;flex-basis:68px;border-radius:0}}
 
 
 /* Four visual identities for the same complete mosque website */
