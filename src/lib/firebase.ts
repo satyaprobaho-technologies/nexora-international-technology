@@ -15,4 +15,6 @@ const firebaseConfig = {
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app);
-export const ADMIN_EMAIL = "computer26training@gmail.com";
+export const ADMIN_EMAIL = "satyaprobaho.official@gmail.com";
+export const ADMIN_EMAILS = [ADMIN_EMAIL, "computer26training@gmail.com"] as const;
+export function isAdminEmail(email?: string | null) { return Boolean(email && ADMIN_EMAILS.includes(email.toLowerCase() as (typeof ADMIN_EMAILS)[number])); }
